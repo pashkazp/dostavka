@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<link th:rel="stylesheet"
+	th:href="@{assets/datatable/datatables.min.css}" />
+<th:block th:insert="fragments/page-parts :: body/head" />
+
+<title th:text="#{app.title.users}">Title</title>
+</head>
+
+<body>
+
+	<!-- preloader area start -->
+	<div th:replace="fragments/template :: body/preloader"></div>
+	<!-- preloader area end -->
+
+	<!-- page container area start -->
+	<div class="page-container">
+
+		<!-- sidebar menu area start -->
+		<div th:replace="fragments/template :: body/sidebar-menu"></div>
+		<!-- sidebar menu area end -->
+
+		<!-- main content area start -->
+		<div class="main-content">
+
+			<!-- header area start -->
+			<div th:replace="fragments/template :: body/header-area"></div>
+			<!-- header area end -->
+
+			<!-- page title area start -->
+			<div
+				th:replace="fragments/template :: body/page-title-area(~{::h4},~{::li})">
+				<h4 class="page-title fa-pull-left" th:text="#{menu.main.users}">Title</h4>
+				
+				<!-- Insert to breadcrumbs-area -->
+				<li><span th:text="#{menu.main.users}">Users</span></li>
+				
+			</div>
+			<!-- page title area end -->
+
+			<div class="main-content-inner p-1">
+				<div th:replace="users/UsersMain :: body"></div>
+			</div>
+		</div>
+		<!-- main content area end -->
+
+		<!-- footer area start-->
+		<footer>
+			<div class="footer-area">
+				<div th:replace="fragments/page-parts :: body/footer"></div>
+			</div>
+		</footer>
+		<!-- footer area end-->
+
+	</div>
+	<!-- page container area end -->
+
+	<!-- offset area start -->
+	<div th:replace="fragments/template :: body/offset-area"></div>
+
+	<div th:replace="fragments/page-parts :: body/bottom"></div>
+
+	<script th:src="@{assets/datatable/datatables.min.js}"></script>
+	<th:block
+		th:replace="fragments/scripts/datatables :: body/true_false_show_check_func" />
+	<th:block
+		th:replace="fragments/scripts/datatables :: body/role_presenter_func" />
+
+<!-- 	<script th:src="@{assets/colResizable/colResizable-1.6.min.js}"></script>
+	<script th:inline="javascript">
+		$("#table-users").colResizable({
+		  resizeMode:'fit'
+		});
+	</script> -->
+
+	<script th:inline="javascript">
+		var locE = [[@{assets/datatable/English.json}]];
+		var locR = [[@{assets/datatable/Russian.json}]];
+		var locU = [[@{assets/datatable/Ukrainian.json}]];
+    	var localecallstr = ( [[${#locale.language}]] == "en" )? locE :( [[${#locale.language}]] == "ru" )? locR: locU ;
+	    var table = $('#table-users').DataTable({
+	    	dom: 'Bfrtip',
+	    	buttons: { 
+	    		dom: {
+    				button: {
+	    		      className: 'btn-outline-primary'
+	    			}
+	    		},
+	    		
+	    		buttons:[
+	    			{ 
+			    		"extend": 'print', 
+			    		"text":'<span class="fas fa-print"></span>',
+			    		"className": 'btn btn-xs'
+		    		},
+	    			{ 
+			    		"extend": 'pdf', 
+			    		"text":'<span class="far fa-file-pdf"></span>',
+			    		"className": 'btn btn-xs'
+		    		},
+		    		{
+			    		"text":'<span class="fas fa-plus"></span>',
+			    		"className": 'btn btn-xs',
+		    		    "action": function ( e, dt, node, config ) {
+		    		    	//dt.clear().draw();
+		    		    	$('#addNewUserModal').modal('show');
+		    		    }
+		    		},
+		    		{
+			    		"text":'<span class="fas fa-sync-alt"></span>',
+			    		"className": 'btn btn-xs',
+		    		    "action": function ( e, dt, node, config ) {
+		    		    	//dt.clear().draw();
+		    		    	dt.ajax.reload(null,false);
+		    		    }
+		    		}
+	        ]},
+	        "processing": true,
+	        "serverSide": true,
+	        scrollY:        '50vh',
+	        scrollCollapse: true,
+	        paging:         true,
+	        "lengthMenu": [ [ 25, 50, 100, -1], [ 25, 50, 100, "All"] ],
+	        "pagingType": "numbers",
+	        "ajax": {
+	            "url": [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_USERS_PAGES}}]],
+	            "type": "POST",
+	            "dataType": "json",
+	            "contentType": "application/json",
+//	            "beforeSend": function (xhr) {
+//					xhr.setRequestHeader ("Authorization", 'Bearer_'+$.cookie('oauth_token'));
+//				},
+				"data": function (d) {
+	                return JSON.stringify(d);
+	            }
+	        },
+			"language": {
+				"url": localecallstr
+			},
+    		"columns": [
+	            {"data": "id","width": "9rem",responsivePriority: 3},
+	            {"data": "name","width": "33%", responsivePriority:1},
+	            {"data": "email","width": "33%"},
+	            {"data": "enabled", "render": true_false_show_check_func, "width": "5rem"},
+	            {"data": "verified","render": true_false_show_check_func, "width": "5rem"},
+	            {"data": "roles","bSortable": false, "render": role_presenter_func, "width": "34%"},
+	            {"data": null,"bSortable": false, "width": "5rem",
+		            "defaultContent": '<a class="btn btn-xs btn-link text-primary" data-name="editButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>',
+	        		"targets": -1, responsivePriority: 2}
+	        ],
+	        
+	    });
+	    
+	</script>
+	
+	<!-- Add User modal form part -->
+	<div th:replace="users/addUser :: body/addUser"></div>
+
+	<!-- Edit User modal form part -->
+	<div th:replace="users/editUser :: body/editUser"></div>
+
+
+</body>
+
+</html>

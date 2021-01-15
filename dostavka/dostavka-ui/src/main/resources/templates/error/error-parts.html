@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:fragment="head(title)">
+	<th:block th:insert="fragments/page-parts :: body/head"></th:block>
+
+	<th:block th:if="${title != null}">
+		<th:block th:replace="${title}" />
+	</th:block>
+	<th:block th:if="${title == null}">
+		<title th:text="#{error.unknown.title}">Unknown error</title>
+	</th:block>
+</th:block>
+</head>
+
+<body>
+<th:block th:fragment="body(title,descr,link)">
+
+	<!-- preloader area start -->
+	<div th:replace="fragments/template :: body/preloader"></div>
+	<!-- preloader area end -->
+	
+	<!-- error area start -->
+	<div class="error-area ptb--100 text-center">
+		<div class="container">
+			<div class="error-content">
+			<th:block th:if="${title != null}">
+				<th:block th:replace="${title}" />
+			</th:block>
+			<th:block th:if="${title == null}">
+				<h2 th:text="#{error.unknown.title}">Error</h2>
+			</th:block>
+			<th:block th:if="${descr != null}">
+				<th:block th:replace="${descr}" />
+			</th:block>
+			<th:block th:if="${descr == null}">
+				<p th:text="#{error.unknown.descr}">Unknown error</p>
+			</th:block>
+			<th:block th:if="${link != null}">
+				<th:block th:replace="${link}" />
+			</th:block>
+			<th:block th:if="${link == null}">
+				<a th:href="@{${T(ua.com.sipsoft.util.AppURL).HOME}}" th:text="#{menu.main.backtohome}">Back to Home</a>
+			</th:block>
+			</div>
+		</div>
+	</div>
+	
+	<div th:replace="fragments/page-parts :: body/bottom"></div>
+</th:block>
+
+</body>
+</html>

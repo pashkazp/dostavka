@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:insert="fragments/page-parts :: body/head"></th:block>
+
+<title th:text="#{app.title.forgot.pass}">Forgot password</title>
+</head>
+<body>
+
+
+	<!-- preloader area start -->
+	<div th:replace="fragments/template :: body/preloader"></div>
+	<!-- preloader area end -->
+
+	<!-- request token area start -->
+	<div class="login-area login-s2">
+		<div class="container">
+			<div class="login-box ptb--100">
+				<form th:action="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_FORGOT}}"
+					th:object="${useremail}" method="post">
+					<div class="login-form-head">
+						<h4 th:text="#{app.title.forgot.pass}">Forgot Password</h4>
+						<p th:text="#{login.forgot.info}">To reset password submit
+							your username or email</p>
+					</div>
+					<div class="login-form-body">
+
+						<th:block th:if="${param.success}">
+							<div class="form-gp alert alert-info text-center"
+								th:text="#{app.note.email.sending}">An email with
+								instructions has been sent to your email address.</div>
+						</th:block>
+
+						<th:block th:unless="${param.success}">
+						<div class="form-gp focused">
+								<label for="message" th:text="#{login.user.email}">Username
+									or Email</label> <input type="text" id="message" th:field="*{message}">
+								<i class="ti-email"></i>
+								<div class="text-danger">
+									<p class="alert alert-danger" th:each="error: ${#fields.errors('message')}"
+										th:text="${error}">Validation error</p>
+								</div>
+							</div>
+
+							<div class="submit-btn-area">
+								<button id="form_submit" type="submit">
+									[[#{button.send.mail}]] <i class="ti-email"></i>
+								</button>
+							</div>
+						</th:block>
+
+						<div class="form-footer text-center mt-5">
+							<p class="text-muted">
+								[[#{login.signup.noacc}]]? <a
+									th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_REGISTRATION}}"
+									th:text="#{login.signup.here}">Sign up</a>
+							</p>
+							<p class="text-muted">
+								[[#{login.already.registered}]]? <a
+									th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGIN}}"
+									th:text="#{login.already.here}">Login here</a>
+							</p>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="text-center"
+			th:insert="fragments/page-parts :: body/footer"></div>
+	</div>
+	<!-- request token area end -->
+
+	<div th:replace="fragments/page-parts :: body/bottom"></div>
+
+
+
+	<!-- <div class="container">
+		<div class="row">
+			<div class="col-md-6 offset-md-3">
+			
+				<h1 th:text="#{app.title.forgot.pass}">Forgot Password</h1>
+				
+				<form action="#"
+					th:action="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_FORGOT}}"
+					th:object="${usernameoremail}" method="post">
+
+					<div th:if="${param.success}">
+						<div class="alert alert-info" th:text="#{app.note.email.sending}">An
+							email with instructions has been sent to your email address.</div>
+					</div>
+
+					<div th:unless="${param.success}">
+						<input 
+							th:replace="~{fragments/inputField :: input ('__#{login.usernameemail}__', 'message', 'text')}" />
+					</div>
+
+					<div class="form-group" th:unless="${param.success}">
+						<div class="row">
+							<div class="col-md-8 offset-md-2">
+								<button type="submit" class="form-control btn btn-primary">
+									<i
+										th:class="${T(ua.com.sipsoft.util.UIIcon).MAIL.getClassCSS()}"></i>
+									[[#{button.send.mail}]]
+								</button>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="row">
+							<div class="col-md-10 offset-md-1">
+								<div th:replace="login/fragments :: loginhere"></div>
+								<div th:replace="login/fragments :: noacc"></div>
+								<div th:replace="login/fragments :: forgot"></div>
+							</div>
+						</div>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div> -->
+
+
+</body>
+</html>

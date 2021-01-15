@@ -1,0 +1,116 @@
+logging:
+  file:
+    name: app.log
+  level:
+    org:
+      hibernate:
+        SQL: INFO
+        type:
+          descriptor:
+            sql:
+              BasicBinder: INFO
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+            StatementCreatorUtils: TRACE
+    ua:
+      com:
+        sipsoft: DEBUG
+  pattern:
+    console: '%highlight(%-5level) %green(%C{1.}):%L - %msg%n%throwable'
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:sipsoft.p12
+    key-store-password: CbgCjanGfhjkm1
+    keyStoreType: PKCS12
+  servlet:
+    context-path: /dostavka
+
+spring:
+  main:
+    lazy-initialization: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 5
+    initialization-mode: always
+    password: changeme
+    platform: postgres
+    #url: jdbc:postgresql://192.168.88.6:5432/sipsoft
+    #url: jdbc:postgresql://localhost:5432/sipsoft
+    url: jdbc:postgresql://192.168.123.6:5432/sipsoft
+    username: postgres
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+        type: 'TRACE '
+        use_sql_comments: true
+    show-sql: true
+  mail:
+    host: mail.sipsoft.com.ua
+    password: "************"
+    port: 465
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+          timeout: 30000
+        transport:
+          protocol: smtp
+    username: logistic@sipsoft.com.ua
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook: # Must be changed before commissioning
+            #tokenExpirationMsec: 864000000
+            clientId: 240784900318030
+            clientSecret: e249cdf5c99d1b85a0872ca360de2d48
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+          google: # Must be changed before commissioning
+            #tokenExpirationMsec: 864000000
+            clientId: 355196798909-a4e28l9t1bruoimf0ch1cqaev0g0b2fo.apps.googleusercontent.com
+            # real secret was changed
+            client-secret: P_tCb_K3ifYPc-9TyOiai-W6 
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+
+app:
+  app:
+    domain: http://localhost:8080
+  auth: # Must be changed before commissioning
+    tokenExpirationMsec: 864000000
+    tokenIssurer: "Soutinfopro Dostavka Application"
+    tokenSecret: U291dGhpbmZvcHJvIEpXVCBEb3N0YXZrYSBBcHBsaWNhdGlvbiBTZWNyZXQgS2V5 # Base64 encoded key phrase. 
+    tokenCookieName: oauth_token
+    tokenPrefix: Bearer_
+#  oauth2:
+#    # After successfully authenticating with the OAuth2 Provider,
+#    # we'll be generating an auth token for the user and sending the token to the
+#    # redirectUri mentioned by the frontend client in the /oauth2/authorize request.
+#    # We're not using cookies because they won't work well in mobile clients.
+#    authorizedRedirectUris:
+#      - http://localhost:3000/oauth2/redirect
+
+springdoc:
+  api-docs:
+    path: /api/doc/api-docs
+  swagger-ui:
+    path: /api/doc/swagger-ui.html
+
+

@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+
+	<div th:fragment="editUser" class="modal fade" id="editUserModal"
+		tabindex="-1" role="dialog" aria-labelledby="editUserLabel"
+		aria-hidden="true">
+		<form id="editUserForm">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content login-s2">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editUserLabel"
+							th:text="#{entity.user.title.edit}">Edit User</h5>
+						<h5 class="modal-title ml-1" id="editUserNum" data-name="id"
+							data-value="0">1</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+
+						<div class="form-group">
+							<label class="text-primary" for="nameEdit"
+								th:text="#{entity.user.name}">Name </label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="text" id="nameEdit" name="name">
+								<div class="input-group-append input-group-text border-left-0">
+									<i class="ti-user"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" data-name="name"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="text-primary" for="emailEdit"
+								th:text="#{entity.user.email}">email </label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="email" id="emailEdit" name="email">
+								<div class="input-group-append input-group-text border-left-0">
+									<i class="ti-email"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" data-name="email"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="text-primary" for="passwordEdit"
+								th:text="#{entity.user.password}">password </label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="password" id="passwordEdit" name="password">
+								<div class="input-group-append input-group-text bborder-left-0">
+									<i class="ti-lock"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" data-name="password"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="text-primary" for="confirmPasswordEdit"
+								th:text="#{entity.user.check.confirmpassword}">Confirm
+								Password </label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="password" id="confirmPasswordEdit" name="confirmPassword">
+								<div class="input-group-append input-group-text border-left-0">
+									<i class="ti-lock"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1"
+								data-name="confirmPassword" hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<label class="text-primary" for="verifiedEdit"
+								th:text="#{entity.user.permits}">Permits</label>
+						<div class="form-row">
+							<div class="form-group col-md-3">
+								<div class="input-group form-row">
+									<div
+										class="custom-control custom-checkbox custom-control-inline">
+										<input type="checkbox" class="custom-control-input"
+											id="verifiedEdit" name="verified"> <label
+											class="custom-control-label text-primary"
+											th:for="verifiedEdit" th:text="#{entity.user.verified}">Verified</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group col-md-3">
+								<div class="input-group form-row">
+									<div
+										class="custom-control custom-checkbox custom-control-inline">
+										<input type="checkbox" class="custom-control-input"
+											id="enabledEdit" name="enabled"> <label
+											class="custom-control-label text-primary"
+											th:for="enabledEdit" th:text="#{entity.user.enabled}">Verified</label>
+									</div>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" th:data-name="permits"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="text-primary" for="rolesEdit"
+								th:text="#{entity.user.roles}">Roles</label>
+							<div class="input-group form-row">
+								<div
+									class="custom-control custom-checkbox custom-control-inline mr-4"
+									th:each="role : ${T(ua.com.sipsoft.util.security.Role).values()}"
+									th:title="#{${role.getRoleNameMessage()}}">
+									<input type="checkbox" class="custom-control-input"
+										th:id="cb_edit_ + ${role}" th:name="role" th:value="${role}">
+									<label class="custom-control-label text-primary"
+										th:for="cb_edit_ + ${role}"><i
+										th:class="${role.getIcon().getClassCSS()}"></i></label>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" th:data-name="roles"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+						<div class="text-danger form-row mr-1" th:data-name="editForm"
+							hidden="true">
+							<p class="alert alert-danger w-100 mb-0">Validation error</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="editUserButton" type="submit" class="btn btn-primary"
+							th:text="#{button.save}">Save</button>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal" th:text="#{button.close}">Close</button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<script th:inline="javascript">
+		// collect data from modalpage and send it to the backend
+		$(function () {
+		    $('#editUserButton').click(function (e) {
+		 
+		        //Prevent default submission of form
+		        e.preventDefault();
+		 
+		        //Remove previous errors
+		        $('#editUserForm .alert-danger').remove();
+		        $('#editUserForm .text-danger').attr("hidden",true);
+		        
+		        var formData = {
+		        	id : $('#editUserForm #editUserNum').attr('data-value'),	
+					name : $( '#editUserForm #nameEdit' ).val(),
+					email : $( '#editUserForm #emailEdit' ).val(),
+					password : $( '#editUserForm #passwordEdit' ).val(),
+					confirmPassword : $('#editUserForm #confirmPasswordEdit' ).val(),
+					roles : $( "#editUserForm input:checkbox[name=role]:checked" )
+								.map( function(){ return $( this ).val()}).get(),
+					verified : $('#editUserForm #verifiedEdit' ).prop('checked'),
+					enabled : $('#editUserForm #enabledEdit' ).prop('checked')
+				};
+				
+	            //console.log(formData);
+		        $.ajax({
+		            url: [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_USERS}}]]+"/"+formData.id,
+		            data: JSON.stringify(formData),
+		            //data: JSON.stringify($('#addNewUserForm').serialize()),
+					type: 'PUT',
+		            dataType: "json",
+		            contentType : "application/json",
+		            //timeout: 3000,
+		            async:true
+		        })
+		        .done(function (res,status, xhr) {
+	            	console.log(res);
+                    $('#editUserModal').modal('hide');
+                    $('#table-users').DataTable().ajax.reload(null,false);
+	            })
+	            .fail(function (xhr, textStatus, errorThrown) {
+	            	//console.log(xhr);
+	            	//console.log(textStatus);
+                    $.each(xhr.responseJSON.subInfos, function (key, value) {
+                    	if (!value.field){value.field='editForm'}
+                        $('#editUserForm .text-danger[data-name=' + value.field + ']').append('<p class="alert alert-danger w-100 mb-0">' + value.message + '</p>');
+                    });
+    		        $('#editUserForm .text-danger').attr("hidden",false);
+	                if(textStatus == "timeout") {
+	                  alert("Got timeout");
+	                }
+	        	});
+		    });
+	    });
+		</script>
+		<script th:inline="javascript">
+			// Clear data on hide the form
+			$('#editUserModal').on('hidden.bs.modal', function (e) {
+				$(this)
+					.find("#editUserForm input,textarea,select")
+						.not('[type=checkbox]')
+				    	.val('')
+				    	.end();
+				$(this)
+				    .find("#editUserForm input[type=checkbox], input[type=radio]")
+				       .prop("checked", false)
+				       .end();
+				$('#editUserForm .alert-danger').remove();
+				$('#editUserForm .text-danger').attr("hidden",true);
+			});		
+		</script>
+		<script th:inline="javascript">
+			// get gata from the backend and populate on the modal form and open it
+			$('#table-users tbody').on( 'click', 'a[data-name="editButton"]', function (e) {
+				event.preventDefault();
+	    		var tr = $(this).closest("tr");
+	    	    var data = $("#table-users").DataTable().row(tr).data();
+	        	$.get({
+	        		url : [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_USERS}}]] + "/" + data.id,
+	        		dataType: "json",
+		            contentType : "application/json",
+		            //timeout: 3000,
+		            async:true
+	        	})
+	        	.done(function (user) {
+	            	//console.log(user);
+	    			$('#editUserNum').text('# ' + user.id);
+	    			$('#editUserNum').attr('data-value', user.id);
+	    			$('#nameEdit').val(user.name);
+	    			$('#emailEdit').val(user.email);
+	    			$.each(user.roles, function (index, role) {
+	    				$("#cb_edit_" + role + "").prop("checked",true);
+                    });
+    				$("#enabledEdit").prop("checked",user.enabled);
+    				$("#verifiedEdit").prop("checked",user.verified);
+    				
+		        	$('#editUserModal').modal('show'); 
+	            })
+	            .fail(function (data, textStatus, errorThrown) {
+	            	console.log(data);
+	            	console.log(textStatus);
+	                if(textStatus == "timeout") {
+	                  alert("Got timeout");
+	                }
+	            })
+			});
+		</script>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" 
+xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<th:block th:insert="fragments/page-parts :: body/head"></th:block>
+
+<title th:text="#{app.title.home}">Home</title>
+</head>
+
+<body>
+	<!-- preloader area start -->
+	<div th:replace="fragments/template :: body/preloader"></div>
+	<!-- preloader area end -->
+
+	<!-- page container area start -->
+	<div class="page-container">
+
+		<!-- sidebar menu area start -->
+		<div th:replace="fragments/template :: body/sidebar-menu"></div>
+		<!-- sidebar menu area end -->
+
+		<!-- main content area start -->
+		<div class="main-content">
+
+			<!-- header area start -->
+			<div th:replace="fragments/template :: body/header-area"></div>
+			<!-- header area end -->
+
+			<!-- page title area start -->
+			<div th:replace="fragments/template :: body/page-title-area(~{::h4},~{::li})">
+ 				<h4 class="page-title fa-pull-left" th:text="#{menu.main.home}">Title</h4>
+                <!-- <li><span th:text="#{menu.main.facilities}">Facility</span></li> -->  				
+			</div>			
+			<!-- page title area end -->
+
+			<div class="main-content-inner p-1">
+				<!-- MAIN CONTENT GOES HERE -->
+			</div>
+		</div>
+		<!-- main content area end -->
+
+		<!-- footer area start-->
+		<footer>
+			<div class="footer-area">
+				<div th:replace="fragments/page-parts :: body/footer"></div>
+			</div>
+		</footer>
+		<!-- footer area end-->
+
+	</div>
+	<!-- page container area end -->
+
+	<!-- offset area start -->
+	<div th:replace="fragments/template :: body/offset-area"></div>
+
+	<div th:replace="fragments/page-parts :: body/bottom"></div>
+
+</body>
+
+</html>

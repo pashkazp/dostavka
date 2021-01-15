@@ -1,0 +1,32 @@
+td.details-control {
+    background: url('../datatable/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../datatable/details_close.png') no-repeat center center;
+}
+table.dataTable tbody tr.selected {
+    color: black !important;
+    background-color: #C6C8CA !important;
+}
+
+
+.btn-outline-facebook {
+	border-color: #4267B2 !important;
+}
+
+.btn-outline-facebook:hover {
+	color:#ffffff  !important;
+	background-color:#4267B2 !important;
+	border-color:rgba(0,0,0,0.2);
+}
+
+.btn-outline-google {
+	border-color: #DB4437 !important;
+}
+
+.btn-outline-google:hover {
+	color:#ffffff  !important;
+	background-color:#DB4437 !important;
+	border-color:rgba(0,0,0,0.2);
+}

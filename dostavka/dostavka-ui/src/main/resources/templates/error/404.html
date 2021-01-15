@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+<th:block th:replace="error/error-parts :: head/head(~{::title})">
+	<title th:text="#{error.404.title}">404 Error</title>
+</th:block>
+</head>
+
+<body>
+	<th:block th:replace="error/error-parts :: body/body(~{::h2},~{::p},~{::a})">
+		<h2 th:text="#{error.404.title}">404</h2>
+		<p th:text="#{error.404.descr}">Ooops! Something went wrong.</p>
+		<a th:href="@{${T(ua.com.sipsoft.util.AppURL).HOME}}" th:text="#{menu.main.backtohome}">Back to Home</a>
+	</th:block>
+</body>
+
+</html>

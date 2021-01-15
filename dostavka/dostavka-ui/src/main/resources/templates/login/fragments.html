@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<div th:fragment="loginhere">
+		<span th:text="#{login.already.registered}+'? - '"> Already
+			registered? - </span> <span><a href="/"
+			th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGIN}}"
+			th:text="#{login.already.here}">Login here</a></span>
+	</div>
+	
+	<div th:fragment="forgot">
+		<span th:text="#{login.forgot.pass}+'? - '">Forgot password? -
+		</span> <span><a
+			th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_FORGOT}}"
+			th:text="#{login.forgot.here}">Forgot Password</a> </span>
+	</div>
+	
+	<div th:fragment="noacc">
+		<span th:text="#{login.signup.noacc}+'? - '"> No account? - </span> <span><a
+			href="/"
+			th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_REGISTRATION}}"
+			th:text="#{login.signup.here}">Register here</a></span>
+	</div>
+</body>
+</html>

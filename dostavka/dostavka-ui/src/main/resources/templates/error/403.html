@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<th:block th:replace="error/error-parts :: head/head(~{::title})">
+	<title th:text="#{error.403.title}">403 Forbidden</title>
+</th:block>
+</head>
+<body>
+	<th:block th:replace="error/error-parts :: body/body(~{::h2},~{::p},~{::a})">
+		<h2 th:text="#{error.403.title}">403</h2>
+		<p th:text="#{error.403.descr}">Access to this resource on the server is denied</p>
+		<a th:href="@{${T(ua.com.sipsoft.util.AppURL).HOME}}" th:text="#{menu.main.backtohome}">Back to Home</a>
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<th:block th:insert="fragments/page-parts :: body/head"></th:block>
+
+<title th:text="#{app.title.home}">Home</title>
+</head>
+
+<body>
+	<!-- preloader area start -->
+	<div th:replace="fragments/template :: body/preloader"></div>
+	<!-- preloader area end -->
+
+	<!-- page container area start -->
+	<div class="page-container">
+
+		<!-- sidebar menu area start -->
+		<div th:replace="fragments/template :: body/sidebar-menu"></div>
+		<!-- sidebar menu area end -->
+
+		<!-- main content area start -->
+		<div class="main-content">
+
+			<!-- header area start -->
+			<div th:replace="fragments/template :: body/header-area"></div>
+			<!-- header area end -->
+
+			<!-- page title area start -->
+			<div th:replace="fragments/template :: body/page-title-area(~{::h4},~{::li})">
+ 				<h4 class="page-title fa-pull-left" th:text="#{menu.main.home}">Title</h4>
+                <!-- <li><span th:text="#{menu.main.facilities}">Facility</span></li> -->  				
+			</div>			
+			<!-- page title area end -->
+
+			<div class="main-content-inner p-1">
+				<div th:if="${#strings.equalsIgnoreCase('ROLE_ADMIN', #authentication.getPrincipal().getUser().getHighesRole())}">
+					<div th:replace="home/Home-Admin :: body"></div>
+				</div>
+				<div th:if="${#strings.equalsIgnoreCase('ROLE_DISPATCHER', #authentication.getPrincipal().getUser().getHighesRole())}">
+					<div th:replace="home/Home-Dispather :: body"></div>
+				</div>
+				<div th:if="${#strings.equalsIgnoreCase('ROLE_MANAGER', #authentication.getPrincipal().getUser().getHighesRole())}">
+					<div th:replace="home/Home-Manager :: body"></div>
+				</div>
+				<div th:if="${#strings.equalsIgnoreCase('ROLE_PRODUCTOPER', #authentication.getPrincipal().getUser().getHighesRole())}">
+					<div th:replace="home/Home-Productoper :: body"></div>
+				</div>
+				<div th:if="${#strings.equalsIgnoreCase('ROLE_COURIER', #authentication.getPrincipal().getUser().getHighesRole())}">
+					<div th:replace="home/Home-Courier :: body"></div>
+				</div>
+				<div th:if="${#strings.equalsIgnoreCase('ROLE_CLIENT', #authentication.getPrincipal().getUser().getHighesRole())}">
+					<div th:replace="home/Home-Client :: body"></div>
+				</div>
+				<div th:if="${#strings.equalsIgnoreCase('ROLE_USER', #authentication.getPrincipal().getUser().getHighesRole())}">
+					<div th:replace="home/Home-User :: body"></div>
+				</div>
+			</div>
+		</div>
+		<!-- main content area end -->
+
+		<!-- footer area start-->
+		<footer>
+			<div class="footer-area">
+				<div th:replace="fragments/page-parts :: body/footer"></div>
+			</div>
+		</footer>
+		<!-- footer area end-->
+
+	</div>
+	<!-- page container area end -->
+
+	<!-- offset area start -->
+	<div th:replace="fragments/template :: body/offset-area"></div>
+
+	<div th:replace="fragments/page-parts :: body/bottom"></div>
+
+</body>
+
+</html>

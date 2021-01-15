@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+	<form>
+		<th:block th:fragment="input (label, name, type)" th:with="act=${act} ?: 'search'">
+				<div  th:with="valid=${!#fields.hasErrors(name)}"
+					th:class="form-group" th:classappend="${(valid ? '' : ' has-danger')}">
+
+				<label th:if="${__type__ != 'checkbox'}" class="control-label"  th:text="${label}">Label</label>
+				
+				<div th:switch="${type}">
+					
+					<!-- TEXT -->
+					<input th:case="'text'" 
+						class="form-control"
+						th:classappend="${(valid ? '' : 'is-invalid')}" type="text"
+						th:field="*{__${name}__}" /> 
+					
+					<!-- SEARCH -->
+					<div th:case="'search'" class="input-group">	
+						<input
+							class="form-control"
+							th:classappend="${(valid ? '' : 'is-invalid')}" type="search"
+							th:field="*{__${name}__}" /> 
+           			    <span class="input-group-append">
+    					    <button class="form-control btn btn-outline-secondary" name="action" type="submit" th:value="__${act}__">
+        				  	  <i class="fa fa-search"></i>
+     					   </button>
+     					</span>
+    				</div>	
+    				
+    				<!-- CHECK BOX -->	
+					<div th:case="'checkbox'" class="form-check">						 
+						<input class="form-check-input"
+							th:classappend="${(valid ? '' : 'is-invalid')}" type="checkbox"
+							th:field="*{__${name}__}" /> 
+						<label class="form-check-label"  th:text="${label}">Label</label>
+					<p class="invalid-feedback"
+						th:each="error: ${#fields.errors('__${name}__')}"
+						th:text="${error}">Validation error</p>
+					</div>	
+					
+					<!-- EMAIL -->
+					<input th:case="'email'" 
+						class="form-control"
+						th:classappend="${(valid ? '' : 'is-invalid')}" type="email"
+						th:field="*{__${name}__}" /> 
+					
+					<!-- PASSWORD -->	
+					<input th:case="'password'"
+						class="form-control"
+						th:classappend="${(valid ? '' : 'is-invalid')}" type="password"
+						th:field="*{__${name}__}" /> 
+					
+					<!-- DATE -->	
+					<input th:case="'date'"
+						class="form-control"
+						th:classappend="${(valid ? '' : 'is-invalid')}" type="text"
+						th:field="*{__${name}__}" placeholder="YYYY-MM-DD"
+						title="Enter a date in this format: YYYY-MM-DD"
+						pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" />
+	
+					<!-- error -->
+					<p class="invalid-feedback"
+						th:each="error: ${#fields.errors('__${name}__')}"
+						th:text="${error}">Validation error</p>
+				</div>
+			</div>
+		</th:block>
+	</form>
+</body>
+</html>

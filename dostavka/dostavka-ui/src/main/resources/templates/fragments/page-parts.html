@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+	<th:block th:fragment="head">
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<th:block th:insert="fragments/bootstrap :: body/head"></th:block>
+
+		<th:block th:insert="fragments/template :: body/head"></th:block>
+		<script src="https://kit.fontawesome.com/a2dabbbbbf.js"
+			crossorigin="anonymous"></script>
+	</th:block>
+
+	<th:block th:fragment="footer">
+		<p>
+			<small> © 2019-2020 <a href="http://sipsoft.com.ua"
+				target="_blank">SIPSoft</a>.
+			</small>
+		</p>
+	</th:block>
+
+
+	<th:block th:fragment="bottom">
+		<th:block th:insert="fragments/bootstrap :: body/bottom"></th:block>
+		<th:block th:insert="fragments/template :: body/bottom"></th:block>
+	</th:block>
+
+</body>
+</html>

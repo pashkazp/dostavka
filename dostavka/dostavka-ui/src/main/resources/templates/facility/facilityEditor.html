@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+
+	<div th:fragment="facilityEditor" class="modal fade"
+		id="editFacilityModal" tabindex="-1" role="dialog"
+		aria-labelledby="editFacilityLabel" aria-hidden="true">
+		<form id="editFacilityForm">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content login-s2">
+					<div class="modal-header">
+						<div id="editFacilityNum" style="display: none;"
+							class="container row">
+							<h5 id="editFacilityLabel" class="modal-title"
+								th:text="#{entity.facility.edit}" style="display: inline;">Edit
+								Facility</h5>
+							<h5 id="editFacilityLabelId" class="modal-title ml-1"
+								data-name="id" data-value="0">1</h5>
+						</div>
+						<div id="addFacilityNum" style="display: none;">
+							<h5 class="modal-title" id="addFacilityLabel"
+								th:text="#{entity.facility.add}">Add Facility</h5>
+						</div>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="text-primary" for="nameEdit"
+								th:text="#{entity.facility.name}">Name</label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="text" id="nameEdit" name="name">
+								<div class="input-group-append input-group-text border-left-0">
+									<i class="fas fa-city"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" data-name="name"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+							<div id="fEF-header" class="modal-header">
+								<div class="container row">
+									<h5 class="modal-title" th:text="#{entity.facilityaddr.add}">Add
+										Facility Address</h5>
+								</div>
+							</div>
+							<div
+								th:replace="facility/facilityAddrEditorFields :: body/facilityAddrEditorFields(fragmentId='fEF',hide='false')"></div>
+						</div>
+						<div class="text-danger form-row mr-1" th:data-name="editForm"
+							hidden="true">
+							<p class="alert alert-danger w-100 mb-0">Validation error</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="addNewFacilityButton" type="submit"
+							class="btn btn-primary" th:text="#{button.add}"
+							style="display: none;">Add</button>
+						<button id="updateFacilityButton" type="submit"
+							class="btn btn-primary" th:text="#{button.save}"
+							style="display: none;">Save</button>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal" th:text="#{button.close}">Close</button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<script th:inline="javascript">
+			// чистка полей и чекбоксов редактора
+		    function cleanFacilityFormFields() {
+				$(this)
+				.find("#editFacilityForm input,textarea,select")
+					.not('[type=checkbox]')
+			    	.val('')
+			    	.end();
+				$(this)
+			    .find("#editFacilityForm input[type=checkbox], input[type=radio]")
+			       .prop("checked", false)
+			       .end();
+		    };
+			
+			// чистка сообщений об ошибках
+		    function cleanFacilityFormErrors() {
+		        $('#editFacilityForm .alert-danger').remove();
+		        $('#editFacilityForm .text-danger').attr("hidden",true);
+			};
+		    
+			// Очистка формы редактора
+			// чистка полей и чекбоксов
+			// чистка сообщений об ошибках
+			// сокрытие кнопок и служебных полей редактора
+		    function cleanFacilityForm() {
+		    	cleanFacilityFormFields();
+		    	cleanFacilityFormErrors();
+		    	$('#editFacilityForm #addNewFacilityButton').hide();
+		    	$('#editFacilityForm #updateFacilityButton').hide();
+		    	$('#editFacilityForm #editFacilityNum').hide();
+		    	$('#editFacilityForm #addFacilityNum').hide();
+		    	$('#editFacilityForm #fEF-header').hide();
+		    	$('#editFacilityForm #fEF-block').hide();
+		    };
+		    
+		    // нажатие кнопки добавления записи
+		    // очистка формы
+		    // включение нужных кнопок и служебных полей
+		    // показ формы редактора
+		    function onAddNewFacilityButtonModalClick() {
+		    	console.log("press add");
+		        //e.preventDefault();
+		        cleanFacilityForm();
+		    	$('#editFacilityForm #addNewFacilityButton').show();
+		    	$('#editFacilityForm #addFacilityNum').show();
+		    	$('#editFacilityForm #fEF-header').show();
+		    	$('#editFacilityForm #fEF-block').show();
+		    	$('#editFacilityModal').modal('show');
+		    };
+		    
+		</script>
+		<script th:inline="javascript">
+			// ADD addNewFacilityButton на форме редактора
+			// Чистка сообщений об ошибках
+			// Получение значений полей формы редактора
+			// Отправка в базу
+			// при успехе добавления - скрытие формы редактора и рефреш таблицы
+			// при неуспехе - показ ошибок
+			// при сбое - показ ошибок
+			$(document).ready(function () {
+
+				$('#addNewFacilityButton').click(function (e) {
+			 
+			        //Prevent default submission of form
+			        e.preventDefault();
+			 
+			        //Remove previous errors
+			        cleanFacilityFormErrors();
+			        
+			        var formData = {
+						name : $( '#editFacilityForm #nameEdit' ).val(),
+						facilityAddress: {
+				        	addressesAlias : $( '#editFacilityForm #fEF-addressesAliasEdit' ).val(),
+				        	address : $( '#editFacilityForm #fEF-addressEdit' ).val(),
+							lat : $( '#editFacilityForm #fEF-latitudeEdit' ).val(),
+							lng : $( '#editFacilityForm #fEF-longitudeEdit' ).val(),
+							defaultAddress : $('#editFacilityForm #fEF-defaultAddressEdit' ).prop('checked'),
+						}
+					}
+					
+		            console.log(formData);
+			        $.post({
+			            url: [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES}}]]+"/",
+			            data: JSON.stringify(formData),
+			            dataType: "json",
+			            contentType : "application/json",
+			            //timeout: 3000,
+			            async:true
+					})
+					.done(function (res) {
+		                console.log(res);
+	                    $('#editFacilityModal').modal('hide');
+	                    $('#facilities-table').DataTable().ajax.reload(null,false);
+		                if (res.validated) {
+		                    //take your successful action here; you may want to redirect to another page
+		                } else {
+		                }
+		            })
+		            .fail(function (xhr, textStatus, errorThrown) {
+		            	console.log(xhr);
+		            	console.log(textStatus);
+	                    $.each(xhr.responseJSON.errorMessages, function (key, value) {
+	                    	if (!key){key='editForm'}
+	                        $('#editFacilityForm .text-danger[data-name=' + key + ']').append('<p class="alert alert-danger w-100 mb-0">' + value + '</p>');
+	                    });
+	    		        $('#editFacilityForm .text-danger').attr("hidden",false);
+		                if(textStatus == "timeout") {
+		                  alert("Got timeout");
+		                }
+		        	})
+			    });
+		    });
+			
+		</script>
+		<script th:inline="javascript">
+			// SAVE updateFacilityButton на форме редактора
+			// очиста сообщений об ошибках
+			// получение данных из полей редактора формы
+			// отправка данных в базу данных
+			// при успехе обновления - сокрытие формы редактора и рефреш таблицы
+			// при неуспехе - показ ошибок
+			// при сбое - показ ошибок
+			$(document).ready(function () {
+			    $('#updateFacilityButton').click(function (e) {
+			 
+			        //Prevent default submission of form
+			        e.preventDefault();
+			 
+			        //Remove previous errors
+			        cleanFacilityFormErrors();
+			        
+			        var formData = {
+			        	id : $('#editFacilityLabelId').attr('data-value'),	
+						name : $( '#editFacilityForm #nameEdit' ).val(),
+					}
+					
+		            console.log(formData);
+			        $.ajax({
+			            url: [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES}}]]+"/"+formData.id,
+						type : "PUT",
+			            data: JSON.stringify(formData),
+			            //data: JSON.stringify($('#addNewUserForm').serialize()),
+			            dataType: "json",
+			            contentType : "application/json",
+			            //timeout: 3000,
+			            async:true
+			        })
+			        .done(function (res) {
+		                console.log(res);
+	                    $('#editFacilityModal').modal('hide');
+	                    $('#facilities-table').DataTable().ajax.reload(null,false);
+		            })
+		            .fail(function (xhr, textStatus, errorThrown) {
+		            	console.log(xhr);
+		            	console.log(textStatus);
+	                    $.each(xhr.responseJSON.errorMessages, function (key, value) {
+	                    	if (!key){key='editForm'}
+	                        $('#editFacilityForm .text-danger[data-name=' + key + ']').append('<p class="alert alert-danger w-100 mb-0">' + value + '</p>');
+	                    });
+	    		        $('#editFacilityForm .text-danger').attr("hidden",false);
+		                if(textStatus == "timeout") {
+		                  alert("Got timeout");
+		                }
+		        	});
+			    });
+		    });
+			
+		</script>
+		<script th:inline="javascript">
+			// EditButton в таблице значений организаций
+			// Чистка полей и сообщений об ошибках
+			// Включение кнопок и полей в режим редактирования
+			// Получение данных текущей строки
+			// Запрос данных из базы по ID
+			// при успехе - разнос данных по полям
+			// при сбое - показ ошибки
+			$(document).ready(function() {    
+				$('#facilities-table tbody').on( 'click', 'a[data-name="editButton"]', function (e) {
+					event.preventDefault();
+
+					cleanFacilityForm();
+			    	$('#editFacilityForm #updateFacilityButton').show();
+			    	$('#editFacilityForm #editFacilityNum').show();
+		    		
+			    	var tr = $(this).closest("tr");
+		    	    var data = $("#facilities-table").DataTable().row(tr).data();
+		        	$.get({
+		        		url : [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES}}]] + "/" + data.id,
+		        		dataType: "json",
+			            contentType : "application/json",
+			            //timeout: 3000,
+			            async:true
+		        	})
+		        	.done(function (facility) {
+		            	console.log(facility);
+		    			$('#editFacilityLabelId').text('# ' + facility.id);
+		    			$('#editFacilityLabelId').attr('data-value', facility.id);
+		    			$('#nameEdit').val(facility.name);
+		    			
+			        	$('#editFacilityModal').modal('show'); 
+		            })
+		            .fail(function (xhr, textStatus, errorThrown) {
+		            	console.log(xhr);
+		            	console.log(textStatus);
+		            	console.log(errorThrown);
+		                if(textStatus == "timeout") {
+		                  alert("Got timeout");
+		                }
+		        	});
+				})
+			});
+		</script>
+		<script th:inline="javascript">
+			// При скрытии формы редактора
+			// Очистка данных в полях и чекбоксах редактора. 
+			// Удаление сообщение об ошибках
+			$('#editFacilityModal').on('hidden.bs.modal', function (e) {
+				$(this)
+					.find("#editFacilityForm input,textarea,select")
+						.not('[type=checkbox]')
+				    	.val('')
+				    	.end();
+				$(this)
+				    .find("#editFacilityForm input[type=checkbox], input[type=radio]")
+				       .prop("checked", false)
+				       .end();
+				$('#editFacilityForm .alert-danger').remove();
+				$('#editFacilityForm .text-danger').attr("hidden",true);
+			})		
+		</script>
+
+	</div>
+</body>
+
+</html>

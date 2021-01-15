@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body>
+	<th:block th:fragment="head">
+		<link rel="shortcut icon" type="image/png"
+			th:href="@{/assets/images/icon/favicon.ico}">
+
+		<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
+		<!-- <link rel="stylesheet" href="assets/css/font-awesome.min.css"> -->
+
+		<link rel="stylesheet" type="text/css"
+			th:href="@{/webjars/themify-icons/css/themify-icons.css}">
+
+		<link rel="stylesheet" type="text/css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/3.0.3/metisMenu.min.css">
+		<!-- 		<link rel="stylesheet" type="text/css"
+			th:href="@{/webjars/metisMenu/dist/metisMenu.min.css}">
+ -->
+		<link rel="stylesheet" type="text/css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.css">
+		<!-- 		<link rel="stylesheet" type="text/css"
+			th:href="@{/webjars/OwlCarousel/owl.carousel.css}">
+ -->
+
+		<link rel="stylesheet" type="text/css"
+			th:href="@{/assets/css/slicknav.min.css}">
+		<!-- amchart css -->
+
+
+		<!-- 		<link rel="stylesheet" type="text/css"
+			th:href="@{/webjars/amcharts/plugins/export/export.css}" media="all" />
+ -->
+		<link rel="stylesheet"
+			href="https://www.amcharts.com/lib/3/plugins/export/export.css"
+			type="text/css" media="all" />
+
+		<!-- others css -->
+		<link rel="stylesheet" type="text/css"
+			th:href="@{/assets/css/typography.css}">
+		<link rel="stylesheet" type="text/css"
+			th:href="@{/assets/css/default-css.css}">
+		<link rel="stylesheet" type="text/css"
+			th:href="@{/assets/css/styles.css}">
+		<link rel="stylesheet" type="text/css"
+			th:href="@{/assets/css/responsive.css}">
+		<link rel="stylesheet" type="text/css"
+			th:href="@{/assets/css/slicknav.min.css}">
+		<link rel="stylesheet" type="text/css"
+			th:href="@{/assets/css/application.css}">
+		<!-- modernizr css -->
+		<script type="text/javascript"
+			src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+		<!-- 		<script type="text/javascript"
+			th:src="@{/webjars/modernizr/modernizr.min.js}"></script>
+ -->
+	</th:block>
+
+	<th:block th:fragment="bottom">
+		<!-- jquery latest version -->
+		<!-- <script src="assets/js/vendor/jquery-2.2.4.min.js"></script> -->
+		<!-- bootstrap 4 js -->
+		<!-- <script src="assets/js/popper.min.js"></script> -->
+		<!-- <script src="assets/js/bootstrap.min.js"></script> -->
+		<script type="text/javascript"
+			src="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.js"></script>
+		<!-- 		<script type="text/javascript"
+			th:src="@{/webjars/OwlCarousel/owl.carousel.min.js}"></script>
+ -->
+
+		<script type="text/javascript"
+			src="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/3.0.3/metisMenu.min.js"></script>
+		<!-- 		<script type="text/javascript"
+			th:src="@{/webjars/metisMenu/dist/metisMenu.min.js}"></script>
+ -->
+		<script type="text/javascript"
+			src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
+		<!-- 		<script type="text/javascript"
+			th:src="@{/webjars/jQuery-slimScroll/jquery.slimscroll.min.js}"></script>
+ -->
+		<script type="text/javascript"
+			th:src="@{/assets/js/jquery/jquery.slicknav.min.js}"></script>
+
+		<!-- start chart js -->
+		<script type="text/javascript"
+			src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+		<!-- start highcharts js -->
+		<script type="text/javascript"
+			src="https://code.highcharts.com/highcharts.js"></script>
+		<!-- start zingchart js -->
+		<script type="text/javascript"
+			src="https://cdn.zingchart.com/zingchart.min.js"></script>
+		<script> zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/"; ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "ee6b7db5b51705a13dc2339db3edaf6d"]; </script>
+		<!-- all line chart activation -->
+		<script type="text/javascript" th:src="@{/assets/js/line-chart.js}"></script>
+		<!-- all pie chart -->
+		<script type="text/javascript" th:src="@{/assets/js/pie-chart.js}"></script>
+		<!-- others plugins -->
+		<script type="text/javascript" th:src="@{/assets/js/plugins.js}"></script>
+		<script type="text/javascript" th:src="@{/assets/js/scripts.js}"></script>
+		<script th:inline="javascript">$("#metismenu").metisMenu();</script>
+
+	</th:block>
+
+	<!-- page title area start -->
+	<div class="page-title-area" th:fragment="page-title-area(title,lis)">
+		<div class="row align-items-center">
+			<div class="col-sm-6">
+				<div class="breadcrumbs-area clearfix">
+					<!-- <th:block th:replace="${title}" /> -->
+					<ul class="breadcrumbs fa-pull-left">
+						<th:block th:if="${lis != null}">
+							<li><a th:href="@{${T(ua.com.sipsoft.util.AppURL).HOME}}"
+								th:text="#{menu.main.home}">Home</a></li>
+							<th:block th:replace="${lis}" />
+						</th:block>
+						<li th:unless="${lis != null}"><span
+							th:text="#{menu.main.home}">Home</span></li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-sm-6 clearfix">
+				<div class="user-profile fa-pull-right">
+					<i
+						th:class="@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_ADMIN.getClassCSS()}}"
+						data-toggle="tooltip" th:title="#{user.role.admin}"
+						style="color: white;"
+						th:if="${#strings.equalsIgnoreCase('ROLE_ADMIN', #authentication.getPrincipal().getUser().getHighesRole())}"></i>
+					<i
+						th:class="@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_DISPATCHER.getClassCSS()}}"
+						data-toggle="tooltip" th:title="#{user.role.dispatcher}"
+						style="color: white;"
+						th:if="${#strings.equalsIgnoreCase('ROLE_DISPATCHER', #authentication.getPrincipal().getUser().getHighesRole())}"></i>
+					<i
+						th:class="@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_MANAGER.getClassCSS()}}"
+						data-toggle="tooltip" th:title="#{user.role.manager}"
+						style="color: white;"
+						th:if="${#strings.equalsIgnoreCase('ROLE_MANAGER', #authentication.getPrincipal().getUser().getHighesRole())}"></i>
+					<i
+						th:class="@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_PRODUCTOPER.getClassCSS()}}"
+						data-toggle="tooltip" th:title="#{user.role.productoper}"
+						style="color: white;"
+						th:if="${#strings.equalsIgnoreCase('ROLE_PRODUCTOPER', #authentication.getPrincipal().getUser().getHighesRole())}"></i>
+					<i
+						th:class="@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_COURIER.getClassCSS()}}"
+						data-toggle="tooltip" th:title="#{user.role.courier}"
+						style="color: white;"
+						th:if="${#strings.equalsIgnoreCase('ROLE_COURIER', #authentication.getPrincipal().getUser().getHighesRole())}"></i>
+					<i
+						th:class="@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_CLIENT.getClassCSS()}}"
+						data-toggle="tooltip" th:title="#{user.role.client}"
+						style="color: white;"
+						th:if="${#strings.equalsIgnoreCase('ROLE_CLIENT', #authentication.getPrincipal().getUser().getHighesRole())}"></i>
+					<i
+						th:class="@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_USER.getClassCSS()}}"
+						data-toggle="tooltip" th:title="#{user.role.user}"
+						style="color: white;"
+						th:if="${#strings.equalsIgnoreCase('ROLE_USER', #authentication.getPrincipal().getUser().getHighesRole())}"></i>
+					<h4 class="user-name dropdown-toggle" data-toggle="dropdown">
+						<span class="ml-1"
+							th:text="${#authentication.getPrincipal().getUser().getName()}"></span>
+						<i class="fas fa-angle-down"></i>
+					</h4>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="#">Message</a> <a
+							class="dropdown-item" href="#">Settings</a> <a
+							class="dropdown-item"
+							th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGOUT_URL}}"
+							th:text="#{menu.main.logout}">Log Out</a>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- page title area end -->
+	<th:block th:fragment="preloader">
+
+		<!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+		<!-- preloader area start -->
+		<div id="preloader">
+			<div class="loader"></div>
+		</div>
+		<!-- preloader area end -->
+	</th:block>
+
+
+
+	<!-- header area start -->
+	<div class="header-area" th:fragment="header-area">
+		<div class="row align-items-center">
+			<!-- nav and search button -->
+			<div class="col-md-6 col-sm-8 clearfix">
+				<div class="nav-btn fa-pull-left">
+					<span></span> <span></span> <span></span>
+				</div>
+				<div class="search-box fa-pull-left">
+					<form action="#">
+						<input type="text" name="search" placeholder="Search..." required>
+						<i class="fas fa-search"></i>
+					</form>
+				</div>
+			</div>
+			<!-- profile info & task notification -->
+			<div class="col-md-6 col-sm-4 clearfix">
+				<ul class="notification-area fa-pull-right">
+					<li id="full-view" data-toggle="tooltip"
+						th:title="#{prop.set.fullscreen.on}"><i class="fas fa-expand"></i></li>
+					<li id="full-view-exit" data-toggle="tooltip"
+						th:title="#{prop.set.fullscreen.off}"><i
+						class="fas fa-compress-arrows-alt"></i></li>
+					<li class="dropdown"><i class="far fa-bell dropdown-toggle"
+						data-toggle="dropdown"> <span>2</span>
+					</i>
+						<div class="dropdown-menu bell-notify-box notify-box">
+							<span class="notify-title">You have 3 new notifications <a
+								href="#">view all</a></span>
+							<div class="nofity-list">
+								<a href="#" class="notify-item">
+									<div class="notify-thumb">
+										<i class="ti-key btn-danger"></i>
+									</div>
+									<div class="notify-text">
+										<p>You have Changed Your Password</p>
+										<span>Just Now</span>
+									</div>
+								</a> <a href="#" class="notify-item">
+									<div class="notify-thumb">
+										<i class="ti-comments-smiley btn-info"></i>
+									</div>
+									<div class="notify-text">
+										<p>New Commetns On Post</p>
+										<span>30 Seconds ago</span>
+									</div>
+								</a> <a href="#" class="notify-item">
+									<div class="notify-thumb">
+										<i class="ti-key btn-primary"></i>
+									</div>
+									<div class="notify-text">
+										<p>Some special like you</p>
+										<span>Just Now</span>
+									</div>
+								</a>
+							</div>
+						</div></li>
+					<li class="dropdown"><i
+						class="far fa-envelope-open dropdown-toggle"
+						data-toggle="dropdown"><span>3</span></i>
+						<div class="dropdown-menu notify-box nt-enveloper-box">
+							<span class="notify-title">You have 3 new notifications <a
+								href="#">view all</a></span>
+							<div class="nofity-list">
+								<a href="#" class="notify-item">
+									<div class="notify-thumb">
+										<img src="assets/images/author/author-img1.jpg" alt="image">
+									</div>
+									<div class="notify-text">
+										<p>Aglae Mayer</p>
+										<span class="msg">Hey I am waiting for you...</span> <span>3:15
+											PM</span>
+									</div>
+								</a>
+							</div>
+						</div></li>
+					<li class="settings-btn" data-toggle="tooltip"
+						th:title="#{prop.settings.open}"><i class="fas fa-cogs"></i></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- header area end -->
+
+
+	<!-- sidebar menu area start -->
+	<div class="sidebar-menu" th:fragment="sidebar-menu">
+		<div class="sidebar-header">
+			<div class="logo">
+				<a href="#"><img src="assets/images/icon/logo_b.png" alt="logo"></a>
+			</div>
+		</div>
+		<div class="main-menu">
+			<div class="menu-inner">
+				<nav>
+					<ul class="metismenu" id="metismenu">
+						<li><a th:href="@{${T(ua.com.sipsoft.util.AppURL).HOME}}">
+								<i class="fas fa-home"></i><span th:text="#{menu.main.home}">Home</span>
+						</a></li>
+						<li
+							sec:authorize="(!hasRole('COURIER') and !hasRole('USER')) or (hasAnyRole('ADMIN', 'DISPATCHER', 'MANAGER','PRODUCTOPER','CLIENT'))"><a
+							href="javascript:void(0)" aria-expanded="false"><i
+								class="fas fa-truck"></i><span
+								th:text="#{menu.main.routesheets}">Route Sheets</span></a>
+							<ul>
+								<li><a href="#"> <i class="fas fa-file-signature"></i><span
+										th:text="#{menu.main.routesheets.drafts}">Drafts</span>
+								</a></li>
+								<li><a href="#"> <i class="fas fa-file-alt"></i><span
+										th:text="#{menu.main.routesheets.issued}">Issued</span>
+								</a></li>
+								<li><a href="#"> <i class="fas fa-archive"></i><span
+										th:text="#{menu.main.routesheets.archived}">Archived</span>
+								</a></li>
+							</ul></li>
+						<li
+							sec:authorize="!hasRole('USER') or (hasAnyRole('ADMIN', 'DISPATCHER', 'MANAGER','PRODUCTOPER','CLIENT','COURIER'))"><a
+							th:href="@{${T(ua.com.sipsoft.util.AppURL).FACILITIES}}"> <i
+								class="fas fa-city"></i> <span th:text="#{menu.main.facilities}">Facilities</span>
+						</a></li>
+						<li sec:authorize="hasAnyRole('ADMIN', 'DISPATCHER', 'MANAGER')">
+							<a th:href="@{${T(ua.com.sipsoft.util.AppURL).USERS}}"><i
+								class="fas fa-user-friends"></i><span
+								th:text="#{menu.main.users}">Users</span></a>
+						</li>
+						<li sec:authorize="hasRole('COURIER')"><a href="#"> <i
+								class="fas fa-truck"></i> <span
+								th:text="#{menu.main.routesheets}">Route Sheets</span>
+						</a></li>
+						<li sec:authorize="hasRole('ADMIN')"><a
+							th:href="@{${@environment.getProperty('springdoc.api-docs.path')}}"
+							target="_blank"><i class="fas fa-book"></i><span
+								th:text="#{menu.main.api.doc}">API doc</span></a></li>
+						<li sec:authorize="hasRole('ADMIN')"><a
+							th:href="@{${@environment.getProperty('springdoc.swagger-ui.path')}}"
+							target="_blank"><i class="fas fa-book-medical"></i><span
+								th:text="#{menu.main.api.swagger}">API Swagger doc</span></a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<!-- sidebar menu area end -->
+
+	<!-- offset area start -->
+	<div class="offset-area" th:fragment="offset-area">
+		<div class="offset-close">
+			<i class="far fa-window-close" data-toggle="tooltip"
+				th:title="#{prop.settings.close}"></i>
+		</div>
+		<ul class="nav offset-menu-tab">
+			<li><a class="active" data-toggle="tab" href="#activity">Activity</a></li>
+			<li><a data-toggle="tab" href="#settings"
+				th:text="#{prop.tab.title}">Settings</a></li>
+		</ul>
+		<div class="offset-content tab-content">
+			<div id="activity" class="tab-pane fade in show active">
+				<div class="recent-activity">
+					<div class="timeline-task">
+						<div class="icon bg1">
+							<i class="far fa-envelope-open"></i>
+						</div>
+						<div class="tm-title">
+							<h4>Rashed sent you an email</h4>
+							<span class="time"><i class="far fa-clock"></i>09:35</span>
+						</div>
+						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+							Esse distinctio itaque at.</p>
+					</div>
+					<div class="timeline-task">
+						<div class="icon bg2">
+							<i class="fa fa-check"></i>
+						</div>
+						<div class="tm-title">
+							<h4>Added</h4>
+							<span class="time"><i class="far fa-clock"></i>7 Minutes
+								Ago</span>
+						</div>
+						<p>Lorem ipsum dolor sit amet consectetur.</p>
+					</div>
+					<div class="timeline-task">
+						<div class="icon bg2">
+							<i class="fa fa-exclamation-triangle"></i>
+						</div>
+						<div class="tm-title">
+							<h4>You missed you Password!</h4>
+							<span class="time"><i class="far fa-clock"></i>09:20 Am</span>
+						</div>
+					</div>
+					<div class="timeline-task">
+						<div class="icon bg3">
+							<i class="fa fa-bomb"></i>
+						</div>
+						<div class="tm-title">
+							<h4>Member waiting for you Attention</h4>
+							<span class="time"><i class="far fa-clock"></i>09:35</span>
+						</div>
+						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+							Esse distinctio itaque at.</p>
+					</div>
+				</div>
+			</div>
+			<div id="settings" class="tab-pane fade">
+				<div class="offset-settings">
+					<h4 th:text="#{prop.general.title}">General Settings</h4>
+					<div class="settings-list">
+						<div class="s-settings">
+							<div class="s-sw-title">
+								<h5>Notifications</h5>
+								<div class="s-swtich">
+									<input type="checkbox" id="switch1" /> <label for="switch1">Toggle</label>
+								</div>
+							</div>
+							<p>Keep it 'On' When you want to get all the notification.</p>
+						</div>
+						<div class="s-settings">
+							<div class="s-sw-title">
+								<h5>Show recent activity</h5>
+								<div class="s-swtich">
+									<input type="checkbox" id="switch2" /> <label for="switch2">Toggle</label>
+								</div>
+							</div>
+							<p>The for attribute is necessary to bind our custom checkbox
+								with the input.</p>
+						</div>
+						<div class="s-settings">
+							<div class="s-sw-title">
+								<h5 th:text="#{prop.user.locale.title}">Language</h5>
+								<form id="envselection"
+									action="@{${T(ua.com.sipsoft.util.AppURL).USER_ENV}}">
+									<div class="custom-control custom-radio">
+										<input type="radio" value="uk"
+											onclick="sendLocaleSettings(this.name)"
+											th:checked="${#locale.language == 'uk'}" id="userLocaleUK"
+											name="userLocale" class="custom-control-input"> <label
+											class="custom-control-label" for="userLocaleUK">Укр</label>
+									</div>
+									<div class="custom-control custom-radio">
+										<input type="radio" value="ru"
+											onclick="sendLocaleSettings(this.name)"
+											th:checked="${#locale.language == 'ru'}" id="userLocaleRU"
+											name="userLocale" class="custom-control-input"> <label
+											class="custom-control-label" for="userLocaleRU">Рус</label>
+									</div>
+									<div class="custom-control custom-radio">
+										<input type="radio" value="en"
+											onclick="sendLocaleSettings(this.name)"
+											th:checked="${#locale.language == 'en'}" id="userLocaleEN"
+											name="userLocale" class="custom-control-input"> <label
+											class="custom-control-label" for="userLocaleEN">En</label>
+									</div>
+								</form>
+
+							</div>
+							<p id="localedescripription" th:text="#{prop.user.locale.descr}">Select
+								preferred language.</p>
+						</div>
+					</div>
+					<script th:inline="javascript">
+					function sendLocaleSettings(val1) {
+					    var radVal = $("input[type=radio][name=userLocale]:checked").val();
+					    var localeData = {};
+					    localeData["name"] =  val1;
+					    localeData["value"] = radVal;
+						$.ajax({
+							type : "post",
+							contentType : "application/json",
+							url : "[(@{${T(ua.com.sipsoft.util.AppURL).USER_ENV}})]?lang="+radVal,
+					        data: JSON.stringify(localeData),
+					        dataType: 'JSON',
+					        success: function (localeData) {
+					        	$("#localedescripription").html([[#{prop.user.locale.refresh}]]);
+					        },
+				        	error: function () {
+				        }
+						});
+					}
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

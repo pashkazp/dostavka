@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:insert="fragments/page-parts :: body/head"></th:block>
+
+<title th:text="#{app.title.forgot.reqpass}">Password Change
+	Request</title>
+</head>
+<body>
+
+	<!-- preloader area start -->
+	<div th:replace="fragments/template :: body/preloader"></div>
+	<!-- preloader area end -->
+
+	<!-- request new password area start -->
+	<div class="login-area login-s2">
+		<div class="container">
+			<div class="login-box ptb--100">
+				<form action="#"
+					th:action="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_FORGOT+T(ua.com.sipsoft.util.AppURL).REQUEST}+'?token='+${token}}"
+					th:object="${requestpassword}" method="post">
+
+					<div class="login-form-head">
+						<h4 th:text="#{app.title.forgot.reqpass}">Password Change
+							Request</h4>
+						<p th:text="#{login.forgotreq.info}">Specify and submit your
+							new password</p>
+					</div>
+
+					<div class="login-form-body" th:if="${#fields.hasGlobalErrors()}">
+						<div class="form-gp alert alert-danger text-center"
+							th:each="error: ${#fields.errors('global')}" th:text="${error}">Global
+							Error</div>
+					</div>
+
+
+					<div class="login-form-body"
+						th:unless="${#fields.hasGlobalErrors()}">
+
+						<div th:if="${param.success}"
+							class="form-gp alert alert-info text-center"
+							th:text="#{login.pass.reset.success}">Ура все получилось.</div>
+
+						<th:block th:unless="${param.success}">
+							<div class="form-gp focused">
+								<label for="messageOne" th:text="#{entity.user.password}">Password</label>
+								<input type="password" id="messageOne" th:field="*{messageOne}">
+								<i class="ti-lock"></i>
+								<div class="text-danger">
+									<p class="alert alert-danger"
+										th:each="error: ${#fields.errors('messageOne')}"
+										th:text="${error}">Validation error</p>
+								</div>
+							</div>
+
+							<div class="form-gp">
+								<div class="form-gp focused">
+									<label for="messageTwo"
+										th:text="#{entity.user.check.confirmpassword}">Password
+										again</label> <input type="password" id="messageTwo"
+										th:field="*{messageTwo}"> <i class="ti-lock"></i>
+									<div class="text-danger">
+										<p class="alert alert-danger"
+											th:each="error: ${#fields.errors('messageTwo')}"
+											th:text="${error}">Validation error</p>
+									</div>
+								</div>
+
+								<div class="submit-btn-area">
+									<button id="form_submit" type="submit">
+										[[#{button.send}]] <i class="ti-arrow-right"></i>
+									</button>
+								</div>
+							</div>
+						</th:block>
+
+					</div>
+					<div class="form-footer text-center mt-5">
+						<p class="text-muted">
+							[[#{login.signup.noacc}]]? <a
+								th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_REGISTRATION}}"
+								th:text="#{login.signup.here}">Sign up</a>
+						</p>
+						<p class="text-muted">
+							[[#{login.already.registered}]]? <a
+								th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGIN}}"
+								th:text="#{login.already.here}">Login here</a>
+						</p>
+						<p class="text-muted">
+							[[#{login.forgot.pass}]]? <a
+								th:href="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_FORGOT}}"
+								th:text="#{login.forgot.here}">Forgot Password</a>
+						</p>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="text-center"
+			th:insert="fragments/page-parts :: body/footer"></div>
+	</div>
+	<!-- request new password area end -->
+
+	<div th:replace="fragments/page-parts :: body/bottom"></div>
+
+
+
+
+	<!-- Insert NavBar Fragment -->
+	<!-- <div th:replace="fragments/navbar :: navbar"></div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 offset-md-3">
+				<h1 th:text="#{app.title.forgot.reqpass}">Password Change Request</h1>
+
+				<form action="#"
+					th:action="@{${T(ua.com.sipsoft.util.AppURL).LOGIN_FORGOT+T(ua.com.sipsoft.util.AppURL).REQUEST}+'?token='+${token}}"
+					th:object="${requestpassword}" method="post">
+
+					<div th:if="${#fields.hasGlobalErrors()}">
+						<div class="form-group has-error alert alert-danger"
+							th:each="error: ${#fields.errors('global')}" th:text="${error}">Global
+							Error</div>
+					</div>
+
+					<div th:unless="${#fields.hasGlobalErrors()}">
+
+						<div th:if="${param.success}" class="form-group alert alert-info"
+							th:text="#{login.pass.reset.success}">Ура все получилось.</div>
+
+						<div th:unless="${param.success}">
+						
+							<input required
+								th:replace="~{fragments/inputField :: input ('__#{entity.user.password}__', 'messageOne', 'password')}" />
+							<input required
+								th:replace="~{fragments/inputField :: input ('__#{entity.user.check.confirmpassword}__', 'messageTwo', 'password')}" />
+
+							<div class="form-group">
+								<div class="row">
+									<div class="col-md-8 offset-md-2">
+										<button type="submit" class="form-control btn btn-primary">
+											<i
+												th:class="${T(ua.com.sipsoft.util.UIIcon).BTN_OK.getClassCSS()}"></i>
+											[[#{button.send}]]
+										</button>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+					
+					<div class="form-group">
+						<div class="row">
+							<div class="col-md-10 offset-md-1">
+								<div th:replace="login/fragments :: loginhere"></div>
+								<div th:replace="login/fragments :: noacc"></div>
+								<div th:replace="login/fragments :: forgot"></div>
+							</div>
+						</div>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+	</div>
+	
+    <div class="text-center" th:insert="fragments/page-parts :: body/footer"></div> -->
+
+</body>
+</html>

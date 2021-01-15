@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+
+	<div th:fragment="addUser" class="modal fade" id="addNewUserModal"
+		tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel"
+		aria-hidden="true">
+		<form id="addNewUserForm">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content login-s2">
+					<div class="modal-header">
+						<h5 class="modal-title" id="addUserModalLabel"
+							th:text="#{entity.user.title.addnew}">Add new User</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+
+						<div class="form-group focused">
+							<label class="text-primary" for="name" th:text="#{entity.user.name}">User name
+							</label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="text" id="name" name="name">
+								<div class="input-group-append input-group-text border-left-0">
+									<i class="ti-user"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" data-name="name"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="text-primary" for="email" th:text="#{entity.user.email}">email </label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="email" id="email" name="email">
+								<div class="input-group-append input-group-text border-left-0">
+									<i class="ti-email"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" data-name="email"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="text-primary" for="password" th:text="#{entity.user.password}">password
+							</label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="password" id="password" name="password">
+								<div class="input-group-append input-group-text bborder-left-0">
+									<i class="ti-lock"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" data-name="password"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="text-primary" for="confirmPassword"
+								th:text="#{entity.user.check.confirmpassword}">Confirm
+								Password </label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="password" id="confirmPassword" name="confirmPassword">
+								<div class="input-group-append input-group-text border-left-0">
+									<i class="ti-lock"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1"
+								data-name="confirmPassword" hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="text-primary" for="roles" th:text="#{entity.user.roles}">Roles</label>
+							<div class="input-group form-row">
+								<div
+									class="custom-control custom-checkbox custom-control-inline mr-4"
+									th:each="role : ${T(ua.com.sipsoft.util.security.Role).values()}"
+									th:title="#{${role.getRoleNameMessage()}}">
+									<input type="checkbox" class="custom-control-input"
+										th:id="cb_ + ${role}" th:name="role" th:value="${role}">
+									<label class="custom-control-label text-primary" th:for="cb_ + ${role}"><i
+										th:class="${role.getIcon().getClassCSS()}"></i></label>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" th:data-name="roles"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+						<div class="text-danger form-row mr-1" th:data-name="editForm"
+							hidden="true">
+							<p class="alert alert-danger w-100 mb-0">Validation error</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="addNewUserButton" type="submit"
+							class="btn btn-primary" th:text="#{button.add}">Add</button>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal" th:text="#{button.close}">Close</button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<script th:inline="javascript">
+		// collect data from modal form
+		$(function () {
+		    $('#addNewUserButton').click(function (e) {
+		 
+		        //Prevent default submission of form
+		        e.preventDefault();
+		 
+		        //Remove previous errors
+		        $('#addNewUserForm .alert-danger').remove();
+		        $('#addNewUserForm .text-danger').attr("hidden",true);
+		        
+		        var formData = {
+					name : $( '#addNewUserForm #name' ).val(),
+					email : $( '#addNewUserForm #email' ).val(),
+					password : $( '#addNewUserForm #password' ).val(),
+					confirmPassword : $('#addNewUserForm #confirmPassword' ).val(),
+					roles : $( "#addNewUserForm input:checkbox[name=role]:checked" )
+								.map( function(){ return $( this ).val()}).get()
+				};
+				
+	            //console.log(formData);
+		        $.post({
+		            url: [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_USERS}}]]+"/",
+		            data: JSON.stringify(formData),
+		            //data: JSON.stringify($('#addNewUserForm').serialize()),
+		            dataType: "json",
+		            contentType : "application/json",
+		            //timeout: 3000,
+		            async:true
+		        })
+		      	.done(function(res) {
+	            	console.log(res);
+                    $('#addNewUserModal').modal('hide');
+                    $('#table-users').DataTable().ajax.reload(null,false);
+		        })
+		        .fail(function(xhr, textStatus, error) {
+	            	//console.log(xhr);
+	            	//console.log(xhr.responseJSON.subInfos);
+                    $.each(xhr.responseJSON.subInfos, function (key, value) {
+		            	//console.log(value.field,' : ',value.message);
+                    	if (!value.field){value.field='editForm'}
+                        $('#addNewUserForm .text-danger[data-name=' + value.field + ']').append('<p class="alert alert-danger w-100 mb-0">' + value.message + '</p>');
+                    });
+    		        $('#addNewUserForm .text-danger').attr("hidden",false);
+	                if(textStatus == "timeout") {
+	                  alert("Got timeout");
+	                }
+		      	});
+		    });
+	    });
+		</script>
+		<script th:inline="javascript">
+			// clean form fields on fide
+			$('#addNewUserModal').on('hidden.bs.modal', function (e) {
+				$(this)
+					.find("#addNewUserForm input,textarea,select")
+						.not('[type=checkbox]')
+				    	.val('')
+				    	.end();
+				$(this)
+				    .find("#addNewUserForm input[type=checkbox], input[type=radio]")
+				       .prop("checked", false)
+				       .end();
+				$('#addNewUserForm .alert-danger').remove();
+				$('#addNewUserForm .text-danger').attr("hidden",true);
+			});	
+		</script>
+
+	</div>
+</body>
+
+</html>

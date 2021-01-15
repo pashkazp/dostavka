@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<script th:inline="javascript" th:fragment="role_presenter_func">
+		var role_presenter_func = function ( data, type, full, meta ) {
+           	var buttons = '<div class="row no-gutters">';
+           	for (i=0; i<data.length; i++) {
+              	switch(data[i]){
+                	case "ROLE_ADMIN":
+                  		buttons += '<div class="col-xl-1 col-lg-1 col-md-2 col-sm-2 ml-1 mr-2"><span class=[[@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_ADMIN.getClassCSS()}}]] data-toggle="tooltip" title=[[#{user.role.admin}]]/></div>';
+                  		break;
+                	case "ROLE_DISPATCHER":
+                  		buttons += '<div class="col-xl-1 col-lg-1 col-md-2 col-sm-2 ml-1 mr-2"><span class=[[@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_DISPATCHER.getClassCSS()}}]] title=[[#{user.role.dispatcher}]]/></div>';
+                  		break;
+                	case "ROLE_MANAGER":
+                  		buttons += '<div class="col-xl-1 col-lg-1 col-md-2 col-sm-2 ml-1 mr-2"><span class=[[@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_MANAGER.getClassCSS()}}]] title=[[#{user.role.manager}]]/></div>';
+                  		break;
+                	case "ROLE_PRODUCTOPER":
+                  		buttons += '<div class="col-xl-1 col-lg-1 col-md-2 col-sm-2 ml-1 mr-2"><span class=[[@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_PRODUCTOPER.getClassCSS()}}]] title=[[#{user.role.productoper}]]/></div>';
+                  		break;
+                	case "ROLE_COURIER":
+                  		buttons += '<div class="col-xl-1 col-lg-1 col-md-2 col-sm-2 ml-1 mr-2"><span class=[[@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_COURIER.getClassCSS()}}]] title=[[#{user.role.courier}]]/></div>';
+                  		break;
+                	case "ROLE_CLIENT":
+                  		buttons += '<div class="col-xl-1 col-lg-1 col-md-2 col-sm-2 ml-1 mr-2"><span class=[[@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_CLIENT.getClassCSS()}}]] title=[[#{user.role.client}]]/></div>';
+                  		break;
+                	case "ROLE_USER":
+                  		buttons += '<div class="col-xl-1 col-lg-1 col-md-2 col-sm-2 ml-1 mr-2"><span class=[[@{${T(ua.com.sipsoft.util.UIIcon).USERROLE_USER.getClassCSS()}}]] title=[[#{user.role.user}]]/></div>';
+                  		break;
+              	}
+           	}
+           	buttons += '</div>'; 
+           	return buttons;
+		}
+	</script>
+	<script th:inline="javascript" th:fragment="true_false_show_radio_func">
+		var true_false_show_radio_func = function ( data, type, full, meta ) {
+    		var is_checked = data == true ? "checked" : "";
+    		return is_checked ? '<input type="radio" onchange="this.checked=true" checked="checked">' :
+    			'<input type="radio" onchange="this.checked=false" >';
+		}	
+	</script>
+	<script th:inline="javascript" th:fragment="true_false_show_check_func">
+		var true_false_show_check_func = function ( data, type, full, meta ) {
+    		var is_checked = data == true ? "checked" : "";
+    		return is_checked ? '<span class="fas fa-check text-success"/>' :
+    			'<span class="fas fa-times text-danger"/>';
+		}	
+	</script>
+</body>
+</html>

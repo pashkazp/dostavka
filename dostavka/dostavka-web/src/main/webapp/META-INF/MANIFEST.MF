@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 11
+Implementation-Title: dostavka-web
+Implementation-Version: 0.0.1
+Implementation-Vendor: Southinfopro
+Created-By: Maven Integration for Eclipse
+

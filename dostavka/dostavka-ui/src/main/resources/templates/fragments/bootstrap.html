@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+	<th:block th:fragment="head">
+		<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}">
+		<link rel="stylesheet" type="text/css" th:href="@{/webjars/font-awesome/css/v4-shims.min.css}">
+		<!-- <link rel="stylesheet" type="text/css" th:href="@{/assets/fonts/fontawesome/css/fontawesome.min.css}">
+		<link rel="stylesheet" type="text/css" th:href="@{/assets/fonts/fontawesome/css/v4-shims.min.css}"> -->
+	</th:block>
+
+	<th:block th:fragment="bottom">
+		<script type="text/javascript" th:src="@{/assets/js/jquery/jquery.min.js}"></script>
+		<!-- <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script> -->
+		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<!-- 		<script type="text/javascript" th:src="@{/webjars/js-cookie/js.cookie.min.js}"></script>
+ -->
+		<script type="text/javascript"
+			src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+			integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+			crossorigin="anonymous"></script>
+		<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+
+	<div th:fragment="facilityAddrEditorFields (fragmentId, hide)" 
+		th:id="__${fragmentId}__-block" th:hidden="${hide}">
+
+		<div class="form-group">
+			<label class="text-primary" th:for="__${fragmentId}__-addressEdit"
+				th:text="#{entity.facilityaddr.address}">Address</label>
+			<div class="input-group form-row">
+				<input class="form-control border-right-0 bg-transparent"
+					type="text" th:id="__${fragmentId}__-addressEdit" name="name">
+				<div class="input-group-append input-group-text border-left-0">
+					<i class="fas fa-map-marked-alt"></i>
+				</div>
+			</div>
+			<div class="text-danger form-row mr-1" data-name="address"
+				hidden="true">
+				<p class="alert alert-danger w-100 mb-0">Validation error</p>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="text-primary" th:for="__${fragmentId}__-addressesAliasEdit"
+				th:text="#{entity.facilityaddr.alias}">Alias</label>
+			<div class="input-group form-row">
+				<input class="form-control bg-transparent" type="text"
+					th:id="__${fragmentId}__-addressesAliasEdit" name="name">
+			</div>
+			<div class="text-danger form-row mr-1" data-name="addressesAlias"
+				hidden="true">
+				<p class="alert alert-danger w-100 mb-0">Validation error</p>
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col-md-2">
+				<label class="text-primary" th:for="__${fragmentId}__-defaultAddressEdit"> </label>
+				<div class="input-group form-row">
+					<div
+						class="custom-control custom-checkbox custom-control-inline mr-4">
+						<input type="checkbox" class="custom-control-input"
+							th:id="__${fragmentId}__-defaultAddressEdit" name="defaultAddress"> <label
+							class="custom-control-label text-primary"
+							th:for="defaultAddressEdit"
+							th:text="#{entity.facilityaddr.default}">Default Address</label>
+					</div>
+				</div>
+				<div class="text-danger form-row mr-1" th:data-name="defaultAddress"
+					hidden="true">
+					<p class="alert alert-danger w-100 mb-0">Validation error</p>
+				</div>
+			</div>
+			<div class="form-group col-md-5">
+				<label class="text-primary" th:for="__${fragmentId}__-latitudeEdit"
+					th:text="#{entity.facilityaddr.lat}">Latitude</label>
+				<div class="input-group form-row">
+					<input class="form-control border-right-0 bg-transparent"
+						type="text" th:id="__${fragmentId}__-latitudeEdit" name="lat">
+					<div class="input-group-append input-group-text border-left-0">
+						<i class="fas fa-map-marker-alt"></i>
+					</div>
+				</div>
+				<div class="text-danger form-row mr-1" data-name="lat" hidden="true">
+					<p class="alert alert-danger w-100 mb-0">Validation error</p>
+				</div>
+			</div>
+			<div class="form-group col-md-5">
+				<label class="text-primary" th:for="__${fragmentId}__-longitudeEdit"
+					th:text="#{entity.facilityaddr.lng}">Longitude</label>
+				<div class="input-group form-row">
+					<input class="form-control border-right-0 bg-transparent"
+						type="text" th:id="__${fragmentId}__-longitudeEdit" name="lng">
+					<div class="input-group-append input-group-text border-left-0">
+						<i class="fas fa-map-marker-alt"></i>
+					</div>
+				</div>
+				<div class="text-danger form-row mr-1" data-name="lng" hidden="true">
+					<p class="alert alert-danger w-100 mb-0">Validation error</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
