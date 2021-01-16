@@ -14,12 +14,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>ua.com.sipsoft</groupId>
-			<artifactId>dostavka-model</artifactId>
+			<artifactId>dostavka-utils</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>ua.com.sipsoft</groupId>
-			<artifactId>dostavka-utils</artifactId>
+			<artifactId>dostavka-model</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>

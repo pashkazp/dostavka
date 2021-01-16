@@ -90,12 +90,12 @@
     </dependencies>
 
 	<modules>
+		<module>dostavka-utils</module>
 		<module>dostavka-model</module>
-		<module>dostavka-web</module>
 		<module>dostavka-repository</module>
 		<module>dostavka-service</module>
 		<module>dostavka-ui</module>
-		<module>dostavka-utils</module>
+		<module>dostavka-web</module>
 	</modules>
 
 	<build>

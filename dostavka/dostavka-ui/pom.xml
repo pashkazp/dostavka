@@ -54,20 +54,15 @@
 		</dependency>
  -->
 		<dependency>
-			<groupId>ua.com.sipsoft</groupId>
-			<artifactId>dostavka-service</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>ua.com.sipsoft</groupId>
 			<artifactId>dostavka-model</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-
+ -->
 		<!-- template dependesyes -->
 		<!-- https://mvnrepository.com/artifact/org.webjars/jQuery-slimScroll -->
 <!-- 		<dependency>
@@ -154,11 +149,6 @@
 			<artifactId>spring-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>ua.com.sipsoft</groupId>
-			<artifactId>dostavka-utils</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>
@@ -171,6 +161,16 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
 			<version>${org.mapstruct.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ua.com.sipsoft</groupId>
+			<artifactId>dostavka-utils</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ua.com.sipsoft</groupId>
+			<artifactId>dostavka-service</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 

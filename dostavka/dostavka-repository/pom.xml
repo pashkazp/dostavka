@@ -12,6 +12,11 @@
 	<artifactId>dostavka-repository</artifactId>
 
 	<dependencies>
+        <dependency>
+        	<groupId>ua.com.sipsoft</groupId>
+        	<artifactId>dostavka-utils</artifactId>
+        	<version>0.0.1</version>
+        </dependency>
 		<dependency>
 			<groupId>ua.com.sipsoft</groupId>
 			<artifactId>dostavka-model</artifactId>
@@ -24,11 +29,6 @@
 		</dependency>
 		
 
-        <dependency>
-        	<groupId>ua.com.sipsoft</groupId>
-        	<artifactId>dostavka-utils</artifactId>
-        	<version>0.0.1</version>
-        </dependency>
 	</dependencies>
 
 	<build>
