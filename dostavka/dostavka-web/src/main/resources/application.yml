@@ -37,14 +37,19 @@ spring:
     initialization-mode: always
     password: changeme
     platform: postgres
-    url: jdbc:postgresql://192.168.88.6:5432/sipsoft
+    
+    # uncomment for populate data to clean database
+    #data: classpath:/populate_db.sql
+    
+    #url: jdbc:postgresql://192.168.88.6:5432/sipsoft
     #url: jdbc:postgresql://localhost:5432/sipsoft
-    #url: jdbc:postgresql://192.168.123.6:5432/sipsoft
+    url: jdbc:postgresql://192.168.123.6:5432/sipsoft
+    
     username: postgres
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     open-in-view: true
     properties:
       hibernate:

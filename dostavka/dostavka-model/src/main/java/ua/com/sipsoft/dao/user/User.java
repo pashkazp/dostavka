@@ -121,7 +121,7 @@ public class User implements Serializable {
 	 * @param roles the roles
 	 * @return true, if successful
 	 */
-	public boolean containsAnyRole(Collection<Role> roles) {
+	public boolean hasRoles(Collection<Role> roles) {
 		if (roles != null && this.roles != null) {
 			for (Role role : roles) {
 				if (this.roles.contains(role))
@@ -129,6 +129,24 @@ public class User implements Serializable {
 			}
 		}
 		return false;
+	}
+
+	public boolean hasRoles(Role... roles) {
+		if (roles != null && this.roles != null) {
+			for (Role role : roles) {
+				if (this.roles.contains(role))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasNoOneRole(Collection<Role> roles) {
+		return !hasRoles(roles);
+	}
+
+	public boolean hasNoOneRole(Role... roles) {
+		return !hasRoles(roles);
 	}
 
 	/**
