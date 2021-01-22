@@ -5,7 +5,7 @@ import static org.apache.commons.lang3.StringUtils.defaultString;
 
 import java.util.Collection;
 
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

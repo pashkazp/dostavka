@@ -5,7 +5,7 @@ import static org.apache.commons.lang3.StringUtils.defaultString;
 
 import java.util.Set;
 
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,7 +59,7 @@ public class ArchivedVisitsFilter implements EntityFilter<ArchivedCourierVisit> 
 		if (!containsIgnoreCase(entity.getDescription(), defaultString(description))) {
 			return false;
 		}
-		if (courierVisitStates != null && !CollectionUtils.containsInstance(courierVisitStates, entity.getState())) {
+		if (courierVisitStates != null && !CollectionUtils.containsAny(courierVisitStates, entity.getState())) {
 			return false;
 		}
 
