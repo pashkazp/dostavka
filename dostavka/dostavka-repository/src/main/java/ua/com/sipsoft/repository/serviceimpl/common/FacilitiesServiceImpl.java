@@ -15,6 +15,10 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +36,7 @@ import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
 import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
 import ua.com.sipsoft.service.exception.FacilityDtoAuditExeption;
 import ua.com.sipsoft.service.exception.ResourceNotFoundException;
+import ua.com.sipsoft.service.security.UserPrincipal;
 import ua.com.sipsoft.service.util.AppNotificator;
 import ua.com.sipsoft.service.util.EntityFilter;
 import ua.com.sipsoft.service.util.HasFilteredList;
@@ -48,6 +53,7 @@ import ua.com.sipsoft.util.paging.Page;
 import ua.com.sipsoft.util.paging.PagingRequest;
 import ua.com.sipsoft.util.query.Query;
 import ua.com.sipsoft.util.query.QuerySortOrder;
+import ua.com.sipsoft.util.security.Role;
 
 /**
  * The Class FacilitiesServiceImpl.
@@ -78,7 +84,7 @@ public class FacilitiesServiceImpl
 	 */
 	@Override
 	public List<Facility> getByName(String name) {
-		return dao.getByName(name.toLowerCase(), null);
+		return dao.getByName(name.toLowerCase());
 	}
 
 	/**
@@ -279,7 +285,7 @@ public class FacilitiesServiceImpl
 	 */
 	@Override
 	public int getOrderedFilteredFacilitiesCount(String filter) {
-		return dao.getByName(filter, null).size();
+		return dao.getByName(filter).size();
 	}
 
 	/**
@@ -419,8 +425,19 @@ public class FacilitiesServiceImpl
 				pagingRequest, entityFilter);
 
 		Page<FacilityDto> page = new Page<>();
-		List<Facility> facilities = dao.findAll(toSort(pagingRequest));
+		List<Facility> facilities;
+		User caller = null;
+		if (entityFilter instanceof FacilitiesFilter) {
+			caller = ((FacilitiesFilter) entityFilter).getCaller();
+		}
+		if (caller != null
+				&& caller.hasNoOneRole(Role.ROLE_ADMIN, Role.ROLE_COURIER,
+						Role.ROLE_DISPATCHER, Role.ROLE_MANAGER, Role.ROLE_PRODUCTOPER)) {
+			facilities = dao.getAllOwnedByUser(caller, toSort(pagingRequest));
 
+		} else {
+			facilities = dao.findAll(toSort(pagingRequest));
+		}
 		page.setRecordsTotal(facilities.size());
 
 		facilities = getFiteredList(facilities, entityFilter);
@@ -442,9 +459,28 @@ public class FacilitiesServiceImpl
 	 * @return the all facilities
 	 */
 	@Override
+	@PreAuthorize("isAuthenticated()")
 	public List<Facility> getAllFacilities() {
-		List<Facility> facilities = dao.findAll();
-		return facilities;
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (auth == null || auth.getPrincipal() == null) {
+			return List.of();
+		}
+		UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+		if (CollectionUtils.containsAny(auth.getAuthorities(), AuthorityUtils.createAuthorityList(
+				Role.ROLE_ADMIN.name(), Role.ROLE_COURIER.name(), Role.ROLE_DISPATCHER.name(), Role.ROLE_MANAGER.name(),
+				Role.ROLE_PRODUCTOPER.name()))) {
+			List<Facility> facilities = dao.findAll();
+			return facilities;
+
+		} else if (CollectionUtils.containsAny(auth.getAuthorities(), AuthorityUtils.createAuthorityList(
+				Role.ROLE_CLIENT.name()))) {
+			List<Facility> facilities = dao.getAllOwnedByUser(userPrincipal.getUser());
+			return facilities;
+
+		}
+		return List.of();
 	}
 
 	/**

@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +35,7 @@ import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.dao.common.Facility;
+import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.service.common.FacilitiesFilter;
 import ua.com.sipsoft.service.common.FacilitiesService;
 import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
@@ -40,6 +44,7 @@ import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
 import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
 import ua.com.sipsoft.service.exception.FacilityDtoAuditExeption;
 import ua.com.sipsoft.service.exception.UserDtoAuditExeption;
+import ua.com.sipsoft.service.security.UserPrincipal;
 import ua.com.sipsoft.ui.model.request.facility.FacilityRegistrationRequest;
 import ua.com.sipsoft.ui.model.request.facility.FacilityUpdateRequest;
 import ua.com.sipsoft.ui.model.request.mapper.ToFacilityRegistrationDtoMapper;
@@ -58,14 +63,6 @@ import ua.com.sipsoft.util.paging.PagingRequest;
 @Slf4j
 @RestController
 @RequestMapping(AppURL.API_V1_FACILITIES)
-
-/**
- * Instantiates a new facility rest controller.
- *
- * @param facilitiesService          the facilities service
- * @param facilityAddrRestController the facility addr rest controller
- * @param i18n                       the i 18 n
- */
 @RequiredArgsConstructor
 public class FacilityRestController {
 
@@ -89,10 +86,10 @@ public class FacilityRestController {
 					MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> listAllFacilitiesDto() {
 		log.debug("Get the list of  all FacilityDto");
-		// TODO return only Facilities approved for Editor
 		List<FacilityDto> facilities = facilitiesService.getAllFacilitiesDto();
 		if (!facilities.isEmpty()) {
-			return ResponseEntity.ok(facilities);
+			// TODO disabled by access violation to user password
+			// return ResponseEntity.ok(facilities);
 		}
 		return ResponseEntity.notFound().build();
 	}
@@ -107,13 +104,21 @@ public class FacilityRestController {
 	@PostMapping(value = AppURL.PAGES, consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Object> getFasilitiesPage(@RequestBody(required = true) PagingRequest pagingRequest) {
+	public ResponseEntity<Object> getFasilitiesPage(@RequestBody(required = true) PagingRequest pagingRequest,
+			@AuthenticationPrincipal User user) {
 		log.debug("IN getFasilitiesPage - get page of facilities by request: {}", pagingRequest.toString());
 
 		FacilitiesFilter facilityFilter = new FacilitiesFilter();
 		if (StringUtils.isNotBlank(pagingRequest.getSearch().getValue())) {
 			facilityFilter.setName(pagingRequest.getSearch().getValue());
 		}
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null) {
+			UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+			facilityFilter.setCaller(userPrincipal.getUser());
+		}
+
 		Page<FacilityDto> page = facilitiesService.getFilteredPage(pagingRequest, facilityFilter);
 
 		List<FacilityDto> data = page.getData();
