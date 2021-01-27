@@ -1,8 +1,6 @@
-package ua.com.sipsoft.service.dto.facility;
+package ua.com.sipsoft.ui.model.request.facility;
 
 import java.io.Serializable;
-
-import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -13,20 +11,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
 @EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ToString
-public class FacilityRegistrationDto implements Serializable {
+@Getter
+@Setter
+public class FacilityAddressRegReq implements Serializable {
 
-	private static final long serialVersionUID = -6621774694796773948L;
+	private static final long serialVersionUID = 124090882967902928L;
 
-	@NotEmpty
-	private String name;
+	private String addressesAlias;
 
-	private FacilityAddressRegistrationDto facilityAddress;
+	private String address;
+
+	private boolean defaultAddress;
+
+	private String lat;
+
+	private String lng;
 
 }

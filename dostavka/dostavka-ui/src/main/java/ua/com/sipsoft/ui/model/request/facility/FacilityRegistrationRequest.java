@@ -24,4 +24,8 @@ public class FacilityRegistrationRequest implements Serializable {
 	@Setter
 	private String name;
 
+	@Getter
+	@Setter
+	private FacilityAddressRegReq facilityAddress;
+
 }

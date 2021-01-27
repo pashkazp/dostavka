@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
 import ua.com.sipsoft.ui.model.request.facility.FacilityRegistrationRequest;
 
-@Mapper
+@Mapper(uses = ToFacilityAddressRegistrationDtoMapper.class)
 public interface ToFacilityRegistrationDtoMapper {
 
 	ToFacilityRegistrationDtoMapper MAPPER = Mappers

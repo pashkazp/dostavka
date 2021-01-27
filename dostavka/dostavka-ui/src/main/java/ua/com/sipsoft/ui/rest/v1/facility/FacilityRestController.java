@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,7 +45,6 @@ import ua.com.sipsoft.service.dto.facility.FacilityDto;
 import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
 import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
 import ua.com.sipsoft.service.exception.FacilityDtoAuditExeption;
-import ua.com.sipsoft.service.exception.UserDtoAuditExeption;
 import ua.com.sipsoft.service.security.UserPrincipal;
 import ua.com.sipsoft.ui.model.request.facility.FacilityRegistrationRequest;
 import ua.com.sipsoft.ui.model.request.facility.FacilityUpdateRequest;
@@ -52,13 +53,16 @@ import ua.com.sipsoft.ui.model.request.mapper.ToFacilityUpdateDtoMapper;
 import ua.com.sipsoft.ui.model.response.AbstractSubInfoResponse;
 import ua.com.sipsoft.ui.model.response.InfoResponse;
 import ua.com.sipsoft.ui.model.response.ValidationInfoResponse;
+import ua.com.sipsoft.ui.model.response.facility.FacilityAddrResponse;
 import ua.com.sipsoft.ui.model.response.facility.FacilityResponse;
+import ua.com.sipsoft.ui.model.response.mapper.FacilityAddrRespMapper;
 import ua.com.sipsoft.ui.model.response.mapper.FacilityRespMapper;
 import ua.com.sipsoft.util.AppURL;
 import ua.com.sipsoft.util.I18NProvider;
 import ua.com.sipsoft.util.message.RestV1Msg;
 import ua.com.sipsoft.util.paging.Page;
 import ua.com.sipsoft.util.paging.PagingRequest;
+import ua.com.sipsoft.util.security.Role;
 
 @Slf4j
 @RestController
@@ -159,6 +163,7 @@ public class FacilityRestController {
 	 * @param principal   the principal
 	 * @return the response entity
 	 */
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	@PostMapping(value = "", consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
@@ -166,10 +171,10 @@ public class FacilityRestController {
 			@RequestBody(required = false) FacilityRegistrationRequest newFacility, Locale loc,
 			Principal principal) {
 
-		log.info("IN addNewFacility - Request register new Facility: '{}'", newFacility);
+		log.info("addNewFacility] - Request register new Facility: '{}'", newFacility);
 
 		if (newFacility == null) {
-			log.warn("IN addNewFacility - Facility creation request must be not null");
+			log.warn("addNewFacility] - Facility creation request must be not null");
 			InfoResponse infoResponse = new InfoResponse(HttpStatus.BAD_REQUEST,
 					i18n.getTranslation(RestV1Msg.ERR_BAD_REQUEST, loc),
 					i18n.getTranslation(RestV1Msg.ERR_BAD_REQUEST_EXT, loc));
@@ -180,12 +185,12 @@ public class FacilityRestController {
 		FacilityRegistrationDto facilityRegDto = ToFacilityRegistrationDtoMapper.MAPPER
 				.fromFacilityRegistrationRequest(newFacility);
 
-		log.info("IN addNewFacility - Perform register Facility");
+		log.info("addNewFacility] - Perform register Facility");
 
 		Optional<FacilityDto> facilityDtoO = facilitiesService.registerNewFacility(facilityRegDto);
 
 		if (facilityDtoO.isEmpty()) { // Registration is fail
-			log.info("IN addNewFacility - Registration is fail. Inform to the registrant");
+			log.info("addNewFacility] - Registration is fail. Inform to the registrant");
 			InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR,
 					i18n.getTranslation(RestV1Msg.FACILITY_NEW_CHECK_FAIL, loc),
 					i18n.getTranslation(RestV1Msg.FACILITY_NEW_CHECK_FAIL_EXT, loc));
@@ -193,7 +198,7 @@ public class FacilityRestController {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		log.info("IN addNewFacility - Registration is successful. Inform to the registrant");
+		log.info("addNewFacility] - Registration is successful. Inform to the registrant");
 		FacilityResponse facilityResponse = FacilityRespMapper.MAPPER.toRest(facilityDtoO.get());
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path(AppURL.API_V1_FACILITIES).path("/{id}")
 				.buildAndExpand(facilityDtoO.get().getId()).toUri();
@@ -292,19 +297,34 @@ public class FacilityRestController {
 	 * @param principal  the principal
 	 * @return the facility addresses by facility id
 	 */
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "/{id}" + AppURL.FACILITIESADDR, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Object> getFacilityAddressesByFacilityId(@PathVariable(value = "id") Long facilityId,
 			Locale loc, Principal principal) {
-		// TODO return only Facilities approved for Editor
+		UserPrincipal userPrincipal = null;
 		Optional<FacilityDto> facilityDtoO = facilitiesService.fetchByIdDto(facilityId);
-		if (facilityDtoO.isEmpty()) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null) {
+			userPrincipal = (UserPrincipal) auth.getPrincipal();
+		}
+		if (facilityDtoO.isEmpty() || userPrincipal == null) {
 			return ResponseEntity.notFound().build();
 		}
+
+		final var id = userPrincipal.getUser().getId();
+		if (userPrincipal.getUser().getHighesRole().ordinal() >= Role.ROLE_CLIENT.ordinal()
+				&& facilityDtoO.get().getUsers().stream()
+						.filter(userDto -> userDto.getId() == id)
+						.count() == 0) {
+			return ResponseEntity.notFound().build();
+		}
+
 		List<FacilityAddressDto> response = facilityDtoO.get().getFacilityAddresses().stream()
 				.collect(Collectors.toList());
 		if (!response.isEmpty()) {
-			return ResponseEntity.ok(response);
+			List<FacilityAddrResponse> resp = FacilityAddrRespMapper.MAPPER.toRest(response);
+			return ResponseEntity.ok(resp);
 		}
 		return ResponseEntity.notFound().build();
 
@@ -318,7 +338,7 @@ public class FacilityRestController {
 	 * @param loc     the loc
 	 * @return the response entity
 	 */
-	@ExceptionHandler(value = { UserDtoAuditExeption.class })
+	@ExceptionHandler(value = { FacilityDtoAuditExeption.class })
 	@ResponseBody()
 	public ResponseEntity<Object> handleFacilityDtoAuditExeption(FacilityDtoAuditExeption ex, WebRequest request,
 			Locale loc) {
@@ -334,6 +354,8 @@ public class FacilityRestController {
 			infoResponse.setSubInfos(new ArrayList<AbstractSubInfoResponse>());
 			response.forEach((k, v) -> infoResponse.getSubInfos().add(new ValidationInfoResponse(k, v)));
 		}
+
+		infoResponse.getSubInfos().add(new ValidationInfoResponse("", infoResponse.getMessage()));
 
 		String headers = request.getHeader(HttpHeaders.ACCEPT);
 

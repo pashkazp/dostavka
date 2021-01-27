@@ -29,6 +29,7 @@ import ua.com.sipsoft.dao.common.FacilityAddress;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.repository.common.FacilityRepository;
 import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityMapper;
+import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityRegDtoMapper;
 import ua.com.sipsoft.service.common.FacilitiesFilter;
 import ua.com.sipsoft.service.common.FacilitiesService;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
@@ -504,6 +505,7 @@ public class FacilitiesServiceImpl
 	 */
 	@Override
 	public Optional<FacilityDto> registerNewFacility(@NotNull FacilityRegistrationDto facilityRegDto) {
+
 		log.info("IN registerNewFacility - Save Facility: {}", facilityRegDto);
 		Locale loc = LocaleContextHolder.getLocale();
 		AuditResponse response = facilityCreateDtoAuditor.inspectNewData(facilityRegDto, null, loc);
@@ -517,7 +519,7 @@ public class FacilitiesServiceImpl
 			throw ex;
 		}
 
-		Facility facility = Mappers.getMapper(FacilityMapper.class).fromRegDto(facilityRegDto);
+		Facility facility = Mappers.getMapper(FacilityRegDtoMapper.class).fromRegDto(facilityRegDto);
 		Optional<Facility> fasilityO = saveFacility(facility);
 		if (fasilityO.isPresent()) {
 			return Optional.of(Mappers.getMapper(FacilityMapper.class).toDto(fasilityO.get()));

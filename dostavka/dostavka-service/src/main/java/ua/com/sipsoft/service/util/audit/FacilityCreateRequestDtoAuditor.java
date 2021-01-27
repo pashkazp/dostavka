@@ -22,6 +22,7 @@ public class FacilityCreateRequestDtoAuditor
 	private final I18NProvider i18n;
 	private final static int facilityNameLengthMin = 1;
 	private final static int facilityNameLengthMax = 200;
+	private final FacilityAddrCreateRequestDtoAuditor addrAuditor;
 
 	@Override
 	public AuditResponse inspectNewData(FacilityRegistrationDto inspectedInfo, AuditResponse result,
@@ -41,6 +42,9 @@ public class FacilityCreateRequestDtoAuditor
 			result.addMessage("name", i18n.getTranslation(FacilityEntityMsg.CHK_NAME_LONG, loc));
 			return result;
 		}
+
+		result = addrAuditor.inspectNewData(inspectedInfo.getFacilityAddress(), result, loc);
+
 		return result;
 	}
 }

@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @Entity
 @Table(name = "facility_address")
 @Slf4j
+@Builder
+@AllArgsConstructor
 public class FacilityAddress implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -45,18 +49,22 @@ public class FacilityAddress implements Serializable {
 	/** The version. */
 	@Version
 	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	@Builder.Default
 	private Long version = 0L;
 
 	/** The addresses alias. */
 	@Column(name = "address_alias", length = 100, nullable = false)
+	@Builder.Default
 	private String addressesAlias = "";
 
 	/** The address. */
 	@Column(name = "address", length = 255, nullable = false)
+	@Builder.Default
 	private String address = "";
 
 	/** The default address. */
 	@Column(name = "default_address", columnDefinition = "boolean default false", nullable = false)
+	@Builder.Default
 	private boolean defaultAddress = false;
 
 //	/** The geo coordinates. */
@@ -72,6 +80,7 @@ public class FacilityAddress implements Serializable {
 	/** The facility. */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "facility_id")
+	@Builder.Default
 	private Facility facility = new Facility();
 
 	/**
