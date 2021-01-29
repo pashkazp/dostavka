@@ -15,8 +15,8 @@ import ua.com.sipsoft.dao.common.Facility;
 import ua.com.sipsoft.dao.common.FacilityAddress;
 import ua.com.sipsoft.repository.common.FacilityAddressRepository;
 import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddressMapper;
-import ua.com.sipsoft.service.common.FacilitiesService;
-import ua.com.sipsoft.service.common.FacilityAddrService;
+import ua.com.sipsoft.service.common.FacilitiesServiceToRepo;
+import ua.com.sipsoft.service.common.FacilityAddrServiceToRepo;
 import ua.com.sipsoft.service.common.FacilityAddressFilter;
 import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
 import ua.com.sipsoft.service.util.EntityFilter;
@@ -24,7 +24,7 @@ import ua.com.sipsoft.service.util.HasQueryToSortConvertor;
 import ua.com.sipsoft.util.query.Query;
 
 /**
- * The Class FacilityAddrServiceImpl.
+ * The Class FacilityAddrServiceToRepoImpl.
  *
  * @author Pavlo Degtyaryev
  */
@@ -32,12 +32,12 @@ import ua.com.sipsoft.util.query.Query;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FacilityAddrServiceImpl implements FacilityAddrService, HasQueryToSortConvertor {
+public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo, HasQueryToSortConvertor {
 
 	/** The dao. */
 	private final FacilityAddressRepository dao;
 
-	private final FacilitiesService facilityService;
+	private final FacilitiesServiceToRepo facilityService;
 
 	/**
 	 * Gets the facility addresses.

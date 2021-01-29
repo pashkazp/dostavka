@@ -57,9 +57,9 @@ public class UsersRestControllerTest
 //	@MockBean
 //	private UserServiceImpl userService;
 //	@MockBean
-//	private FacilitiesServiceImpl m1;
+//	private FacilitiesServiceToRepoImpl m1;
 //	@MockBean
-//	private FacilityAddrServiceImpl m2;
+//	private FacilityAddrServiceToRepoImpl m2;
 //	@MockBean
 //	private ArchivedSheetsServiceImpl m3;
 //	@MockBean

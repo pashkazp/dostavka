@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ua.com.sipsoft.service.common.FacilityAddrService;
+import ua.com.sipsoft.service.common.FacilityAddrServiceToRepo;
 import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
 import ua.com.sipsoft.service.util.audit.LatLngAuditor;
 import ua.com.sipsoft.util.AppURL;
@@ -39,7 +39,7 @@ import ua.com.sipsoft.util.message.FacilityAddrEntityMsg;
 @RequiredArgsConstructor
 public class FacilityAddrRestController implements LatLngAuditor {
 
-	private final FacilityAddrService facilityAddrService;
+	private final FacilityAddrServiceToRepo facilityAddrService;
 	/** The i18n provider. */
 	private final I18NProvider i18n;
 

@@ -13,12 +13,12 @@ import ua.com.sipsoft.service.util.EntityFilter;
 import ua.com.sipsoft.util.query.Query;
 
 /**
- * The Interface FacilityAddrService.
+ * The Interface FacilityAddrServiceToRepo.
  *
  * @author Pavlo Degtyaryev
  */
 @Service
-public interface FacilityAddrService {
+public interface FacilityAddrServiceToRepo {
 
 	/**
 	 * Gets the facility addresses.

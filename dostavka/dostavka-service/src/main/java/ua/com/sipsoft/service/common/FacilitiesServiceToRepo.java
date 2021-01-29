@@ -19,13 +19,13 @@ import ua.com.sipsoft.util.paging.PagingRequest;
 import ua.com.sipsoft.util.query.Query;
 
 /**
- * The Class FacilitiesService.
+ * The Class FacilitiesServiceToRepo.
  *
  * @author Pavlo Degtyaryev
  */
 
 @Service
-public interface FacilitiesService {
+public interface FacilitiesServiceToRepo {
 
 	/**
 	 * Gets the by name.
@@ -200,5 +200,7 @@ public interface FacilitiesService {
 	 * @return the optional
 	 */
 	Optional<FacilityDto> updateFacility(FacilityUpdateDto facilityUpdDto);
+
+	void delete(Long facilityId);
 
 }

@@ -2,7 +2,6 @@ package ua.com.sipsoft.repository.serviceimpl.common;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,7 +11,6 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,11 +29,10 @@ import ua.com.sipsoft.repository.common.FacilityRepository;
 import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityMapper;
 import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityRegDtoMapper;
 import ua.com.sipsoft.service.common.FacilitiesFilter;
-import ua.com.sipsoft.service.common.FacilitiesService;
+import ua.com.sipsoft.service.common.FacilitiesServiceToRepo;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
 import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
 import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
-import ua.com.sipsoft.service.exception.FacilityDtoAuditExeption;
 import ua.com.sipsoft.service.exception.ResourceNotFoundException;
 import ua.com.sipsoft.service.security.UserPrincipal;
 import ua.com.sipsoft.service.util.AppNotificator;
@@ -45,11 +42,6 @@ import ua.com.sipsoft.service.util.HasLimitedList;
 import ua.com.sipsoft.service.util.HasPagingRequestToSortConvertor;
 import ua.com.sipsoft.service.util.HasQueryToSortConvertor;
 import ua.com.sipsoft.service.util.OffsetBasedPageRequest;
-import ua.com.sipsoft.service.util.audit.FacilityCreateRequestDtoAuditor;
-import ua.com.sipsoft.service.util.audit.FacilityUpdateRequestDtoAuditor;
-import ua.com.sipsoft.util.I18NProvider;
-import ua.com.sipsoft.util.audit.AuditResponse;
-import ua.com.sipsoft.util.message.RestV1Msg;
 import ua.com.sipsoft.util.paging.Page;
 import ua.com.sipsoft.util.paging.PagingRequest;
 import ua.com.sipsoft.util.query.Query;
@@ -57,7 +49,7 @@ import ua.com.sipsoft.util.query.QuerySortOrder;
 import ua.com.sipsoft.util.security.Role;
 
 /**
- * The Class FacilitiesServiceImpl.
+ * The Class FacilitiesServiceToRepoImpl.
  *
  * @author Pavlo Degtyaryev
  */
@@ -66,16 +58,12 @@ import ua.com.sipsoft.util.security.Role;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FacilitiesServiceImpl
-		implements FacilitiesService, HasQueryToSortConvertor, HasPagingRequestToSortConvertor, HasFilteredList,
+public class FacilitiesServiceToRepoImpl
+		implements FacilitiesServiceToRepo, HasQueryToSortConvertor, HasPagingRequestToSortConvertor, HasFilteredList,
 		HasLimitedList {
 
 	/** The dao. */
 	private final FacilityRepository dao;
-
-	private final FacilityCreateRequestDtoAuditor facilityCreateDtoAuditor;
-	private final FacilityUpdateRequestDtoAuditor facilityUpdateDtoAuditor;
-	private final I18NProvider i18n;
 
 	/**
 	 * Gets the by name.
@@ -311,22 +299,22 @@ public class FacilitiesServiceImpl
 	}
 
 	/**
-	 * Fetch by id dto.
+	 * Fetch FacilityDto by id.
 	 *
-	 * @param id the id
-	 * @return the optional
+	 * @param id the Facility id
+	 * @return the optional of FacilityDto
 	 */
 	@Override
 	public Optional<FacilityDto> fetchByIdDto(Long id) {
-		Optional<FacilityDto> facilityDtoO;
-		Optional<Facility> facilityO = fetchById(id);
-		if (facilityO.isPresent()) {
-			facilityDtoO = Optional.of(Mappers.getMapper(FacilityMapper.class).toDto(facilityO.get()));
-//			facilityDtoO = Optional.of(FacilityMapper.MAPPER.toDto(facilityO.get()));
-		} else {
-			facilityDtoO = Optional.empty();
+		log.debug("fetchByIdDto] - Get Facility by id: '{}'", id);
+		if (id == null) {
+			log.debug("Get Facility by id is impossible. id is null.");
+			return Optional.empty();
 		}
-		return facilityDtoO;
+
+		Optional<Facility> facilityO = fetchById(id);
+
+		return Optional.of(Mappers.getMapper(FacilityMapper.class).toDto(facilityO.get()));
 	}
 
 	/**
@@ -447,7 +435,7 @@ public class FacilitiesServiceImpl
 
 		facilities = getLimitedList(facilities, pagingRequest.getStart(), pagingRequest.getLength());
 
-		page.setData(FacilityMapper.MAPPER.toDto(facilities));
+		page.setData(Mappers.getMapper(FacilityMapper.class).toDto(facilities));
 
 		page.setDraw(pagingRequest.getDraw());
 
@@ -507,17 +495,6 @@ public class FacilitiesServiceImpl
 	public Optional<FacilityDto> registerNewFacility(@NotNull FacilityRegistrationDto facilityRegDto) {
 
 		log.info("IN registerNewFacility - Save Facility: {}", facilityRegDto);
-		Locale loc = LocaleContextHolder.getLocale();
-		AuditResponse response = facilityCreateDtoAuditor.inspectNewData(facilityRegDto, null, loc);
-
-		if (response.isInvalid()) { // if there are any errors
-			log.info("IN registerNewFacility - Registration is fail. Inform to the registrant");
-
-			FacilityDtoAuditExeption ex = new FacilityDtoAuditExeption(response);
-			ex.setErrMsg(i18n.getTranslation(RestV1Msg.FACILITY_NEW_CHECK_FAIL, loc));
-			ex.setErrMsgExt(i18n.getTranslation(RestV1Msg.FACILITY_NEW_CHECK_FAIL_EXT, loc));
-			throw ex;
-		}
 
 		Facility facility = Mappers.getMapper(FacilityRegDtoMapper.class).fromRegDto(facilityRegDto);
 		Optional<Facility> fasilityO = saveFacility(facility);
@@ -529,20 +506,11 @@ public class FacilitiesServiceImpl
 
 	@Override
 	public Optional<FacilityDto> updateFacility(@NotNull FacilityUpdateDto facilityUpdDto) {
-		log.info("IN updateFacility - Update Facility: {}", facilityUpdDto);
-		Locale loc = LocaleContextHolder.getLocale();
-		AuditResponse response = facilityUpdateDtoAuditor.inspectUpdatedData(facilityUpdDto, null, loc);
 
-		if (response.isInvalid()) {
-			log.info("IN updateFacility - User update is fail. Inform to the updater");
-
-			FacilityDtoAuditExeption ex = new FacilityDtoAuditExeption(response);
-			ex.setErrMsg(i18n.getTranslation(RestV1Msg.FACILITY_UPDATE_CHECK_FAIL, loc));
-			ex.setErrMsgExt(i18n.getTranslation(RestV1Msg.FACILITY_UPDATE_CHECK_FAIL_EXT, loc));
-			throw ex;
-		}
+		log.info("updateFacility] - Update Facility: {}", facilityUpdDto);
 
 		Optional<Facility> facilityO = fetchById(facilityUpdDto.getId());
+
 		if (facilityO.isEmpty()) {
 			ResourceNotFoundException ex = new ResourceNotFoundException("User", "id", facilityUpdDto.getId());
 			throw ex;
@@ -556,6 +524,21 @@ public class FacilitiesServiceImpl
 
 		facility = dao.saveAndFlush(facility);
 		return Optional.of(FacilityMapper.MAPPER.toDto(facility));
+	}
+
+	@Override
+	public void delete(Long facilityId) {
+		log.info("delete] - Try to delete facility by Id: {}", facilityId);
+		if (facilityId == null) {
+			log.debug("Delete Facilities is impossible. Miss some data.");
+		}
+
+		Optional<Facility> facility = dao.findById(facilityId);
+		// TODO perform a check for the possibility of deleting the Facility
+		if (facility.isPresent()) {
+			dao.delete(facility.get());
+		}
+
 	}
 
 }
