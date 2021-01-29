@@ -36,10 +36,9 @@ import com.google.common.collect.Multimap;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ua.com.sipsoft.dao.common.Facility;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.service.common.FacilitiesFilter;
-import ua.com.sipsoft.service.common.FacilitiesService;
+import ua.com.sipsoft.service.common.FacilityService;
 import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
 import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
@@ -71,7 +70,7 @@ import ua.com.sipsoft.util.security.Role;
 public class FacilityRestController {
 
 	/** The facilities service. */
-	private final FacilitiesService facilitiesService;
+	private final FacilityService facilitiesService;
 
 	/** The facility addr rest controller. */
 	private final FacilityAddrRestController facilityAddrRestController;
@@ -104,23 +103,18 @@ public class FacilityRestController {
 	 * @param pagingRequest the request of Page of Facilities
 	 * @return the fasilities page
 	 */
-	@PreAuthorize("isAuthenticated()")
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
+			"ROLE_CLIENT" })
 	@PostMapping(value = AppURL.PAGES, consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> getFasilitiesPage(@RequestBody(required = true) PagingRequest pagingRequest,
 			@AuthenticationPrincipal User user) {
-		log.debug("IN getFasilitiesPage - get page of facilities by request: {}", pagingRequest.toString());
+		log.debug("getFasilitiesPage] - get page of facilities by request: {}", pagingRequest.toString());
 
 		FacilitiesFilter facilityFilter = new FacilitiesFilter();
 		if (StringUtils.isNotBlank(pagingRequest.getSearch().getValue())) {
 			facilityFilter.setName(pagingRequest.getSearch().getValue());
-		}
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null) {
-			UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
-			facilityFilter.setCaller(userPrincipal.getUser());
 		}
 
 		Page<FacilityDto> page = facilitiesService.getFilteredPage(pagingRequest, facilityFilter);
@@ -139,12 +133,13 @@ public class FacilityRestController {
 	 * @param facilityId the facility id
 	 * @return the {@link FacilityRegistrationDto}
 	 */
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
+			"ROLE_CLIENT" })
 	@GetMapping(value = "/{facilityId}", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> getFacilityById(@PathVariable(value = "facilityId") Long facilityId) {
-		log.debug("IN getFacilityById - Get Facility by id {}", facilityId);
+		log.debug("getFacilityById] - Get Facility by id {}", facilityId);
 
-		// TODO return only Users approved for Editor
 		Optional<FacilityDto> facilityDtoO = facilitiesService.fetchByIdDto(facilityId);
 
 		if (facilityDtoO.isEmpty()) {
@@ -192,8 +187,8 @@ public class FacilityRestController {
 		if (facilityDtoO.isEmpty()) { // Registration is fail
 			log.info("addNewFacility] - Registration is fail. Inform to the registrant");
 			InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-					i18n.getTranslation(RestV1Msg.FACILITY_NEW_CHECK_FAIL, loc),
-					i18n.getTranslation(RestV1Msg.FACILITY_NEW_CHECK_FAIL_EXT, loc));
+					i18n.getTranslation(RestV1Msg.INFO_INACESSIBLE, loc),
+					i18n.getTranslation(RestV1Msg.INFO_INACESSIBLE_EXT, loc));
 
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
@@ -215,6 +210,7 @@ public class FacilityRestController {
 	 * @param principal       the principal
 	 * @return the response entity
 	 */
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	@PutMapping(value = "/{facilityId}", consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
@@ -222,10 +218,10 @@ public class FacilityRestController {
 			@RequestBody(required = false) FacilityUpdateRequest updatedFacility, Locale loc,
 			Principal principal) {
 
-		log.info("IN updateFacility - Request Facility update id='{}' by Facility data '{}'", facilityId,
+		log.info("updateFacility] - Request Facility update id='{}' by Facility data '{}'", facilityId,
 				updatedFacility);
 		if (updatedFacility == null) {
-			log.warn("IN updateFacility - Facility update request must be not null");
+			log.warn("updateFacility] - Facility update request must be not null");
 			InfoResponse infoResponse = new InfoResponse(HttpStatus.BAD_REQUEST,
 					i18n.getTranslation(RestV1Msg.ERR_BAD_REQUEST, loc),
 					i18n.getTranslation(RestV1Msg.ERR_BAD_REQUEST_EXT, loc));
@@ -238,11 +234,11 @@ public class FacilityRestController {
 
 		facilityUpdDto.setId(facilityId);
 
-		log.info("IN updateFacility - Perform update Facility");
+		log.info("updateFacility] - Perform update Facility");
 		Optional<FacilityDto> facilityDtoO = facilitiesService.updateFacility(facilityUpdDto);
 
 		if (facilityDtoO.isEmpty()) {
-			log.info("IN updateFacility - Update is fail. Inform to the registrant");
+			log.info("updateFacility] - Update is fail. Inform to the registrant");
 			InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR,
 					i18n.getTranslation(RestV1Msg.USER_UPDATE_FAIL, loc),
 					i18n.getTranslation(RestV1Msg.USER_UPDATE_FAIL_EXT, loc));
@@ -251,24 +247,21 @@ public class FacilityRestController {
 
 		}
 
-		log.info("IN updateFacility - Update is successful. Inform to the updater");
+		log.info("updateFacility] - Update is successful. Inform to the updater");
 		FacilityResponse facilityResponse = FacilityRespMapper.MAPPER.toRest(facilityDtoO.get());
 		return ResponseEntity.accepted().body(facilityResponse);
 	}
 
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER" })
 	@DeleteMapping(value = "/{facilityId}", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> deleteFacility(@PathVariable(value = "facilityId") Long facilityId, Locale loc,
 			Principal principal) {
 
-		log.info("IN deleteFacility - Request Facility delete by id='{}'", facilityId);
+		log.info("deleteFacility] - Request Facility delete by id='{}'", facilityId);
 
-		Optional<Facility> facilityO = facilitiesService.fetchById(facilityId);
-		if (facilityO.isPresent()) {
-			facilitiesService.delete(facilityO.get());
-		}
-
-		return null;
+		facilitiesService.deleteFacility(facilityId);
+		return ResponseEntity.ok().build();
 	}
 
 	/**
@@ -297,17 +290,24 @@ public class FacilityRestController {
 	 * @param principal  the principal
 	 * @return the facility addresses by facility id
 	 */
-	@PreAuthorize("isAuthenticated()")
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
+			"ROLE_CLIENT" })
 	@GetMapping(value = "/{id}" + AppURL.FACILITIESADDR, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Object> getFacilityAddressesByFacilityId(@PathVariable(value = "id") Long facilityId,
 			Locale loc, Principal principal) {
-		UserPrincipal userPrincipal = null;
+
+		log.info("getFacilityAddressesByFacilityId] - Request the addresses of the Facility by its ID='{}'",
+				facilityId);
+
 		Optional<FacilityDto> facilityDtoO = facilitiesService.fetchByIdDto(facilityId);
+
+		UserPrincipal userPrincipal = null;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null) {
 			userPrincipal = (UserPrincipal) auth.getPrincipal();
 		}
+
 		if (facilityDtoO.isEmpty() || userPrincipal == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -325,8 +325,8 @@ public class FacilityRestController {
 		if (!response.isEmpty()) {
 			List<FacilityAddrResponse> resp = FacilityAddrRespMapper.MAPPER.toRest(response);
 			return ResponseEntity.ok(resp);
-		}
-		return ResponseEntity.notFound().build();
+		} else
+			return ResponseEntity.ok(List.of());
 
 	}
 
