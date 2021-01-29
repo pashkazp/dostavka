@@ -19,9 +19,13 @@ public interface FacilityRegDtoMapper {
 
 	@AfterMapping
 	default void populateFacilityAddress(FacilityRegistrationDto facilityRegDto, @MappingTarget Facility facility) {
-		if (facility == null || facility.getFacilityAddresses() == null) {
+		if (facility == null
+				|| facility.getFacilityAddresses() == null
+				|| facilityRegDto.getFacilityAddress() == null
+				|| StringUtils.isBlank(facilityRegDto.getFacilityAddress().getAddress())) {
 			return;
 		}
+
 		FacilityAddress address = FacilityAddress.builder()
 				.address(facilityRegDto.getFacilityAddress().getAddress())
 				.addressesAlias(facilityRegDto.getFacilityAddress().getAddressesAlias())
