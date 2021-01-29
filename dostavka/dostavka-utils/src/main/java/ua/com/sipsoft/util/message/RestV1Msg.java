@@ -23,6 +23,8 @@ public class RestV1Msg {
 	public static final String INFO_INACESSIBLE_EXT = "rest.v1.info.inaccessible.debug";
 	public static final String ERR_BAD_REQUEST = "rest.v1.err.badrequest";
 	public static final String ERR_BAD_REQUEST_EXT = "rest.v1.err.badrequest.debug";
+	public static final String ACCESS_DENIED = "rest.v1.err.accessdenied";
+	public static final String ACCESS_DENIED_EXT = "rest.v1.err.accessdenied.debug";
 
 	public static final String FACILITY_NEW_CHECK_FAIL = "rest.v1.facility.new.check.fail";
 	public static final String FACILITY_NEW_CHECK_FAIL_EXT = "rest.v1.facility.new.check.fail.debug";
