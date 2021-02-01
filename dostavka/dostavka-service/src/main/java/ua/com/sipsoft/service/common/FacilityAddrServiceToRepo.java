@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import lombok.NonNull;
 import ua.com.sipsoft.dao.common.Facility;
 import ua.com.sipsoft.dao.common.FacilityAddress;
 import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
@@ -70,6 +71,7 @@ public interface FacilityAddrServiceToRepo {
 
 	public Optional<FacilityAddressDto> fetchByIdDto(Long id);
 
-	public Optional<FacilityAddressDto> registerNewFacilityAddress(FacilityAddressDto facilityAddrDto, Long fasilityId);
+	public Optional<FacilityAddressDto> registerNewFacilityAddress(@NonNull Long fasilityId,
+			@NonNull FacilityAddressDto facilityAddressDto);
 
 }

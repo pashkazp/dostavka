@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.stereotype.Service;
 
 import ua.com.sipsoft.dao.common.Facility;
@@ -199,7 +201,9 @@ public interface FacilitiesServiceToRepo {
 	 * @param facilityUpdDto the facility dto
 	 * @return the optional
 	 */
-	Optional<FacilityDto> updateFacility(FacilityUpdateDto facilityUpdDto);
+	Optional<FacilityDto> updateFacility(@NotNull FacilityUpdateDto facilityUpdDto);
+
+	Optional<FacilityDto> updateFacility(@NotNull FacilityDto facilityDto);
 
 	void delete(Long facilityId);
 

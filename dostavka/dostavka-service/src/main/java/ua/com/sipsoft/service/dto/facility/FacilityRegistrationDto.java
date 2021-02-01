@@ -27,6 +27,6 @@ public class FacilityRegistrationDto implements Serializable {
 	@NotEmpty
 	private String name;
 
-	private FacilityAddressRegistrationDto facilityAddress;
+	private FacilityAddrRegDto facilityAddress;
 
 }

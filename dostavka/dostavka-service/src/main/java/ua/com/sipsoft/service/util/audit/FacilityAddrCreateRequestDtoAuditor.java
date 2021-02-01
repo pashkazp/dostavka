@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ua.com.sipsoft.service.dto.facility.FacilityAddressRegistrationDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrRegDto;
 import ua.com.sipsoft.util.I18NProvider;
 import ua.com.sipsoft.util.audit.AuditResponse;
 import ua.com.sipsoft.util.audit.CreateRequestPropertyAuditor;
@@ -17,7 +17,7 @@ import ua.com.sipsoft.util.message.FacilityAddrEntityMsg;
 @Slf4j
 @RequiredArgsConstructor
 public class FacilityAddrCreateRequestDtoAuditor
-		implements CreateRequestPropertyAuditor<FacilityAddressRegistrationDto> {
+		implements CreateRequestPropertyAuditor<FacilityAddrRegDto> {
 
 	private final I18NProvider i18n;
 	private final static int facilityAddrNameLengthMin = 1;
@@ -29,7 +29,7 @@ public class FacilityAddrCreateRequestDtoAuditor
 	private final static Double maxLng = 180d;
 
 	@Override
-	public AuditResponse inspectNewData(FacilityAddressRegistrationDto inspectedInfo, AuditResponse result,
+	public AuditResponse inspectNewData(FacilityAddrRegDto inspectedInfo, AuditResponse result,
 			Locale loc) {
 		if (result == null) {
 			result = new AuditResponse();
