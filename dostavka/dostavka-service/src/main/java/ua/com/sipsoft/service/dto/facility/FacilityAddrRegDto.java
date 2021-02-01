@@ -18,7 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class FacilityAddressRegistrationDto implements Serializable {
+public class FacilityAddrRegDto implements Serializable {
 
 	private static final long serialVersionUID = -7000975428120207482L;
 
