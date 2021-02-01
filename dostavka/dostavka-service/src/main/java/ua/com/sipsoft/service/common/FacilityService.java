@@ -38,6 +38,7 @@ import ua.com.sipsoft.util.security.Role;
 public class FacilityService {
 
 	private final FacilitiesServiceToRepo facilityServiceRepo;
+	private final FacilityAddrService facilityAddrService;
 	private final I18NProvider i18n;
 	private final FacilityCreateRequestDtoAuditor facilityCreateDtoAuditor;
 	private final FacilityUpdateRequestDtoAuditor facilityUpdateDtoAuditor;
@@ -122,12 +123,8 @@ public class FacilityService {
 
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER" })
 	public void deleteFacility(Long facilityId) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-		if (auth == null || auth.getPrincipal() == null) {
-			log.debug("fetchByIdDto] - Get Facility by id is impossible. Authentication is null.");
-			return;
-		}
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		Locale loc = LocaleContextHolder.getLocale();
 
@@ -139,23 +136,24 @@ public class FacilityService {
 		facilityServiceRepo.delete(facilityId);
 	}
 
-	/**
-	 * @param facilityRegDto
-	 */
-	private void trimSpaces(FacilityRegistrationDto facilityRegDto) {
+	protected void trimSpaces(FacilityRegistrationDto facilityRegDto) {
+		if (facilityRegDto == null) {
+			return;
+		}
 		facilityRegDto.setName(StringUtils.trim(facilityRegDto.getName()));
-		facilityRegDto.getFacilityAddress()
-				.setAddress(StringUtils.trim(facilityRegDto.getFacilityAddress().getAddress()));
-		facilityRegDto.getFacilityAddress()
-				.setAddressesAlias(StringUtils.trim(facilityRegDto.getFacilityAddress().getAddressesAlias()));
-		facilityRegDto.getFacilityAddress().setLat(StringUtils.trim(facilityRegDto.getFacilityAddress().getLat()));
-		facilityRegDto.getFacilityAddress().setLng(StringUtils.trim(facilityRegDto.getFacilityAddress().getLng()));
+		if (facilityRegDto.getFacilityAddress() == null) {
+			return;
+		}
+		facilityAddrService.trimSpaces(facilityRegDto.getFacilityAddress());
 	}
 
 	/**
 	 * @param facilityUpdDto
 	 */
-	private void trimSpaces(FacilityUpdateDto facilityUpdDto) {
+	protected void trimSpaces(FacilityUpdateDto facilityUpdDto) {
+		if (facilityUpdDto == null) {
+			return;
+		}
 		facilityUpdDto.setName(StringUtils.trim(facilityUpdDto.getName()));
 	}
 

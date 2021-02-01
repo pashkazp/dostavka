@@ -1,20 +1,23 @@
 package ua.com.sipsoft.ui.rest.v1.facility;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.DoubleValidator;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,14 +27,21 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ua.com.sipsoft.service.common.FacilityAddrServiceToRepo;
+import ua.com.sipsoft.service.common.FacilityAddrService;
 import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrRegDto;
 import ua.com.sipsoft.service.util.audit.LatLngAuditor;
+import ua.com.sipsoft.ui.model.request.facility.FacilityAddressRegReq;
+import ua.com.sipsoft.ui.model.request.mapper.ToFacilityAddressRegistrationDtoMapper;
+import ua.com.sipsoft.ui.model.response.InfoResponse;
+import ua.com.sipsoft.ui.model.response.facility.FacilityAddrResponse;
+import ua.com.sipsoft.ui.model.response.mapper.FacilityAddrRespMapper;
 import ua.com.sipsoft.util.AppURL;
 import ua.com.sipsoft.util.I18NProvider;
 import ua.com.sipsoft.util.audit.AuditResponse;
 import ua.com.sipsoft.util.message.AppNotifyMsg;
 import ua.com.sipsoft.util.message.FacilityAddrEntityMsg;
+import ua.com.sipsoft.util.message.RestV1Msg;
 
 @Slf4j
 @RestController
@@ -39,7 +49,7 @@ import ua.com.sipsoft.util.message.FacilityAddrEntityMsg;
 @RequiredArgsConstructor
 public class FacilityAddrRestController implements LatLngAuditor {
 
-	private final FacilityAddrServiceToRepo facilityAddrService;
+	private final FacilityAddrService facilityAddrService;
 	/** The i18n provider. */
 	private final I18NProvider i18n;
 
@@ -118,57 +128,51 @@ public class FacilityAddrRestController implements LatLngAuditor {
 		return result;
 	}
 
-	protected ResponseEntity<Object> addNewFacilityAddr(String facilityAddrDtoJson,
-			Long fasilityId, Locale loc, Principal principal) {
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
+	protected ResponseEntity<Object> addNewFacilityAddr(Long fasilityId,
+			FacilityAddressRegReq newFacilityAddrReq) {
 
-		log.info("Request register new Facility Address '{}'", facilityAddrDtoJson);
-		Optional<FacilityAddressDto> facilityAddrDto;
-		AuditResponse response = new AuditResponse();
-		try {
-			JsonNode rootNode = objectMapper.readTree(facilityAddrDtoJson);
-			JsonNode facilityAddrNode = rootNode.findValue("facilityAddress");
+		log.info("addNewFacilityAddr] - Request register by FacilityId '{}' new Facility Address '{}'", fasilityId,
+				newFacilityAddrReq);
 
-			facilityAddrDto = facilityAddrDtoNodeToDto(facilityAddrNode, loc, response);
-		} catch (NullPointerException | JsonProcessingException e) {
-			response.setValid(false);
-			response.addMessage("", i18n.getTranslation(AppNotifyMsg.FACILITYADDR_NOT_ADDED, loc));
-			return ResponseEntity.badRequest().body(response);
+		Locale loc = LocaleContextHolder.getLocale();
+
+		if (newFacilityAddrReq == null || fasilityId == null) {
+			log.warn("addNewFacilityAddr] - Facility address creation request or Facility Id must be not null");
+			InfoResponse infoResponse = new InfoResponse(HttpStatus.BAD_REQUEST,
+					i18n.getTranslation(RestV1Msg.ERR_BAD_REQUEST, loc),
+					i18n.getTranslation(RestV1Msg.ERR_BAD_REQUEST_EXT, loc));
+
+			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		if (facilityAddrDto.isEmpty()
-				|| (facilityAddrDto.get().getId() != null && facilityAddrDto.get().getId() != fasilityId)) {
-			response.setValid(false);
-			response.addMessage("", i18n.getTranslation(AppNotifyMsg.FACILITYADDR_NOT_ADDED, loc));
-			return ResponseEntity.badRequest().body(response);
+		FacilityAddrRegDto facilityAddrRegDto = ToFacilityAddressRegistrationDtoMapper.MAPPER
+				.fromFacilityRegistrationRequest(newFacilityAddrReq);
+
+		log.info("addNewFacilityAddr] - Perform register Facility address");
+
+		Optional<FacilityAddressDto> facilityAddrDtoO = facilityAddrService.registerNewFacilityAddr(fasilityId,
+				facilityAddrRegDto);
+
+		if (facilityAddrDtoO.isEmpty()) { // Registration is fail
+			log.info("addNewFacilityAddr] - Registration is fail. Inform to the registrant");
+			InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+					i18n.getTranslation(RestV1Msg.INFO_INACESSIBLE, loc),
+					i18n.getTranslation(RestV1Msg.INFO_INACESSIBLE_EXT, loc));
+
+			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		response = performNewFacilityAddrCheck(response, facilityAddrDto.get(), loc);
+		log.info("addNewFacilityAddr] - Registration is successful. Inform to the registrant");
 
-		response.setValid(response.getMessages().isEmpty());
+		FacilityAddrResponse facilityAddrResponse = FacilityAddrRespMapper.MAPPER.toRest(facilityAddrDtoO.get());
 
-		if (response.isInvalid()) {
-			return ResponseEntity.badRequest().body(response);
-		}
+		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path(AppURL.API_V1_FACILITIESADDR)
+				.path("/{id}")
+				.buildAndExpand(facilityAddrResponse.getId()).toUri();
 
-		log.info("Perform register new Facility Address");
-		facilityAddrDto = facilityAddrService.registerNewFacilityAddress(facilityAddrDto.get(),
-				fasilityId);
+		return ResponseEntity.created(location).body(facilityAddrResponse);
 
-		if (facilityAddrDto.isPresent()) {
-			log.info("Registration is successful. Inform to the registrant");
-			try {
-				return ResponseEntity
-						.created(new URI(AppURL.API_V1_FACILITIESADDR + "/" + facilityAddrDto.get().getId()))
-						.body(facilityAddrDto.get());
-			} catch (URISyntaxException e) {
-				// e.printStackTrace();
-			}
-		}
-		log.info("Registration new Fasility Address is failed. Inform to registrant.");
-		response.setValid(false);
-		response.addMessage("", i18n.getTranslation(AppNotifyMsg.FACILITYADDR_NOT_ADDED, loc));
-
-		return ResponseEntity.badRequest().body(response);
 	}
 
 	public Optional<FacilityAddressDto> facilityAddrDtoNodeToDto(JsonNode facilityAddrNode, Locale loc,

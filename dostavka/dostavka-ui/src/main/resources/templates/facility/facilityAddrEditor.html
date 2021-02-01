@@ -176,21 +176,21 @@
 			        //Remove previous errors
 			        cleanFacilityAddrFormErrors();
 			        var tableId = 'addr-table-' + addNewFacilityId;
-			        var facilityAddr = {
-		        		facilityAddress:{
+			        var 
+		        		facilityAddress={
 				        	addressesAlias : $( '#editFacilityAddrForm #fAE-addressesAliasEdit' ).val(),
 				        	address : $( '#editFacilityAddrForm #fAE-addressEdit' ).val(),
 							lat : $( '#editFacilityAddrForm #fAE-latitudeEdit' ).val(),
 							lng : $( '#editFacilityAddrForm #fAE-longitudeEdit' ).val(),
 							defaultAddress : $('#editFacilityAddrForm #fAE-defaultAddressEdit' ).prop('checked')
-						}
+						
 							//facilityId : addNewFacilityId
 					}
 					
-		            console.log(facilityAddr);
+		            console.log(facilityAddress);
 			        $.post({
 			            url: [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES}}]]+"/"+addNewFacilityId+[[${T(ua.com.sipsoft.util.AppURL).FACILITIESADDR}]],
-			            data: JSON.stringify(facilityAddr),
+			            data: JSON.stringify(facilityAddress),
 			            dataType: "json",
 			            contentType : "application/json",
 			            //timeout: 3000,

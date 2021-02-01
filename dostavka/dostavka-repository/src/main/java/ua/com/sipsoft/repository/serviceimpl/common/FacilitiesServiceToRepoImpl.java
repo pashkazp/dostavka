@@ -527,6 +527,14 @@ public class FacilitiesServiceToRepoImpl
 	}
 
 	@Override
+	public Optional<FacilityDto> updateFacility(@NotNull FacilityDto facilityDto) {
+		log.info("updateFacility] - Update Facility: {}", facilityDto);
+		Facility facility = Mappers.getMapper(FacilityMapper.class).fromDto(facilityDto);
+		dao.save(facility);
+		return null;
+	}
+
+	@Override
 	public void delete(Long facilityId) {
 		log.info("delete] - Try to delete facility by Id: {}", facilityId);
 		if (facilityId == null) {

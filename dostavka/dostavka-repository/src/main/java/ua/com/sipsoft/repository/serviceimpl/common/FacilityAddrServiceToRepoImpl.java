@@ -1,10 +1,16 @@
 package ua.com.sipsoft.repository.serviceimpl.common;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.mapstruct.factory.Mappers;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +25,11 @@ import ua.com.sipsoft.service.common.FacilitiesServiceToRepo;
 import ua.com.sipsoft.service.common.FacilityAddrServiceToRepo;
 import ua.com.sipsoft.service.common.FacilityAddressFilter;
 import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
+import ua.com.sipsoft.service.exception.FacilityNotFoundException;
 import ua.com.sipsoft.service.util.EntityFilter;
 import ua.com.sipsoft.service.util.HasQueryToSortConvertor;
+import ua.com.sipsoft.util.I18NProvider;
+import ua.com.sipsoft.util.message.RestV1Msg;
 import ua.com.sipsoft.util.query.Query;
 
 /**
@@ -38,6 +47,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	private final FacilityAddressRepository dao;
 
 	private final FacilitiesServiceToRepo facilityService;
+	private final I18NProvider i18n;
 
 	/**
 	 * Gets the facility addresses.
@@ -170,31 +180,37 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	}
 
 	@Override
-	public Optional<FacilityAddressDto> registerNewFacilityAddress(@NonNull FacilityAddressDto facilityAddrDto,
-			@NonNull Long fasilityId) {
+	public Optional<FacilityAddressDto> registerNewFacilityAddress(@NonNull Long fasilityId,
+			@NonNull FacilityAddressDto facilityAddressDto) {
 
 		Optional<Facility> facilityO = facilityService.fetchById(fasilityId);
 		if (facilityO.isEmpty()) {
-			return Optional.empty();
+			log.info("registerNewFacilityAddress] - Registration is fail. Inform to the registrant");
+
+			Locale locale = LocaleContextHolder.getLocale();
+			FacilityNotFoundException ex = new FacilityNotFoundException();
+			ex.setErrMsg(i18n.getTranslation(RestV1Msg.FACILITY_NOTFOUND, locale));
+			ex.setErrMsgExt(i18n.getTranslation(RestV1Msg.FACILITY_NOTFOUND_EXT, locale));
+			throw ex;
 		}
 
-		FacilityAddress facilityAddress = Mappers.getMapper(FacilityAddressMapper.class).fromDto(facilityAddrDto);
-//		FacilityAddress facilityAddress = FacilityAddressMapper.MAPPER.fromDto(facilityAddrDto);
-		facilityAddress.setFacility(facilityO.get());
-
-		facilityAddress = dao.saveAndFlush(facilityAddress);
-		if (facilityAddress == null) {
-			return Optional.empty();
-		}
-
+		FacilityAddress facilityAddress = Mappers.getMapper(FacilityAddressMapper.class).fromDto(facilityAddressDto);
+		Set<FacilityAddress> oldList = facilityO.get().getFacilityAddresses().stream().collect(Collectors.toSet());
 		facilityO.get().addFacilityAddress(facilityAddress);
 		facilityO = facilityService.saveFacility(facilityO.get());
 
 		if (facilityO.isEmpty()) {
 			return Optional.empty();
 		} else {
-			return Optional.of(Mappers.getMapper(FacilityAddressMapper.class).toDto(facilityAddress));
-//			return Optional.of(FacilityAddressMapper.MAPPER.toDto(facilityAddress));
+
+			List<FacilityAddress> addrList = new ArrayList<>(
+					(CollectionUtils.removeAll(facilityO.get().getFacilityAddresses(), oldList)));
+			if (addrList.size() == 1) {
+				return Optional.of(Mappers.getMapper(FacilityAddressMapper.class).toDto(addrList.get(0)));
+			} else {
+				return Optional.empty();
+			}
+
 		}
 	}
 

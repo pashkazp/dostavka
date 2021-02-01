@@ -8,6 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrRegDto;
 import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
 
 @Mapper(uses = FacilityMapper.class)
@@ -21,7 +22,7 @@ public interface FacilityAddressMapper {
 	// @Mapping(target = "facility", ignore = true)
 	public abstract FacilityAddress fromDto(FacilityAddressDto facilityAddressDto);
 
-	public abstract Set<FacilityAddressDto> toDto(Collection<FacilityAddress> facilityAddresses);
+	public abstract FacilityAddress fromDto(FacilityAddrRegDto facilityAddrRegDto);
 
 	public abstract Set<FacilityAddress> fromDto(Collection<FacilityAddressDto> facilityAddressDtos);
 

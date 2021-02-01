@@ -45,6 +45,7 @@ import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
 import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
 import ua.com.sipsoft.service.exception.FacilityDtoAuditExeption;
 import ua.com.sipsoft.service.security.UserPrincipal;
+import ua.com.sipsoft.ui.model.request.facility.FacilityAddressRegReq;
 import ua.com.sipsoft.ui.model.request.facility.FacilityRegistrationRequest;
 import ua.com.sipsoft.ui.model.request.facility.FacilityUpdateRequest;
 import ua.com.sipsoft.ui.model.request.mapper.ToFacilityRegistrationDtoMapper;
@@ -103,11 +104,11 @@ public class FacilityRestController {
 	 * @param pagingRequest the request of Page of Facilities
 	 * @return the fasilities page
 	 */
-	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
-			"ROLE_CLIENT" })
 	@PostMapping(value = AppURL.PAGES, consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
+			"ROLE_CLIENT" })
 	public ResponseEntity<Object> getFasilitiesPage(@RequestBody(required = true) PagingRequest pagingRequest,
 			@AuthenticationPrincipal User user) {
 		log.debug("getFasilitiesPage] - get page of facilities by request: {}", pagingRequest.toString());
@@ -133,10 +134,10 @@ public class FacilityRestController {
 	 * @param facilityId the facility id
 	 * @return the {@link FacilityRegistrationDto}
 	 */
-	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
-			"ROLE_CLIENT" })
 	@GetMapping(value = "/{facilityId}", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
+			"ROLE_CLIENT" })
 	public ResponseEntity<Object> getFacilityById(@PathVariable(value = "facilityId") Long facilityId) {
 		log.debug("getFacilityById] - Get Facility by id {}", facilityId);
 
@@ -151,17 +152,17 @@ public class FacilityRestController {
 	}
 
 	/**
-	 * Adds the new facility.
+	 * Adds the new Facility.
 	 *
-	 * @param newFacility the new facility
-	 * @param loc         the loc
-	 * @param principal   the principal
+	 * @param newFacility the new Facility
+	 * @param loc         the Locale
+	 * @param principal   the Principal
 	 * @return the response entity
 	 */
-	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	@PostMapping(value = "", consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	public ResponseEntity<Object> addNewFacility(
 			@RequestBody(required = false) FacilityRegistrationRequest newFacility, Locale loc,
 			Principal principal) {
@@ -210,10 +211,10 @@ public class FacilityRestController {
 	 * @param principal       the principal
 	 * @return the response entity
 	 */
-	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	@PutMapping(value = "/{facilityId}", consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	public ResponseEntity<Object> updateFacility(@PathVariable(value = "facilityId") Long facilityId,
 			@RequestBody(required = false) FacilityUpdateRequest updatedFacility, Locale loc,
 			Principal principal) {
@@ -252,9 +253,9 @@ public class FacilityRestController {
 		return ResponseEntity.accepted().body(facilityResponse);
 	}
 
-	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER" })
 	@DeleteMapping(value = "/{facilityId}", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER" })
 	public ResponseEntity<Object> deleteFacility(@PathVariable(value = "facilityId") Long facilityId, Locale loc,
 			Principal principal) {
 
@@ -265,20 +266,22 @@ public class FacilityRestController {
 	}
 
 	/**
-	 * Adds the new facility addr.
+	 * Adds the new Facility Address.
 	 *
-	 * @param facilityId          the facility id
-	 * @param facilityAddrDtoJson the facility addr dto json
-	 * @param loc                 the loc
-	 * @param principal           the principal
+	 * @param facilityId          the Facility id
+	 * @param facilityAddrDtoJson the Facility addr dto json
+	 * @param loc                 the Locale
+	 * @param principal           the Principal
 	 * @return the response entity
 	 */
-	@PostMapping(value = "/{id}" + AppURL.FACILITIESADDR, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/{id}" + AppURL.FACILITIESADDR, consumes = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
+					MediaType.APPLICATION_JSON_VALUE })
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	public ResponseEntity<Object> addNewFacilityAddr(@PathVariable(value = "id") Long facilityId,
-			@RequestBody String facilityAddrDtoJson, Locale loc, Principal principal) {
-
-		ResponseEntity<Object> response = facilityAddrRestController.addNewFacilityAddr(facilityAddrDtoJson, facilityId,
-				loc, principal);
+			@RequestBody(required = false) FacilityAddressRegReq newFacilityAddr) {
+		log.debug("{}", newFacilityAddr);
+		ResponseEntity<Object> response = facilityAddrRestController.addNewFacilityAddr(facilityId, newFacilityAddr);
 		return response;
 	}
 
@@ -290,10 +293,10 @@ public class FacilityRestController {
 	 * @param principal  the principal
 	 * @return the facility addresses by facility id
 	 */
-	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
-			"ROLE_CLIENT" })
 	@GetMapping(value = "/{id}" + AppURL.FACILITIESADDR, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
+			"ROLE_CLIENT" })
 	public ResponseEntity<Object> getFacilityAddressesByFacilityId(@PathVariable(value = "id") Long facilityId,
 			Locale loc, Principal principal) {
 
