@@ -30,6 +30,11 @@ public class RestV1Msg {
 	public static final String FACILITY_NEW_CHECK_FAIL_EXT = "rest.v1.facility.new.check.fail.debug";
 	public static final String FACILITY_UPDATE_CHECK_FAIL = "rest.v1.facility.upd.check.fail";
 	public static final String FACILITY_UPDATE_CHECK_FAIL_EXT = "rest.v1.facility.upd.check.fail.debug";
+	public static final String FACILITY_NOTFOUND = "rest.v1.facility.notfound";
+	public static final String FACILITY_NOTFOUND_EXT = "rest.v1.facility.notfound.debug";
+
+	public static final String FACILITY_NEW_ADDR_CHECK_FAIL = "rest.v1.facility.new.addr.check.fail";
+	public static final String FACILITY_NEW_ADDR_CHECK_FAIL_EXT = "rest.v1.facility.new.addr.check.fail.debug";
 
 	private RestV1Msg() {
 	}
