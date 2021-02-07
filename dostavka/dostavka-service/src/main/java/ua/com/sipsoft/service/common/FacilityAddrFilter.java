@@ -13,7 +13,7 @@ import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.service.util.EntityFilter;
 
 /**
- * The Interface FacilityAddressFilter.
+ * The Interface FacilityAddrFilter.
  *
  * @author Pavlo Degtyaryev
  */
@@ -23,7 +23,7 @@ import ua.com.sipsoft.service.util.EntityFilter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class FacilityAddressFilter implements EntityFilter<FacilityAddr> {
+public class FacilityAddrFilter implements EntityFilter<FacilityAddr> {
 
 	/** The address alias. */
 	@Builder.Default
@@ -44,7 +44,7 @@ public class FacilityAddressFilter implements EntityFilter<FacilityAddr> {
 	 */
 	@Override
 	public String toString() {
-		return String.format("FacilityAddressFilter [facilityId=%s, addressAlias=\"%s\", address=\"%s\"]",
+		return String.format("FacilityAddrFilter [facilityId=%s, addressAlias=\"%s\", address=\"%s\"]",
 				facilityId, addressAlias, address);
 	}
 

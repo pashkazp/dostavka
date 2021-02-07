@@ -29,7 +29,7 @@ public interface FacilityAddrServiceToRepo {
 	 * @param facility the facility
 	 * @return the facility addresses
 	 */
-	public List<FacilityAddr> getFacilityAddresses(Facility facility);
+	public List<FacilityAddr> getFacilityAddr(Facility facility);
 
 	/**
 	 * Save.

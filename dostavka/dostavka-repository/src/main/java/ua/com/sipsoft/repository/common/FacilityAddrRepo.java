@@ -12,12 +12,12 @@ import ua.com.sipsoft.dao.common.Facility;
 import ua.com.sipsoft.dao.common.FacilityAddr;
 
 /**
- * The Interface FacilityAddressRepository.
+ * The Interface FacilityAddrRepo.
  *
  * @author Pavlo Degtyaryev
  */
 @Repository
-public interface FacilityAddressRepository extends JpaRepository<FacilityAddr, Long> {
+public interface FacilityAddrRepo extends JpaRepository<FacilityAddr, Long> {
 
 	/**
 	 * Find by facility.

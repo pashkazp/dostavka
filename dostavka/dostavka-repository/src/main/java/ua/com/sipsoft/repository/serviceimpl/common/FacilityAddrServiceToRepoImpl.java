@@ -21,11 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.dao.common.Facility;
 import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.dao.user.User;
-import ua.com.sipsoft.repository.common.FacilityAddressRepository;
+import ua.com.sipsoft.repository.common.FacilityAddrRepo;
 import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddMapper;
 import ua.com.sipsoft.service.common.FacilitiesServiceToRepo;
+import ua.com.sipsoft.service.common.FacilityAddrFilter;
 import ua.com.sipsoft.service.common.FacilityAddrServiceToRepo;
-import ua.com.sipsoft.service.common.FacilityAddressFilter;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrUpdReqDto;
 import ua.com.sipsoft.service.exception.FacilityAddrNotFoundException;
@@ -48,7 +48,7 @@ import ua.com.sipsoft.util.query.Query;
 public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo, HasQueryToSortConvertor {
 
 	/** The dao. */
-	private final FacilityAddressRepository dao;
+	private final FacilityAddrRepo dao;
 
 	private final FacilitiesServiceToRepo facilityService;
 	private final I18NProvider i18n;
@@ -60,7 +60,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	 * @return the facility addresses
 	 */
 	@Override
-	public List<FacilityAddr> getFacilityAddresses(Facility facility) {
+	public List<FacilityAddr> getFacilityAddr(Facility facility) {
 		return dao.findByFacility(facility);
 	}
 
@@ -108,7 +108,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	 * @param filter the filter
 	 * @return true, if is entity pass filter
 	 */
-	private boolean isEntityPassFilter(FacilityAddr entity, FacilityAddressFilter filter) {
+	private boolean isEntityPassFilter(FacilityAddr entity, FacilityAddrFilter filter) {
 		return entity.getAddress().concat(entity.getAddressesAlias()).toLowerCase()
 				.contains(filter.getAddress() == null ? "" : filter.getAddress().toLowerCase());
 	}
