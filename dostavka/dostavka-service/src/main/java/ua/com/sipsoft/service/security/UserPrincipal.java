@@ -38,8 +38,6 @@ public class UserPrincipal implements UserDetails, OidcUser {
 
 	private OidcIdToken idToken;
 
-//	private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-
 	/**
 	 * Instantiates a new user principal.
 	 *

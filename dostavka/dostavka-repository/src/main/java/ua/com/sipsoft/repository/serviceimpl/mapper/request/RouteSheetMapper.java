@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.dao.request.archive.ArchivedRouteSheet;
 import ua.com.sipsoft.dao.request.draft.DraftRouteSheet;
@@ -14,10 +14,9 @@ import ua.com.sipsoft.dao.request.issued.IssuedRouteSheet;
 import ua.com.sipsoft.repository.serviceimpl.mapper.security.UserMapper;
 import ua.com.sipsoft.service.dto.request.RouteSheetDto;
 
-@Mapper(uses = { CourierRequestMapper.class, HistoryEventMapper.class, UserMapper.class })
+@Mapper(componentModel = "spring", uses = { CourierRequestMapper.class, HistoryEventMapper.class, UserMapper.class })
+@Component
 public interface RouteSheetMapper {
-
-	RouteSheetMapper MAPPER = Mappers.getMapper(RouteSheetMapper.class);
 
 	// DraftRouteSheet
 	RouteSheetDto draftRouteSheetToDto(DraftRouteSheet sheet);

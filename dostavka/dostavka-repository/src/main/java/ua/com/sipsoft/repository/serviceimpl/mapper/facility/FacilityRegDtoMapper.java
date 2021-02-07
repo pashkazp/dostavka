@@ -14,8 +14,6 @@ import ua.com.sipsoft.service.dto.facility.FacilityRegReqDto;
 @Component
 public interface FacilityRegDtoMapper {
 
-//	public FacilityRegDtoMapper MAPPER = Mappers.getMapper(FacilityRegDtoMapper.class);
-
 	public abstract Facility fromRegDto(FacilityRegReqDto facilityRegDto);
 
 	/**

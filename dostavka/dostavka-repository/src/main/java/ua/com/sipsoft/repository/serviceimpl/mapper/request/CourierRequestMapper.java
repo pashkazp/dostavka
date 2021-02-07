@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.dao.request.archive.ArchivedCourierVisit;
 import ua.com.sipsoft.dao.request.draft.CourierRequest;
@@ -15,10 +15,9 @@ import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddMapper;
 import ua.com.sipsoft.repository.serviceimpl.mapper.security.UserMapper;
 import ua.com.sipsoft.service.dto.request.CourierRequestDto;
 
-@Mapper(uses = { FacilityAddMapper.class, HistoryEventMapper.class, UserMapper.class })
+@Mapper(componentModel = "spring", uses = { FacilityAddMapper.class, HistoryEventMapper.class, UserMapper.class })
+@Component
 public interface CourierRequestMapper {
-
-	CourierRequestMapper MAPPER = Mappers.getMapper(CourierRequestMapper.class);
 
 	// CourierRequest
 	CourierRequestDto courierRequestToDto(CourierRequest request);

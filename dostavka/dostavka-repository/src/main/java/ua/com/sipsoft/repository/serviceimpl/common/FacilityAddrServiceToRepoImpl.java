@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.factory.Mappers;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -52,6 +51,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 
 	private final FacilitiesServiceToRepo facilityService;
 	private final I18NProvider i18n;
+	private final FacilityAddMapper facilityAddMapper;
 
 	/**
 	 * Gets the facility addresses.
@@ -169,14 +169,14 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	@Override
 	public List<FacilityAddrDto> getAllFacilityAddrDto() {
 		List<FacilityAddr> facilityAddresses = getAllFacilityAddr();
-		List<FacilityAddrDto> facilityAddressesDto = FacilityAddMapper.MAPPER.toDto(facilityAddresses);
+		List<FacilityAddrDto> facilityAddressesDto = facilityAddMapper.toDto(facilityAddresses);
 		return facilityAddressesDto;
 	}
 
 	@Override
 	public List<FacilityAddrDto> getAllFacilityAddrDto(@NonNull Long facilityUserId) {
 		List<FacilityAddr> facilityAddresses = getAllFacilityAddr(facilityUserId);
-		List<FacilityAddrDto> facilityAddressesDto = FacilityAddMapper.MAPPER.toDto(facilityAddresses);
+		List<FacilityAddrDto> facilityAddressesDto = facilityAddMapper.toDto(facilityAddresses);
 		return facilityAddressesDto;
 	}
 
@@ -185,7 +185,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 		Optional<FacilityAddrDto> facilityAddrDtoO;
 		Optional<FacilityAddr> facilityAddrO = fetchById(id);
 		if (facilityAddrO.isPresent()) {
-			facilityAddrDtoO = Optional.ofNullable(FacilityAddMapper.MAPPER.toDto(facilityAddrO.get()));
+			facilityAddrDtoO = Optional.ofNullable(facilityAddMapper.toDto(facilityAddrO.get()));
 //			facilityAddrDtoO = Optional.of(FacilityAddMapper.MAPPER.toDto(facilityAddrO.get()));
 		} else {
 			facilityAddrDtoO = Optional.empty();
@@ -199,7 +199,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 		Optional<FacilityAddr> facilityAddrO = fetchById(id);
 		if (facilityAddrO.isPresent() && facilityAddrO.get().getFacility() != null
 				&& facilityAddrO.get().getFacility().getUsers().contains(caller)) {
-			facilityAddrDtoO = Optional.ofNullable(FacilityAddMapper.MAPPER.toDto(facilityAddrO.get()));
+			facilityAddrDtoO = Optional.ofNullable(facilityAddMapper.toDto(facilityAddrO.get()));
 		} else {
 			facilityAddrDtoO = Optional.empty();
 		}
@@ -221,7 +221,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 			throw ex;
 		}
 
-		FacilityAddr facilityAddress = Mappers.getMapper(FacilityAddMapper.class).fromDto(facilityAddressDto);
+		FacilityAddr facilityAddress = facilityAddMapper.fromDto(facilityAddressDto);
 		Set<FacilityAddr> oldList = facilityO.get().getFacilityAddresses().stream().collect(Collectors.toSet());
 		facilityO.get().addFacilityAddress(facilityAddress);
 		facilityO = facilityService.saveFacility(facilityO.get());
@@ -233,7 +233,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 			List<FacilityAddr> addrList = new ArrayList<>(
 					(CollectionUtils.removeAll(facilityO.get().getFacilityAddresses(), oldList)));
 			if (addrList.size() == 1) {
-				return Optional.ofNullable(Mappers.getMapper(FacilityAddMapper.class).toDto(addrList.get(0)));
+				return Optional.ofNullable(facilityAddMapper.toDto(addrList.get(0)));
 			} else {
 				return Optional.empty();
 			}
@@ -269,7 +269,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 
 		fa = dao.saveAndFlush(fa);
 
-		return Optional.ofNullable(FacilityAddMapper.MAPPER.toDto(fa));
+		return Optional.ofNullable(facilityAddMapper.toDto(fa));
 	}
 
 }

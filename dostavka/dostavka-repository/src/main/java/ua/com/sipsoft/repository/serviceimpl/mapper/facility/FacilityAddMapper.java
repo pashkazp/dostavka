@@ -5,17 +5,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrRegReqDto;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrUpdReqDto;
 
-@Mapper(uses = FacilityMapper.class)
+@Mapper(componentModel = "spring", uses = FacilityMapper.class)
+@Component
 public interface FacilityAddMapper {
-
-	public FacilityAddMapper MAPPER = Mappers.getMapper(FacilityAddMapper.class);
 
 	// @Mapping(target = "facility", ignore = true)
 	public abstract FacilityAddrDto toDto(FacilityAddr facilityAddress);

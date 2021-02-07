@@ -4,15 +4,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.service.dto.user.UserDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
+@Component
 public interface UserMapper {
-
-	UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
 //	@Mapping(target = "password", ignore = true)
 	UserDto toDto(User user);

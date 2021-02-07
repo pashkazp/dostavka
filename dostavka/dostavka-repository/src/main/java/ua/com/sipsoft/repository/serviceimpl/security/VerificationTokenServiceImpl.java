@@ -28,6 +28,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
 
 	/** The dao. */
 	private final VerificationTokenRepository dao;
+	private final VerificationTokenMapper verificationTokenMapper;
 
 //	private final VerificationTokenMapper verificationTokenMapper;
 
@@ -109,7 +110,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
 			if (vToken.isEmpty()) {
 				return Optional.empty();
 			} else {
-				VerificationTokenDto verificationTokenDto = VerificationTokenMapper.MAPPER.toDto(vToken.get());
+				VerificationTokenDto verificationTokenDto = verificationTokenMapper.toDto(vToken.get());
 				return Optional.of(verificationTokenDto);
 			}
 		} catch (Exception e) {

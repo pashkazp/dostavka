@@ -10,7 +10,18 @@
 	</parent>
 
 	<artifactId>dostavka-ui</artifactId>
+	
 	<dependencies>
+		<dependency>
+			<groupId>ua.com.sipsoft</groupId>
+			<artifactId>dostavka-utils</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ua.com.sipsoft</groupId>
+			<artifactId>dostavka-service</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -29,12 +40,13 @@
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- bootstrap and jquery -->
+ -->		
+ <!-- bootstrap and jquery -->
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>bootstrap</artifactId>
@@ -161,16 +173,6 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
 			<version>${org.mapstruct.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ua.com.sipsoft</groupId>
-			<artifactId>dostavka-utils</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>ua.com.sipsoft</groupId>
-			<artifactId>dostavka-service</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 

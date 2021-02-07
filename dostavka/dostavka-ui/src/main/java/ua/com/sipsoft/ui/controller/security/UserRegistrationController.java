@@ -33,6 +33,7 @@ import ua.com.sipsoft.util.security.Role;
 public class UserRegistrationController {
 
 	private final UserService userService;
+	private final ToUserRegDtoMapper toUserRegDtoMapper;
 
 	@ModelAttribute("user")
 	public UserRegReq userRegistrationRequest() {
@@ -69,8 +70,7 @@ public class UserRegistrationController {
 			return AppURL.LOGIN_REGISTRATION;
 		}
 
-		UserRegistrationDto userRegistrationDto = ToUserRegDtoMapper.MAPPER
-				.fromUserRegReq(userRegistrationRequest);
+		UserRegistrationDto userRegistrationDto = toUserRegDtoMapper.fromUserRegReq(userRegistrationRequest);
 
 		if (userRegistrationDto.getRoles().isEmpty()) {
 			userRegistrationDto.addRoles(Role.ROLE_USER);

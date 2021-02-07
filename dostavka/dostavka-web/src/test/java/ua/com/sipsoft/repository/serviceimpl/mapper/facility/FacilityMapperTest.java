@@ -5,21 +5,28 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ua.com.sipsoft.dao.common.Facility;
 import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.dao.user.User;
-import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityMapper;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
 
-//@SpringBootTest
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration
 public class FacilityMapperTest {
+
+	@Autowired
+	FacilityMapper facilityMapper;
 
 	@Test
 	@DisplayName("Map Facility to FacilityDto")
 	public void testToDto() {
-		FacilityMapper facilityMapper = Mappers.getMapper(FacilityMapper.class);
 		Facility facility = createFacility();
 		FacilityDto facilityDto = facilityMapper.toDto(facility);
 
@@ -38,7 +45,6 @@ public class FacilityMapperTest {
 	@DisplayName("Map FacilityDto to Facility")
 	public void testFromDto() {
 		Facility facility1 = createFacility();
-		FacilityMapper facilityMapper = Mappers.getMapper(FacilityMapper.class);
 		FacilityDto facilityDto = facilityMapper.toDto(facility1);
 		Facility facility2 = facilityMapper.fromDto(facilityDto);
 

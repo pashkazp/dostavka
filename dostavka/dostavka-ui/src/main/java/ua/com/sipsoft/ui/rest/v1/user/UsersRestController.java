@@ -84,6 +84,9 @@ public class UsersRestController {
 
 	/** The confirm updated password auditor. */
 	private final UserUpdateRequestConfirmPasswordAuditor cUPasswordAuditor;
+	private final ToUserRegDtoMapper toUserRegDtoMapper;
+	private final ToUserUpdateDtoMapper toUserUpdateDtoMapper;
+	private final UserRestMapper UserRestMapper;
 
 	/**
 	 * Return List of all {@link UserRest}.
@@ -96,7 +99,7 @@ public class UsersRestController {
 		log.debug("IN listAllUserRest - Get the list of all Users");
 		// TODO return only Users approved for Editor
 		List<UserDto> users = userService.getAllUsersDto();
-		List<UserRest> userRests = UserRestMapper.MAPPER.toRest(users);
+		List<UserRest> userRests = UserRestMapper.toRest(users);
 		if (userRests.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
@@ -127,7 +130,7 @@ public class UsersRestController {
 		Page<UserDto> page = userService.getFilteredPage(pagingRequest, userFilter);
 
 		List<UserDto> data = page.getData();
-		List<UserRest> usersList = UserRestMapper.MAPPER.toRest(data);
+		List<UserRest> usersList = UserRestMapper.toRest(data);
 		Page<UserRest> pageRest = new Page<>(page, usersList);
 		return new ResponseEntity<>(pageRest, HttpStatus.PARTIAL_CONTENT);
 	}
@@ -148,7 +151,7 @@ public class UsersRestController {
 		if (userDtoO.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
-		UserRest userRest = UserRestMapper.MAPPER.toRest(userDtoO.get());
+		UserRest userRest = UserRestMapper.toRest(userDtoO.get());
 		return ResponseEntity.ok(userRest);
 	}
 
@@ -196,8 +199,7 @@ public class UsersRestController {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		UserRegistrationDto userRegDto = ToUserRegDtoMapper.MAPPER
-				.fromUserRegReq(userCreationRequest);
+		UserRegistrationDto userRegDto = toUserRegDtoMapper.fromUserRegReq(userCreationRequest);
 
 		if (userRegDto.getRoles().isEmpty()) {
 			userRegDto.addRoles(Role.ROLE_USER);
@@ -216,7 +218,7 @@ public class UsersRestController {
 		}
 
 		log.info("IN addNewUserByCreationRequest - Registration is successful. Inform to the registrant");
-		UserRest userRest = UserRestMapper.MAPPER.toRest(userDtoO.get());
+		UserRest userRest = UserRestMapper.toRest(userDtoO.get());
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path(AppURL.API_V1_USERS).path("/{id}")
 				.buildAndExpand(userRest.getId()).toUri();
 		return ResponseEntity.created(location).body(userRest);
@@ -268,8 +270,7 @@ public class UsersRestController {
 			}
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
-		UserUpdateDto userRegDto = ToUserUpdateDtoMapper.MAPPER
-				.fromUserUpdateRequest(userUpdateRequest);
+		UserUpdateDto userRegDto = toUserUpdateDtoMapper.fromUserUpdateRequest(userUpdateRequest);
 
 		userRegDto.setId(userId);
 
@@ -287,7 +288,7 @@ public class UsersRestController {
 		}
 
 		log.info("IN updateUser - Update is successful. Inform to the updater");
-		UserRest userRest = UserRestMapper.MAPPER.toRest(userDtoO.get());
+		UserRest userRest = UserRestMapper.toRest(userDtoO.get());
 		return ResponseEntity.accepted().body(userRest);
 	}
 
@@ -305,7 +306,7 @@ public class UsersRestController {
 		Optional<UserDto> userDto = userService.fetchDtoById(userPrincipal.getId());
 
 		if (userDto.isPresent()) {
-			UserRest userRest = UserRestMapper.MAPPER.toRest(userDto.get());
+			UserRest userRest = UserRestMapper.toRest(userDto.get());
 			return ResponseEntity.ok(userRest);
 		} else {
 			InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR,

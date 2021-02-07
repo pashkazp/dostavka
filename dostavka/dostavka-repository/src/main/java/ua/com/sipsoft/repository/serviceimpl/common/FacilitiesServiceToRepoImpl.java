@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.factory.Mappers;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -71,6 +70,7 @@ public class FacilitiesServiceToRepoImpl
 	private final FacilityRepository dao;
 	private final I18NProvider i18n;
 	private final FacilityRegDtoMapper facilityRegDtoMapper;
+	private final FacilityMapper facilityMapper;
 
 	/**
 	 * Gets the by name.
@@ -298,7 +298,7 @@ public class FacilitiesServiceToRepoImpl
 
 		Optional<Facility> facilityO = fetchById(id);
 
-		return Optional.ofNullable(FacilityMapper.MAPPER.toDto(facilityO.get()));
+		return Optional.ofNullable(facilityMapper.toDto(facilityO.get()));
 	}
 
 	/**
@@ -380,7 +380,7 @@ public class FacilitiesServiceToRepoImpl
 		log.debug(
 				"Get requested page Facilities with offset '{}'; limit '{}'; sort '{}'; filter '{}'",
 				query.getOffset(), query.getLimit(), query.getSortOrders(), query.getFilter().get().toString());
-		return Mappers.getMapper(FacilityMapper.class).toDto(getQueriedFacilities(query));
+		return facilityMapper.toDto(getQueriedFacilities(query));
 //		return FacilityMapper.MAPPER.toDto(getQueriedFacilities(query));
 	}
 
@@ -420,7 +420,7 @@ public class FacilitiesServiceToRepoImpl
 
 		facilities = getLimitedList(facilities, pagingRequest.getStart(), pagingRequest.getLength());
 
-		page.setData(Mappers.getMapper(FacilityMapper.class).toDto(facilities));
+		page.setData(facilityMapper.toDto(facilities));
 
 		page.setDraw(pagingRequest.getDraw());
 
@@ -465,8 +465,7 @@ public class FacilitiesServiceToRepoImpl
 	@Override
 	public List<FacilityDto> getAllFacilitiesDto() {
 		List<Facility> facilities = getAllFacilities();
-		List<FacilityDto> facilitiesDto = Mappers.getMapper(FacilityMapper.class).toDto(facilities);
-//		List<FacilityDto> facilitiesDto = FacilityMapper.MAPPER.toDto(facilities);
+		List<FacilityDto> facilitiesDto = facilityMapper.toDto(facilities);
 		return facilitiesDto;
 	}
 
@@ -484,7 +483,7 @@ public class FacilitiesServiceToRepoImpl
 		Facility facility = facilityRegDtoMapper.fromRegDto(facilityRegDto);
 		Optional<Facility> fasilityO = saveFacility(facility);
 		if (fasilityO.isPresent()) {
-			return Optional.ofNullable(FacilityMapper.MAPPER.toDto(fasilityO.get()));
+			return Optional.ofNullable(facilityMapper.toDto(fasilityO.get()));
 		}
 		return Optional.empty();
 	}
@@ -511,13 +510,13 @@ public class FacilitiesServiceToRepoImpl
 		}
 
 		facility = dao.saveAndFlush(facility);
-		return Optional.ofNullable(FacilityMapper.MAPPER.toDto(facility));
+		return Optional.ofNullable(facilityMapper.toDto(facility));
 	}
 
 	@Override
 	public Optional<FacilityDto> updateFacility(@NotNull FacilityDto facilityDto) {
 		log.info("updateFacility] - Update Facility: {}", facilityDto);
-		Facility facility = FacilityMapper.MAPPER.fromDto(facilityDto);
+		Facility facility = facilityMapper.fromDto(facilityDto);
 		dao.save(facility);
 		return null;
 	}

@@ -81,7 +81,8 @@ public class UserServiceImpl
 	private final PasswordEncoder passwordEncoder;
 
 	private final I18NProvider i18n;
-//	private final UserRegistrationMapper userRegistrationMapper;
+	private final UserMapper userMapper;
+	private final UserRegistrationMapper userRegistrationMapper;
 
 	/**
 	 * Save user.
@@ -315,13 +316,13 @@ public class UserServiceImpl
 				return Optional.empty();
 			}
 
-			User user = UserRegistrationMapper.MAPPER.fromDto(userRegistrationDto);
+			User user = userRegistrationMapper.fromDto(userRegistrationDto);
 
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 
 			user = dao.save(user);
 
-			UserDto userDto = UserMapper.MAPPER.toDto(user);
+			UserDto userDto = userMapper.toDto(user);
 			if (isSendRegistrationEmail) {
 				eventPublisher.publishEvent(
 						new OnRegistrationCompleteEvent(user, LocaleContextHolder.getLocale()));
@@ -379,7 +380,7 @@ public class UserServiceImpl
 		}
 
 		user = dao.saveAndFlush(user);
-		return Optional.ofNullable(UserMapper.MAPPER.toDto(user));
+		return Optional.ofNullable(userMapper.toDto(user));
 	}
 
 	/**
@@ -426,7 +427,7 @@ public class UserServiceImpl
 
 		users = getLimitedList(users, pagingRequest.getStart(), pagingRequest.getLength());
 
-		page.setData(UserMapper.MAPPER.toDto(users));
+		page.setData(userMapper.toDto(users));
 
 		page.setDraw(pagingRequest.getDraw());
 
@@ -438,7 +439,7 @@ public class UserServiceImpl
 		Optional<UserRegistrationDto> userDto;
 		Optional<User> user = fetchById(id);
 		if (user.isPresent()) {
-			userDto = Optional.ofNullable(UserRegistrationMapper.MAPPER.toDto(user.get()));
+			userDto = Optional.ofNullable(userRegistrationMapper.toDto(user.get()));
 		} else {
 			userDto = Optional.empty();
 		}
@@ -448,7 +449,7 @@ public class UserServiceImpl
 	@Override
 	public List<UserDto> getAllUsersDto() {
 		List<User> users = dao.findAll();
-		List<UserDto> usersDto = UserMapper.MAPPER.toDto(users);
+		List<UserDto> usersDto = userMapper.toDto(users);
 		return usersDto;
 	}
 
@@ -457,7 +458,7 @@ public class UserServiceImpl
 		Optional<UserDto> userDto;
 		Optional<User> user = fetchById(id);
 		if (user.isPresent()) {
-			userDto = Optional.ofNullable(UserMapper.MAPPER.toDto(user.get()));
+			userDto = Optional.ofNullable(userMapper.toDto(user.get()));
 		} else {
 			userDto = Optional.empty();
 		}
@@ -482,7 +483,7 @@ public class UserServiceImpl
 
 	@Override
 	public List<UserDto> getAllManagersDto() {
-		List<UserDto> usersDto = UserMapper.MAPPER.toDto(getAllManagers());
+		List<UserDto> usersDto = userMapper.toDto(getAllManagers());
 		return usersDto;
 	}
 

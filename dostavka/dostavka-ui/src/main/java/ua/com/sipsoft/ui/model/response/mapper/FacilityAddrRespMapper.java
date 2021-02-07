@@ -4,15 +4,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 import ua.com.sipsoft.ui.model.response.facility.FacilityAddrResponse;
 
-@Mapper
+@Mapper(componentModel = "spring")
+@Component
 public interface FacilityAddrRespMapper {
-
-	FacilityAddrRespMapper MAPPER = Mappers.getMapper(FacilityAddrRespMapper.class);
 
 	FacilityAddrResponse toRest(FacilityAddrDto facilityAddrDto);
 

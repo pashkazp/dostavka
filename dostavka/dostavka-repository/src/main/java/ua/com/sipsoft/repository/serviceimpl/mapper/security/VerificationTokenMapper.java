@@ -1,7 +1,7 @@
 package ua.com.sipsoft.repository.serviceimpl.mapper.security;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.dao.common.VerificationToken;
 import ua.com.sipsoft.service.dto.VerificationTokenDto;
@@ -10,12 +10,10 @@ import ua.com.sipsoft.service.dto.VerificationTokenDto;
  * Implementing the MapStruct interface in VerificationTokenMapper for mutual
  * conversion of {@link VerificationToken} and {@link VerificationTokenDto}
  */
-@Mapper
+@Mapper(componentModel = "spring")
+@Component
 
 public interface VerificationTokenMapper {
-
-	/** The Constant MAPPER. */
-	VerificationTokenMapper MAPPER = Mappers.getMapper(VerificationTokenMapper.class);
 
 	/**
 	 * From {@link VerificationTokenDto} to {@link VerificationToken}.

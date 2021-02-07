@@ -15,7 +15,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.dao.user.User;
-import ua.com.sipsoft.service.common.mapper.FacilityAddressDtoMapper;
+import ua.com.sipsoft.service.common.mapper.FacilityAddrDtoMapper;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrRegReqDto;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrUpdReqDto;
@@ -36,6 +36,7 @@ public class FacilityAddrService {
 	private final FacilityAddrCreateRequestDtoAuditor facilityAddrCreateDtoAuditor;
 	private final FacilityAddrUpdReqDtoAuditor facilityAddrUpdReqDtoAuditor;
 	private final I18NProvider i18n;
+	private final FacilityAddrDtoMapper facilityAddressDtoMapper;
 
 	private final FacilityAddrServiceToRepo facilityAddrServiceRepo;
 
@@ -95,7 +96,7 @@ public class FacilityAddrService {
 			throw ex;
 		}
 
-		FacilityAddrDto facilityAddressDto = FacilityAddressDtoMapper.MAPPER.toDto(facilityAddrRegDto);
+		FacilityAddrDto facilityAddressDto = facilityAddressDtoMapper.toDto(facilityAddrRegDto);
 
 		return facilityAddrServiceRepo.registerNewFacilityAddress(fasilityId, facilityAddressDto);
 	}

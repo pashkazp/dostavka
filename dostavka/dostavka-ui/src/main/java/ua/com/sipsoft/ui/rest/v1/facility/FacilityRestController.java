@@ -76,6 +76,10 @@ public class FacilityRestController {
 
 	/** The i18n provider. */
 	private final I18NProvider i18n;
+	private final ToFacilityRegDtoMapper toFacilityRegDtoMapper;
+	private final ToFacilityUpdDtoMapper toFacilityUpdDtoMapper;
+	private final FacilityRespMapper facilityRespMapper;
+	private final FacilityAddrRespMapper facilityAddrRespMapper;
 
 	/**
 	 * Return List all {@link FacilityDto}.
@@ -119,7 +123,7 @@ public class FacilityRestController {
 		Page<FacilityDto> page = facilitiesService.getFilteredPage(pagingRequest, facilityFilter);
 
 		List<FacilityDto> data = page.getData();
-		List<FacilityResponse> fasilitiesList = FacilityRespMapper.MAPPER.toRest(data);
+		List<FacilityResponse> fasilitiesList = facilityRespMapper.toRest(data);
 		Page<FacilityResponse> pageRest = new Page<>(page, fasilitiesList);
 
 		return new ResponseEntity<>(pageRest, HttpStatus.PARTIAL_CONTENT);
@@ -146,7 +150,7 @@ public class FacilityRestController {
 			return ResponseEntity.notFound().build();
 		}
 
-		FacilityResponse fasility = FacilityRespMapper.MAPPER.toRest(facilityDtoO.get());
+		FacilityResponse fasility = facilityRespMapper.toRest(facilityDtoO.get());
 		return ResponseEntity.ok(fasility);
 	}
 
@@ -177,7 +181,7 @@ public class FacilityRestController {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		FacilityRegReqDto facilityRegDto = ToFacilityRegDtoMapper.MAPPER
+		FacilityRegReqDto facilityRegDto = toFacilityRegDtoMapper
 				.fromFacilityRegReq(newFacility);
 
 		log.info("addNewFacility] - Perform register Facility");
@@ -194,7 +198,7 @@ public class FacilityRestController {
 		}
 
 		log.info("addNewFacility] - Registration is successful. Inform to the registrant");
-		FacilityResponse facilityResponse = FacilityRespMapper.MAPPER.toRest(facilityDtoO.get());
+		FacilityResponse facilityResponse = facilityRespMapper.toRest(facilityDtoO.get());
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path(AppURL.API_V1_FACILITIES).path("/{id}")
 				.buildAndExpand(facilityDtoO.get().getId()).toUri();
 		return ResponseEntity.created(location).body(facilityResponse);
@@ -228,7 +232,7 @@ public class FacilityRestController {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		FacilityUpdReqDto facilityUpdDto = ToFacilityUpdDtoMapper.MAPPER
+		FacilityUpdReqDto facilityUpdDto = toFacilityUpdDtoMapper
 				.fromFacilityUpdReq(updatedFacility);
 
 		facilityUpdDto.setId(facilityId);
@@ -247,7 +251,7 @@ public class FacilityRestController {
 		}
 
 		log.info("updateFacility] - Update is successful. Inform to the updater");
-		FacilityResponse facilityResponse = FacilityRespMapper.MAPPER.toRest(facilityDtoO.get());
+		FacilityResponse facilityResponse = facilityRespMapper.toRest(facilityDtoO.get());
 		return ResponseEntity.accepted().body(facilityResponse);
 	}
 
@@ -309,7 +313,7 @@ public class FacilityRestController {
 		List<FacilityAddrDto> response = facilityDtoO.get().getFacilityAddresses().stream()
 				.collect(Collectors.toList());
 		if (!response.isEmpty()) {
-			List<FacilityAddrResponse> resp = FacilityAddrRespMapper.MAPPER.toRest(response);
+			List<FacilityAddrResponse> resp = facilityAddrRespMapper.toRest(response);
 			return ResponseEntity.ok(resp);
 		} else
 			return ResponseEntity.ok(List.of());

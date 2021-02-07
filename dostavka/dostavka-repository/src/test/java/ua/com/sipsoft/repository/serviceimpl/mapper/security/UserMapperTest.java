@@ -52,7 +52,7 @@ class UserMapperTest implements UserCreator {
 	@DisplayName("Copy User to User")
 	void test3() {
 		User user = createUser();
-		User userCopy = UserMapper.MAPPER.getCopy(user);
+		User userCopy = Mappers.getMapper(UserMapper.class).getCopy(user);
 		assertAll(
 				() -> assertEquals(user.getEmail(), userCopy.getEmail()),
 				() -> assertEquals(user.getEnabled(), userCopy.getEnabled()),

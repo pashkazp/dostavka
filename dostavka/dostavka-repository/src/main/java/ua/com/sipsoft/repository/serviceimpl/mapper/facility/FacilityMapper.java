@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.dao.common.Facility;
 import ua.com.sipsoft.dao.common.FacilityAddr;
@@ -14,10 +14,9 @@ import ua.com.sipsoft.repository.serviceimpl.mapper.security.UserMapper;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
 import ua.com.sipsoft.service.dto.facility.FacilityRegReqDto;
 
-@Mapper(uses = { FacilityAddMapper.class, UserMapper.class })
+@Mapper(componentModel = "spring", uses = { FacilityAddMapper.class, UserMapper.class })
+@Component
 public interface FacilityMapper {
-
-	public FacilityMapper MAPPER = Mappers.getMapper(FacilityMapper.class);
 
 	// @Mapping(target = "facilityAddresses", ignore = true)
 	public abstract FacilityDto toDto(Facility facility);

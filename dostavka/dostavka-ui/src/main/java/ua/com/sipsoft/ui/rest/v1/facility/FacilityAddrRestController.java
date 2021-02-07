@@ -40,8 +40,8 @@ import ua.com.sipsoft.service.exception.ResourceNotFoundException;
 import ua.com.sipsoft.service.util.audit.LatLngAuditor;
 import ua.com.sipsoft.ui.model.request.facility.FacilityAddrRegReq;
 import ua.com.sipsoft.ui.model.request.facility.FacilityAddrUpdReq;
-import ua.com.sipsoft.ui.model.request.mapper.ToFacilityAddrUpdDtoMapper;
 import ua.com.sipsoft.ui.model.request.mapper.ToFacilityAddrRegDtoMapper;
+import ua.com.sipsoft.ui.model.request.mapper.ToFacilityAddrUpdDtoMapper;
 import ua.com.sipsoft.ui.model.response.AbstractSubInfoResponse;
 import ua.com.sipsoft.ui.model.response.InfoResponse;
 import ua.com.sipsoft.ui.model.response.ValidationInfoResponse;
@@ -60,6 +60,9 @@ public class FacilityAddrRestController implements LatLngAuditor {
 	private final FacilityAddrService facilityAddrService;
 	/** The i18n provider. */
 	private final I18NProvider i18n;
+	private final ToFacilityAddrRegDtoMapper toFacilityAddrRegDtoMapper;
+	private final ToFacilityAddrUpdDtoMapper toFacilityAddrUpdDtoMapper;
+	private final FacilityAddrRespMapper facilityAddrRespMapper;
 
 	@GetMapping(value = "", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
@@ -73,7 +76,7 @@ public class FacilityAddrRestController implements LatLngAuditor {
 		List<FacilityAddrDto> facilitiesAddrDto = facilityAddrService.getAllFacilityAddrDto();
 		if (!facilitiesAddrDto.isEmpty()) {
 
-			return ResponseEntity.ok(FacilityAddrRespMapper.MAPPER.toRest(facilitiesAddrDto));
+			return ResponseEntity.ok(facilityAddrRespMapper.toRest(facilitiesAddrDto));
 		}
 
 		return ResponseEntity.notFound().build();
@@ -94,7 +97,7 @@ public class FacilityAddrRestController implements LatLngAuditor {
 			return ResponseEntity.notFound().build();
 		}
 
-		FacilityAddrResponse fasilityAddr = FacilityAddrRespMapper.MAPPER.toRest(facilityAddrDtoO.get());
+		FacilityAddrResponse fasilityAddr = facilityAddrRespMapper.toRest(facilityAddrDtoO.get());
 		return ResponseEntity.ok(fasilityAddr);
 	}
 
@@ -116,7 +119,7 @@ public class FacilityAddrRestController implements LatLngAuditor {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		FacilityAddrRegReqDto facilityAddrRegDto = ToFacilityAddrRegDtoMapper.MAPPER
+		FacilityAddrRegReqDto facilityAddrRegDto = toFacilityAddrRegDtoMapper
 				.fromFacilityRegReq(newFacilityAddrReq);
 
 		log.info("addNewFacilityAddr] - Perform register Facility address");
@@ -135,7 +138,7 @@ public class FacilityAddrRestController implements LatLngAuditor {
 
 		log.info("addNewFacilityAddr] - Registration is successful. Inform to the registrant");
 
-		FacilityAddrResponse facilityAddrResponse = FacilityAddrRespMapper.MAPPER.toRest(facilityAddrDtoO.get());
+		FacilityAddrResponse facilityAddrResponse = facilityAddrRespMapper.toRest(facilityAddrDtoO.get());
 
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path(AppURL.API_V1_FACILITIESADDR)
 				.path("/{id}")
@@ -161,7 +164,7 @@ public class FacilityAddrRestController implements LatLngAuditor {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		FacilityAddrUpdReqDto facilityAddrUpdReqDto = ToFacilityAddrUpdDtoMapper.MAPPER
+		FacilityAddrUpdReqDto facilityAddrUpdReqDto = toFacilityAddrUpdDtoMapper
 				.fromFacilityAddrUpdReq(facilityAddrUpdReq);
 		log.info("updateFacilityAddr] - Perform update Facility address");
 		Optional<FacilityAddrDto> facilityAddrDtoO = facilityAddrService.updateFacilityAddr(fasilityAddrId,
@@ -177,7 +180,7 @@ public class FacilityAddrRestController implements LatLngAuditor {
 
 		log.info("updateFacilityAddr] - Update is successful. Inform to the updater");
 
-		FacilityAddrResponse facilityAddrResponse = FacilityAddrRespMapper.MAPPER.toRest(facilityAddrDtoO.get());
+		FacilityAddrResponse facilityAddrResponse = facilityAddrRespMapper.toRest(facilityAddrDtoO.get());
 		return ResponseEntity.ok().body(facilityAddrResponse);
 
 	}
