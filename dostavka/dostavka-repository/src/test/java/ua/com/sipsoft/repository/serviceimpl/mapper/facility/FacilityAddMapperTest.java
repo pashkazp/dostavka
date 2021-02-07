@@ -8,20 +8,20 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import ua.com.sipsoft.dao.common.Facility;
-import ua.com.sipsoft.dao.common.FacilityAddress;
-import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddressMapper;
-import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
+import ua.com.sipsoft.dao.common.FacilityAddr;
+import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddMapper;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 
 //@SpringBootTest
-public class FacilityAddressMapperTest {
+public class FacilityAddMapperTest {
 
 	@Test
-	@DisplayName("Map FacilityAddress to FacilityAddressDto")
+	@DisplayName("Map FacilityAddr to FacilityAddrDto")
 	public void testToDto() {
-		FacilityAddress facilityAddress = createFacilityAddress();
-		FacilityAddressMapper facilityAddressMapper = Mappers.getMapper(FacilityAddressMapper.class);
+		FacilityAddr facilityAddress = createFacilityAddress();
+		FacilityAddMapper facilityAddressMapper = Mappers.getMapper(FacilityAddMapper.class);
 
-		FacilityAddressDto facilityAddressDto = facilityAddressMapper.toDto(facilityAddress);
+		FacilityAddrDto facilityAddressDto = facilityAddressMapper.toDto(facilityAddress);
 
 		assertEquals(facilityAddressDto.getId(), facilityAddress.getId());
 		assertEquals(facilityAddressDto.getVersion(), facilityAddress.getVersion());
@@ -32,13 +32,13 @@ public class FacilityAddressMapperTest {
 	}
 
 	@Test
-	@DisplayName("Map FacilityAddressDto to FacilityAddress")
+	@DisplayName("Map FacilityAddrDto to FacilityAddr")
 	public void testFromDto() {
-		FacilityAddress facilityAddress1 = createFacilityAddress();
-		FacilityAddressMapper facilityAddressMapper = Mappers.getMapper(FacilityAddressMapper.class);
+		FacilityAddr facilityAddress1 = createFacilityAddress();
+		FacilityAddMapper facilityAddressMapper = Mappers.getMapper(FacilityAddMapper.class);
 
-		FacilityAddressDto facilityAddressDto = facilityAddressMapper.toDto(facilityAddress1);
-		FacilityAddress facilityAddress2 = facilityAddressMapper.fromDto(facilityAddressDto);
+		FacilityAddrDto facilityAddressDto = facilityAddressMapper.toDto(facilityAddress1);
+		FacilityAddr facilityAddress2 = facilityAddressMapper.fromDto(facilityAddressDto);
 
 		assertEquals(facilityAddress2.getId(), facilityAddress1.getId());
 		assertEquals(facilityAddress2.getVersion(), facilityAddress1.getVersion());
@@ -49,8 +49,8 @@ public class FacilityAddressMapperTest {
 		assertNotEquals(facilityAddress2.getFacility(), facilityAddress1.getFacility());
 	}
 
-	private FacilityAddress createFacilityAddress() {
-		FacilityAddress facilityAddress = new FacilityAddress("alias1", "address1");
+	private FacilityAddr createFacilityAddress() {
+		FacilityAddr facilityAddress = new FacilityAddr("alias1", "address1");
 		facilityAddress.setId(1L);
 		facilityAddress.setVersion(1L);
 		facilityAddress.setDefaultAddress(true);

@@ -19,8 +19,8 @@ import ua.com.sipsoft.service.dto.user.UserDto;
 import ua.com.sipsoft.service.dto.user.UserRegistrationDto;
 import ua.com.sipsoft.service.exception.UserDtoAuditExeption;
 import ua.com.sipsoft.service.user.UserService;
-import ua.com.sipsoft.ui.model.request.mapper.ToUserRegistrationDtoMapper;
-import ua.com.sipsoft.ui.model.request.user.UserRegistrationRequest;
+import ua.com.sipsoft.ui.model.request.mapper.ToUserRegDtoMapper;
+import ua.com.sipsoft.ui.model.request.user.UserRegReq;
 import ua.com.sipsoft.util.AppURL;
 import ua.com.sipsoft.util.message.LoginMsg;
 import ua.com.sipsoft.util.message.UserEntityCheckMsg;
@@ -35,19 +35,19 @@ public class UserRegistrationController {
 	private final UserService userService;
 
 	@ModelAttribute("user")
-	public UserRegistrationRequest userRegistrationRequest() {
-		return new UserRegistrationRequest();
+	public UserRegReq userRegistrationRequest() {
+		return new UserRegReq();
 	}
 
 	@GetMapping
-	public String showRegistrationForm(@ModelAttribute("user") UserRegistrationRequest userRegistrationRequest,
+	public String showRegistrationForm(@ModelAttribute("user") UserRegReq userRegistrationRequest,
 			BindingResult result, Model model) {
 		log.info("IN showRegistrationForm - Request registrationn form");
 		return AppURL.LOGIN_REGISTRATION;
 	}
 
 	@PostMapping
-	public String registerUserAccount(@ModelAttribute("user") UserRegistrationRequest userRegistrationRequest,
+	public String registerUserAccount(@ModelAttribute("user") UserRegReq userRegistrationRequest,
 			BindingResult result, Model model, @RequestParam(value = "action") Optional<String> action) {
 
 		log.info("IN registerUserAccount - Request register new user '{}'", userRegistrationRequest);
@@ -69,8 +69,8 @@ public class UserRegistrationController {
 			return AppURL.LOGIN_REGISTRATION;
 		}
 
-		UserRegistrationDto userRegistrationDto = ToUserRegistrationDtoMapper.MAPPER
-				.fromUserRegistrationRequest(userRegistrationRequest);
+		UserRegistrationDto userRegistrationDto = ToUserRegDtoMapper.MAPPER
+				.fromUserRegReq(userRegistrationRequest);
 
 		if (userRegistrationDto.getRoles().isEmpty()) {
 			userRegistrationDto.addRoles(Role.ROLE_USER);

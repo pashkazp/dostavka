@@ -11,11 +11,11 @@ import org.mapstruct.factory.Mappers;
 import ua.com.sipsoft.dao.request.archive.ArchivedCourierVisit;
 import ua.com.sipsoft.dao.request.draft.CourierRequest;
 import ua.com.sipsoft.dao.request.issued.CourierVisit;
-import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddressMapper;
+import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddMapper;
 import ua.com.sipsoft.repository.serviceimpl.mapper.security.UserMapper;
 import ua.com.sipsoft.service.dto.request.CourierRequestDto;
 
-@Mapper(uses = { FacilityAddressMapper.class, HistoryEventMapper.class, UserMapper.class })
+@Mapper(uses = { FacilityAddMapper.class, HistoryEventMapper.class, UserMapper.class })
 public interface CourierRequestMapper {
 
 	CourierRequestMapper MAPPER = Mappers.getMapper(CourierRequestMapper.class);

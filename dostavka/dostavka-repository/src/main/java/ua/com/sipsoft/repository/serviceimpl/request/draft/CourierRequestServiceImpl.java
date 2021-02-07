@@ -111,7 +111,7 @@ public class CourierRequestServiceImpl implements CourierRequestService, HasQuer
 			log.warn("Save Courier Request impossible. Some data missing: {}", request);
 			return Optional.empty();
 		}
-		return Optional.of(dao.saveAndFlush(request));
+		return Optional.ofNullable(dao.saveAndFlush(request));
 	}
 
 	/**

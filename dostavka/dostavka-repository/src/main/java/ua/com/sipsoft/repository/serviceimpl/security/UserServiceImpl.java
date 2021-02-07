@@ -379,7 +379,7 @@ public class UserServiceImpl
 		}
 
 		user = dao.saveAndFlush(user);
-		return Optional.of(UserMapper.MAPPER.toDto(user));
+		return Optional.ofNullable(UserMapper.MAPPER.toDto(user));
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class UserServiceImpl
 		if (userO.isEmpty()) {
 			return Optional.empty();
 		} else {
-			return Optional.of(userO.get().getId());
+			return Optional.ofNullable(userO.get().getId());
 		}
 	}
 

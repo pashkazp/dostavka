@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +34,9 @@ import lombok.extern.slf4j.Slf4j;
 @Entity
 @Table(name = "facility_address")
 @Slf4j
-public class FacilityAddress implements Serializable {
+@Builder
+@AllArgsConstructor
+public class FacilityAddr implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -4398276671459742834L;
@@ -45,18 +49,22 @@ public class FacilityAddress implements Serializable {
 	/** The version. */
 	@Version
 	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	@Builder.Default
 	private Long version = 0L;
 
 	/** The addresses alias. */
 	@Column(name = "address_alias", length = 100, nullable = false)
+	@Builder.Default
 	private String addressesAlias = "";
 
 	/** The address. */
 	@Column(name = "address", length = 255, nullable = false)
+	@Builder.Default
 	private String address = "";
 
 	/** The default address. */
 	@Column(name = "default_address", columnDefinition = "boolean default false", nullable = false)
+	@Builder.Default
 	private boolean defaultAddress = false;
 
 //	/** The geo coordinates. */
@@ -72,6 +80,7 @@ public class FacilityAddress implements Serializable {
 	/** The facility. */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "facility_id")
+	@Builder.Default
 	private Facility facility = new Facility();
 
 	/**
@@ -80,7 +89,7 @@ public class FacilityAddress implements Serializable {
 	 * @param addressAlias the address alias
 	 * @param address      the address
 	 */
-	public FacilityAddress(String addressAlias, String address) {
+	public FacilityAddr(String addressAlias, String address) {
 		super();
 		log.info("Instantiates a new facility address. Alias '{}' address '{}'", addressAlias, address);
 		this.addressesAlias = addressAlias;
@@ -98,10 +107,10 @@ public class FacilityAddress implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof FacilityAddress)) {
+		if (!(obj instanceof FacilityAddr)) {
 			return false;
 		}
-		FacilityAddress other = (FacilityAddress) obj;
+		FacilityAddr other = (FacilityAddr) obj;
 		if (this.id == null && other.id == null) {
 			return false;
 		}
@@ -121,7 +130,7 @@ public class FacilityAddress implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("FacilityAddress [id=").append(id).append(", version=").append(version)
+		builder.append("FacilityAddr [id=").append(id).append(", version=").append(version)
 				.append(", addressesAlias=").append(addressesAlias).append(", address=").append(address)
 				.append(", defaultAddress=").append(defaultAddress).append(", lat=").append(lat).append(", lng=")
 				.append(lng).append(", facility_id=").append(facility.getId()).append("]");

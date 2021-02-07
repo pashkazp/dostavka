@@ -5,27 +5,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.stereotype.Service;
 
 import ua.com.sipsoft.dao.common.Facility;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
-import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
-import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
+import ua.com.sipsoft.service.dto.facility.FacilityRegReqDto;
+import ua.com.sipsoft.service.dto.facility.FacilityUpdReqDto;
 import ua.com.sipsoft.service.util.EntityFilter;
 import ua.com.sipsoft.util.paging.Page;
 import ua.com.sipsoft.util.paging.PagingRequest;
 import ua.com.sipsoft.util.query.Query;
 
 /**
- * The Class FacilitiesService.
+ * The Class FacilitiesServiceToRepo.
  *
  * @author Pavlo Degtyaryev
  */
 
 @Service
-public interface FacilitiesService {
+public interface FacilitiesServiceToRepo {
 
 	/**
 	 * Gets the by name.
@@ -66,7 +68,7 @@ public interface FacilitiesService {
 	 * @param address  the address
 	 * @return the optional
 	 */
-	Optional<Facility> addAddrToFacility(Facility facility, FacilityAddress address);
+	Optional<Facility> addAddrToFacility(Facility facility, FacilityAddr address);
 
 	/**
 	 * Del addr from facility.
@@ -75,7 +77,7 @@ public interface FacilitiesService {
 	 * @param address  the address
 	 * @return the optional
 	 */
-	Optional<Facility> delAddrFromFacility(Facility facility, FacilityAddress address);
+	Optional<Facility> delAddrFromFacility(Facility facility, FacilityAddr address);
 
 	/**
 	 * Adds the links to users.
@@ -191,7 +193,7 @@ public interface FacilitiesService {
 	 * @param facilityRegDto the facility dto
 	 * @return the optional
 	 */
-	Optional<FacilityDto> registerNewFacility(FacilityRegistrationDto facilityRegDto);
+	Optional<FacilityDto> registerNewFacility(FacilityRegReqDto facilityRegDto);
 
 	/**
 	 * Update facility.
@@ -199,6 +201,10 @@ public interface FacilitiesService {
 	 * @param facilityUpdDto the facility dto
 	 * @return the optional
 	 */
-	Optional<FacilityDto> updateFacility(FacilityUpdateDto facilityUpdDto);
+	Optional<FacilityDto> updateFacility(@NotNull FacilityUpdReqDto facilityUpdDto);
+
+	Optional<FacilityDto> updateFacility(@NotNull FacilityDto facilityDto);
+
+	void delete(Long facilityId);
 
 }

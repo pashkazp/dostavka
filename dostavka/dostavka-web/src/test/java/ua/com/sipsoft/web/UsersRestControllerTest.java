@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.com.sipsoft.ui.model.request.user.UserRegistrationRequest;
+import ua.com.sipsoft.ui.model.request.user.UserRegReq;
 import ua.com.sipsoft.util.AppURL;
 
 //@AutoConfigureMockMvc
@@ -57,9 +57,9 @@ public class UsersRestControllerTest
 //	@MockBean
 //	private UserServiceImpl userService;
 //	@MockBean
-//	private FacilitiesServiceImpl m1;
+//	private FacilitiesServiceToRepoImpl m1;
 //	@MockBean
-//	private FacilityAddrServiceImpl m2;
+//	private FacilityAddrServiceToRepoImpl m2;
 //	@MockBean
 //	private ArchivedSheetsServiceImpl m3;
 //	@MockBean
@@ -237,9 +237,9 @@ public class UsersRestControllerTest
 		@DisplayName("using XML media type")
 		public void testUsers10() throws Exception {
 			xmlMapper = new XmlMapper();
-			UserRegistrationRequest userUpdateRequest = new UserRegistrationRequest();
+			UserRegReq userUpdateRequest = new UserRegReq();
 			userUpdateRequest.setEmail("email@email");
-			log.warn("UserRegistrationRequest object: {}", xmlMapper.writeValueAsString(userUpdateRequest));
+			log.warn("UserRegReq object: {}", xmlMapper.writeValueAsString(userUpdateRequest));
 			mockMvc.perform(put(AppURL.API_V1_USERS + "/1")
 					.contentType(MediaType.APPLICATION_XML)
 					.accept(MediaType.APPLICATION_XML_VALUE)
@@ -252,9 +252,9 @@ public class UsersRestControllerTest
 		@DisplayName("using  JSON media type")
 		public void testUsers9() throws Exception {
 			objectMapper = new ObjectMapper();
-			UserRegistrationRequest userUpdateRequest = new UserRegistrationRequest();
+			UserRegReq userUpdateRequest = new UserRegReq();
 			userUpdateRequest.setEmail("email@email");
-			log.warn("UserRegistrationRequest object: {}", objectMapper.writeValueAsString(userUpdateRequest));
+			log.warn("UserRegReq object: {}", objectMapper.writeValueAsString(userUpdateRequest));
 			mockMvc.perform(put(AppURL.API_V1_USERS + "/1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON_VALUE)

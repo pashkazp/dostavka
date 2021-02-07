@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ua.com.sipsoft.ui.model.request.user.UserRegistrationRequest;
+import ua.com.sipsoft.ui.model.request.user.UserRegReq;
 import ua.com.sipsoft.util.I18NProvider;
 import ua.com.sipsoft.util.audit.AuditResponse;
 import ua.com.sipsoft.util.audit.CreateRequestPropertyAuditor;
@@ -15,24 +15,24 @@ import ua.com.sipsoft.util.message.UserEntityCheckMsg;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class UserRegistrationRequestConfirmPasswordAuditor extends AbstractConfirmPasswordAuditor<UserRegistrationRequest>
-		implements CreateRequestPropertyAuditor<UserRegistrationRequest> {
+public class UserRegistrationRequestConfirmPasswordAuditor extends AbstractConfirmPasswordAuditor<UserRegReq>
+		implements CreateRequestPropertyAuditor<UserRegReq> {
 
 	private final I18NProvider i18n;
 
 	@Override
-	public AuditResponse inspectNewData(UserRegistrationRequest inspectedInfo, AuditResponse result,
+	public AuditResponse inspectNewData(UserRegReq inspectedInfo, AuditResponse result,
 			Locale loc) {
 		return validate(inspectedInfo, result, loc);
 	}
 
 	@Override
-	public String getPassword(UserRegistrationRequest inspectedInfo) {
+	public String getPassword(UserRegReq inspectedInfo) {
 		return inspectedInfo.getPassword();
 	}
 
 	@Override
-	public String getCPassword(UserRegistrationRequest inspectedInfo) {
+	public String getCPassword(UserRegReq inspectedInfo) {
 		return inspectedInfo.getConfirmPassword();
 	}
 

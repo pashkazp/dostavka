@@ -69,7 +69,7 @@ public class Facility implements Serializable {
 
 	/** The facility addresses. */
 	@OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-	private Set<FacilityAddress> facilityAddresses = new HashSet<>();
+	private Set<FacilityAddr> facilityAddresses = new HashSet<>();
 
 	/**
 	 * Adds the {@link User}.
@@ -100,7 +100,7 @@ public class Facility implements Serializable {
 	 *
 	 * @param facilityAddress the facility address
 	 */
-	public void addFacilityAddress(FacilityAddress facilityAddress) {
+	public void addFacilityAddress(FacilityAddr facilityAddress) {
 		log.info("Try to add facility addresses");
 		if (facilityAddress != null && facilityAddresses != null) {
 			facilityAddresses.add(facilityAddress);
@@ -113,7 +113,7 @@ public class Facility implements Serializable {
 	 *
 	 * @param facilityAddress the facility address
 	 */
-	public void delFacilityAddress(FacilityAddress facilityAddress) {
+	public void delFacilityAddress(FacilityAddr facilityAddress) {
 		log.info("Try to remove fasility addresses");
 		if (facilityAddress != null && facilityAddresses != null) {
 			facilityAddresses.remove(facilityAddress);

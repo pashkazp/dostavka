@@ -67,7 +67,7 @@ public class FacilitiesFilter implements EntityFilter<Facility> {
 			return false;
 		}
 		if (caller != null) {
-			if (caller.getHighesRole().ordinal() >= Role.ROLE_CLIENT.ordinal()) {
+			if (caller.getHighesRole().ordinal() == Role.ROLE_CLIENT.ordinal()) {
 				if (!CollectionUtils.containsAny(entity.getUsers(), caller)) {
 					return false;
 				}

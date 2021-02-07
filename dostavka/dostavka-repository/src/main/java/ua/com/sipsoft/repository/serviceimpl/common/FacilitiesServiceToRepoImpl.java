@@ -22,20 +22,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.dao.common.Facility;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.repository.common.FacilityRepository;
 import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityMapper;
+import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityRegDtoMapper;
 import ua.com.sipsoft.service.common.FacilitiesFilter;
-import ua.com.sipsoft.service.common.FacilitiesService;
+import ua.com.sipsoft.service.common.FacilitiesServiceToRepo;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
-import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
-import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
-import ua.com.sipsoft.service.exception.FacilityDtoAuditExeption;
-import ua.com.sipsoft.service.exception.ResourceNotFoundException;
+import ua.com.sipsoft.service.dto.facility.FacilityRegReqDto;
+import ua.com.sipsoft.service.dto.facility.FacilityUpdReqDto;
+import ua.com.sipsoft.service.exception.FacilityNotFoundException;
 import ua.com.sipsoft.service.security.UserPrincipal;
 import ua.com.sipsoft.service.util.AppNotificator;
 import ua.com.sipsoft.service.util.EntityFilter;
@@ -44,10 +45,7 @@ import ua.com.sipsoft.service.util.HasLimitedList;
 import ua.com.sipsoft.service.util.HasPagingRequestToSortConvertor;
 import ua.com.sipsoft.service.util.HasQueryToSortConvertor;
 import ua.com.sipsoft.service.util.OffsetBasedPageRequest;
-import ua.com.sipsoft.service.util.audit.FacilityCreateRequestDtoAuditor;
-import ua.com.sipsoft.service.util.audit.FacilityUpdateRequestDtoAuditor;
 import ua.com.sipsoft.util.I18NProvider;
-import ua.com.sipsoft.util.audit.AuditResponse;
 import ua.com.sipsoft.util.message.RestV1Msg;
 import ua.com.sipsoft.util.paging.Page;
 import ua.com.sipsoft.util.paging.PagingRequest;
@@ -56,7 +54,7 @@ import ua.com.sipsoft.util.query.QuerySortOrder;
 import ua.com.sipsoft.util.security.Role;
 
 /**
- * The Class FacilitiesServiceImpl.
+ * The Class FacilitiesServiceToRepoImpl.
  *
  * @author Pavlo Degtyaryev
  */
@@ -65,16 +63,14 @@ import ua.com.sipsoft.util.security.Role;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FacilitiesServiceImpl
-		implements FacilitiesService, HasQueryToSortConvertor, HasPagingRequestToSortConvertor, HasFilteredList,
+public class FacilitiesServiceToRepoImpl
+		implements FacilitiesServiceToRepo, HasQueryToSortConvertor, HasPagingRequestToSortConvertor, HasFilteredList,
 		HasLimitedList {
 
 	/** The dao. */
 	private final FacilityRepository dao;
-
-	private final FacilityCreateRequestDtoAuditor facilityCreateDtoAuditor;
-	private final FacilityUpdateRequestDtoAuditor facilityUpdateDtoAuditor;
 	private final I18NProvider i18n;
+	private final FacilityRegDtoMapper facilityRegDtoMapper;
 
 	/**
 	 * Gets the by name.
@@ -144,13 +140,9 @@ public class FacilitiesServiceImpl
 	 * @return the optional
 	 */
 	@Override
-	public Optional<Facility> saveFacility(Facility facility) {
+	public Optional<Facility> saveFacility(@NonNull Facility facility) {
 		log.info("Save Facility: {}", facility);
-		if (facility == null) {
-			log.warn("Save impossible. Missing some data. ");
-			return Optional.empty();
-		}
-		return Optional.of(dao.saveAndFlush(facility));
+		return Optional.ofNullable(dao.saveAndFlush(facility));
 	}
 
 	/**
@@ -159,11 +151,8 @@ public class FacilitiesServiceImpl
 	 * @param facility the facility
 	 */
 	@Override
-	public void delete(Facility facility) {
+	public void delete(@NonNull Facility facility) {
 		log.info("Delete Facility: {}", facility);
-		if (facility == null) {
-			log.warn("Delete impossible. Missing some data. ");
-		}
 		try {
 			dao.delete(facility);
 		} catch (Exception e) {
@@ -179,12 +168,8 @@ public class FacilitiesServiceImpl
 	 * @return the optional
 	 */
 	@Override
-	public Optional<Facility> addAddrToFacility(Facility facility, FacilityAddress address) {
+	public Optional<Facility> addAddrToFacility(@NonNull Facility facility, @NonNull FacilityAddr address) {
 		log.info("Add Addr [{}] to Facility: [{}]", address, facility);
-		if (facility == null || address == null) {
-			log.warn("Addition impossible. Missing some data. ");
-			return Optional.empty();
-		}
 		address.setFacility(facility);
 		facility.addFacilityAddress(address);
 		try {
@@ -203,12 +188,8 @@ public class FacilitiesServiceImpl
 	 * @return the optional
 	 */
 	@Override
-	public Optional<Facility> delAddrFromFacility(Facility facility, FacilityAddress address) {
+	public Optional<Facility> delAddrFromFacility(@NonNull Facility facility, @NonNull FacilityAddr address) {
 		log.info("Remove Addr [{}] from Facility: [{}]", address, facility);
-		if (facility == null || address == null) {
-			log.warn("Remove is impossible. Missing some data. ");
-			return Optional.empty();
-		}
 		facility.delFacilityAddress(address);
 		try {
 			return saveFacility(facility);
@@ -284,7 +265,7 @@ public class FacilitiesServiceImpl
 	 * @return the ordered filtered facilities count
 	 */
 	@Override
-	public int getOrderedFilteredFacilitiesCount(String filter) {
+	public int getOrderedFilteredFacilitiesCount(@NonNull String filter) {
 		return dao.getByName(filter).size();
 	}
 
@@ -295,12 +276,8 @@ public class FacilitiesServiceImpl
 	 * @return the optional
 	 */
 	@Override
-	public Optional<Facility> fetchById(Long id) {
+	public Optional<Facility> fetchById(@NonNull Long id) {
 		log.debug("Get Facility by id: '{}'", id);
-		if (id == null) {
-			log.debug("Get Facility by id is impossible. id is null.");
-			return Optional.empty();
-		}
 		try {
 			return dao.findById(id);
 		} catch (Exception e) {
@@ -310,22 +287,18 @@ public class FacilitiesServiceImpl
 	}
 
 	/**
-	 * Fetch by id dto.
+	 * Fetch FacilityDto by id.
 	 *
-	 * @param id the id
-	 * @return the optional
+	 * @param id the Facility id
+	 * @return the optional of FacilityDto
 	 */
 	@Override
-	public Optional<FacilityDto> fetchByIdDto(Long id) {
-		Optional<FacilityDto> facilityDtoO;
+	public Optional<FacilityDto> fetchByIdDto(@NonNull Long id) {
+		log.debug("fetchByIdDto] - Get Facility by id: '{}'", id);
+
 		Optional<Facility> facilityO = fetchById(id);
-		if (facilityO.isPresent()) {
-			facilityDtoO = Optional.of(Mappers.getMapper(FacilityMapper.class).toDto(facilityO.get()));
-//			facilityDtoO = Optional.of(FacilityMapper.MAPPER.toDto(facilityO.get()));
-		} else {
-			facilityDtoO = Optional.empty();
-		}
-		return facilityDtoO;
+
+		return Optional.ofNullable(FacilityMapper.MAPPER.toDto(facilityO.get()));
 	}
 
 	/**
@@ -419,7 +392,8 @@ public class FacilitiesServiceImpl
 	 * @return the filtered page
 	 */
 	@Override
-	public Page<FacilityDto> getFilteredPage(PagingRequest pagingRequest, EntityFilter<Facility> entityFilter) {
+	public Page<FacilityDto> getFilteredPage(@NonNull PagingRequest pagingRequest,
+			@NonNull EntityFilter<Facility> entityFilter) {
 		log.debug(
 				"IN getFilteredPage - Get requested page Facilities with PagingRequest '{}' and EntityFilter<Facility> '{}'",
 				pagingRequest, entityFilter);
@@ -446,7 +420,7 @@ public class FacilitiesServiceImpl
 
 		facilities = getLimitedList(facilities, pagingRequest.getStart(), pagingRequest.getLength());
 
-		page.setData(FacilityMapper.MAPPER.toDto(facilities));
+		page.setData(Mappers.getMapper(FacilityMapper.class).toDto(facilities));
 
 		page.setDraw(pagingRequest.getDraw());
 
@@ -503,46 +477,30 @@ public class FacilitiesServiceImpl
 	 * @return the optional
 	 */
 	@Override
-	public Optional<FacilityDto> registerNewFacility(@NotNull FacilityRegistrationDto facilityRegDto) {
+	public Optional<FacilityDto> registerNewFacility(@NotNull FacilityRegReqDto facilityRegDto) {
+
 		log.info("IN registerNewFacility - Save Facility: {}", facilityRegDto);
-		Locale loc = LocaleContextHolder.getLocale();
-		AuditResponse response = facilityCreateDtoAuditor.inspectNewData(facilityRegDto, null, loc);
 
-		if (response.isInvalid()) { // if there are any errors
-			log.info("IN registerNewFacility - Registration is fail. Inform to the registrant");
-
-			FacilityDtoAuditExeption ex = new FacilityDtoAuditExeption(response);
-			ex.setErrMsg(i18n.getTranslation(RestV1Msg.FACILITY_NEW_CHECK_FAIL, loc));
-			ex.setErrMsgExt(i18n.getTranslation(RestV1Msg.FACILITY_NEW_CHECK_FAIL_EXT, loc));
-			throw ex;
-		}
-
-		Facility facility = Mappers.getMapper(FacilityMapper.class).fromRegDto(facilityRegDto);
+		Facility facility = facilityRegDtoMapper.fromRegDto(facilityRegDto);
 		Optional<Facility> fasilityO = saveFacility(facility);
 		if (fasilityO.isPresent()) {
-			return Optional.of(Mappers.getMapper(FacilityMapper.class).toDto(fasilityO.get()));
+			return Optional.ofNullable(FacilityMapper.MAPPER.toDto(fasilityO.get()));
 		}
 		return Optional.empty();
 	}
 
 	@Override
-	public Optional<FacilityDto> updateFacility(@NotNull FacilityUpdateDto facilityUpdDto) {
-		log.info("IN updateFacility - Update Facility: {}", facilityUpdDto);
-		Locale loc = LocaleContextHolder.getLocale();
-		AuditResponse response = facilityUpdateDtoAuditor.inspectUpdatedData(facilityUpdDto, null, loc);
+	public Optional<FacilityDto> updateFacility(@NotNull FacilityUpdReqDto facilityUpdDto) {
 
-		if (response.isInvalid()) {
-			log.info("IN updateFacility - User update is fail. Inform to the updater");
-
-			FacilityDtoAuditExeption ex = new FacilityDtoAuditExeption(response);
-			ex.setErrMsg(i18n.getTranslation(RestV1Msg.FACILITY_UPDATE_CHECK_FAIL, loc));
-			ex.setErrMsgExt(i18n.getTranslation(RestV1Msg.FACILITY_UPDATE_CHECK_FAIL_EXT, loc));
-			throw ex;
-		}
+		log.info("updateFacility] - Update Facility: {}", facilityUpdDto);
 
 		Optional<Facility> facilityO = fetchById(facilityUpdDto.getId());
+
 		if (facilityO.isEmpty()) {
-			ResourceNotFoundException ex = new ResourceNotFoundException("User", "id", facilityUpdDto.getId());
+			Locale locale = LocaleContextHolder.getLocale();
+			FacilityNotFoundException ex = new FacilityNotFoundException();
+			ex.setErrMsg(i18n.getTranslation(RestV1Msg.FACILITY_NOTFOUND, locale));
+			ex.setErrMsgExt(i18n.getTranslation(RestV1Msg.FACILITY_NOTFOUND_EXT, locale));
 			throw ex;
 		}
 
@@ -553,7 +511,27 @@ public class FacilitiesServiceImpl
 		}
 
 		facility = dao.saveAndFlush(facility);
-		return Optional.of(FacilityMapper.MAPPER.toDto(facility));
+		return Optional.ofNullable(FacilityMapper.MAPPER.toDto(facility));
+	}
+
+	@Override
+	public Optional<FacilityDto> updateFacility(@NotNull FacilityDto facilityDto) {
+		log.info("updateFacility] - Update Facility: {}", facilityDto);
+		Facility facility = FacilityMapper.MAPPER.fromDto(facilityDto);
+		dao.save(facility);
+		return null;
+	}
+
+	@Override
+	public void delete(@NonNull Long facilityId) {
+		log.info("delete] - Try to delete facility by Id: {}", facilityId);
+
+		Optional<Facility> facility = dao.findById(facilityId);
+		// TODO perform a check for the possibility of deleting the Facility
+		if (facility.isPresent()) {
+			dao.delete(facility.get());
+		}
+
 	}
 
 }

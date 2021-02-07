@@ -16,12 +16,20 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FacilityRegistrationRequest implements Serializable {
+@Getter
+@Setter
+public class FacilityAddrUpdReq implements Serializable {
 
-	private static final long serialVersionUID = -6024508914029989219L;
+	private static final long serialVersionUID = 124090882967902928L;
 
-	@Getter
-	@Setter
-	private String name;
+	private String addressesAlias;
+
+	private String address;
+
+	private boolean defaultAddress;
+
+	private String lat;
+
+	private String lng;
 
 }
