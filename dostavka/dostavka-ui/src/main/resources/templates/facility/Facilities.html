@@ -63,6 +63,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<script th:inline="javascript">
 	
 	var facilitiesurl = [[@{ ${ T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES }}]];
+	var facilitiesaddressurl = [[@{ ${ T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIESADDR }}]];
 	var facilitiespagesurl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES_PAGES}}]];
 	var facilitiesaddrurl = [[${ T(ua.com.sipsoft.util.AppURL).FACILITIESADDR}]];
 	var defaultcontentstr =  '<a class="btn btn-xs btn-link text-primary" data-name="editButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';

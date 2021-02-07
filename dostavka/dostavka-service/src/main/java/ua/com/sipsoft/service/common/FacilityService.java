@@ -6,11 +6,8 @@ import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
-import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
-import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
+import ua.com.sipsoft.service.dto.facility.FacilityRegReqDto;
+import ua.com.sipsoft.service.dto.facility.FacilityUpdReqDto;
 import ua.com.sipsoft.service.exception.FacilityDtoAuditExeption;
 import ua.com.sipsoft.service.security.UserPrincipal;
 import ua.com.sipsoft.service.util.audit.FacilityCreateRequestDtoAuditor;
@@ -59,20 +56,20 @@ public class FacilityService {
 
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
 			"ROLE_CLIENT" })
-	public Optional<FacilityDto> fetchByIdDto(Long facilityId) {
-		log.debug("fetchByIdDto] - Get Facility by id: '{}'", facilityId);
+	public Optional<FacilityDto> getFacilityDtoById(@NonNull Long facilityId) {
+		log.debug("getFacilityDtoById] - Get Facility by id: '{}'", facilityId);
 
 		Optional<FacilityDto> facilityDtoO = facilityServiceRepo.fetchByIdDto(facilityId);
 
 		if (facilityDtoO.isPresent()) {
 			User caller = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
 					.getUser();
-			if (caller.hasRoles(Role.ROLE_ADMIN,
+			if (caller.hasAnyRole(Role.ROLE_ADMIN,
 					Role.ROLE_COURIER, Role.ROLE_DISPATCHER, Role.ROLE_MANAGER,
 					Role.ROLE_PRODUCTOPER)) {
 				return facilityDtoO;
-			} else if (caller.hasRoles(Role.ROLE_CLIENT) &&
-					CollectionUtils.containsAny(facilityDtoO.get().getUsers(), caller)) {
+			} else if (caller.hasAnyRole(Role.ROLE_CLIENT) &&
+					facilityDtoO.get().getUsers().stream().anyMatch(u -> u.getId() == caller.getId())) {
 				return facilityDtoO;
 			}
 		}
@@ -80,7 +77,7 @@ public class FacilityService {
 	}
 
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
-	public Optional<FacilityDto> registerNewFacility(@NonNull FacilityRegistrationDto facilityRegDto) {
+	public Optional<FacilityDto> registerNewFacility(@NonNull FacilityRegReqDto facilityRegDto) {
 		log.debug("registerNewFacility] - Try to register new Facility: '{}'", facilityRegDto);
 
 		Locale loc = LocaleContextHolder.getLocale();
@@ -101,7 +98,7 @@ public class FacilityService {
 	}
 
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
-	public Optional<FacilityDto> updateFacility(FacilityUpdateDto facilityUpdDto) {
+	public Optional<FacilityDto> updateFacility(@NonNull FacilityUpdReqDto facilityUpdDto) {
 		log.debug("updateFacility] - Try to update Facility: '{}'", facilityUpdDto);
 		Locale loc = LocaleContextHolder.getLocale();
 
@@ -117,26 +114,16 @@ public class FacilityService {
 			ex.setErrMsgExt(i18n.getTranslation(RestV1Msg.FACILITY_UPDATE_CHECK_FAIL_EXT, loc));
 			throw ex;
 		}
-
 		return facilityServiceRepo.updateFacility(facilityUpdDto);
 	}
 
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER" })
-	public void deleteFacility(Long facilityId) {
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		Locale loc = LocaleContextHolder.getLocale();
-
-		User caller = ((UserPrincipal) auth.getPrincipal()).getUser();
-		if (caller.hasNoOneRole(Role.ROLE_ADMIN, Role.ROLE_DISPATCHER)) {
-			throw new AccessDeniedException(i18n.getTranslation(RestV1Msg.ACCESS_DENIED, loc));
-		}
+	public void deleteFacility(@NonNull Long facilityId) {
 
 		facilityServiceRepo.delete(facilityId);
 	}
 
-	protected void trimSpaces(FacilityRegistrationDto facilityRegDto) {
+	protected void trimSpaces(FacilityRegReqDto facilityRegDto) {
 		if (facilityRegDto == null) {
 			return;
 		}
@@ -150,7 +137,7 @@ public class FacilityService {
 	/**
 	 * @param facilityUpdDto
 	 */
-	protected void trimSpaces(FacilityUpdateDto facilityUpdDto) {
+	protected void trimSpaces(FacilityUpdReqDto facilityUpdDto) {
 		if (facilityUpdDto == null) {
 			return;
 		}

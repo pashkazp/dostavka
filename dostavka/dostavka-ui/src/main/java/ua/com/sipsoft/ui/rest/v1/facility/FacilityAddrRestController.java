@@ -1,46 +1,54 @@
 package ua.com.sipsoft.ui.rest.v1.facility;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.routines.DoubleValidator;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Multimap;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.service.common.FacilityAddrService;
-import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
-import ua.com.sipsoft.service.dto.facility.FacilityAddrRegDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrRegReqDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrUpdReqDto;
+import ua.com.sipsoft.service.exception.FacilityAddrDtoAuditExeption;
+import ua.com.sipsoft.service.exception.FacilityAddrNotFoundException;
+import ua.com.sipsoft.service.exception.FacilityNotFoundException;
+import ua.com.sipsoft.service.exception.ResourceNotFoundException;
 import ua.com.sipsoft.service.util.audit.LatLngAuditor;
-import ua.com.sipsoft.ui.model.request.facility.FacilityAddressRegReq;
-import ua.com.sipsoft.ui.model.request.mapper.ToFacilityAddressRegistrationDtoMapper;
+import ua.com.sipsoft.ui.model.request.facility.FacilityAddrRegReq;
+import ua.com.sipsoft.ui.model.request.facility.FacilityAddrUpdReq;
+import ua.com.sipsoft.ui.model.request.mapper.ToFacilityAddrUpdDtoMapper;
+import ua.com.sipsoft.ui.model.request.mapper.ToFacilityAddrRegDtoMapper;
+import ua.com.sipsoft.ui.model.response.AbstractSubInfoResponse;
 import ua.com.sipsoft.ui.model.response.InfoResponse;
+import ua.com.sipsoft.ui.model.response.ValidationInfoResponse;
 import ua.com.sipsoft.ui.model.response.facility.FacilityAddrResponse;
 import ua.com.sipsoft.ui.model.response.mapper.FacilityAddrRespMapper;
 import ua.com.sipsoft.util.AppURL;
 import ua.com.sipsoft.util.I18NProvider;
-import ua.com.sipsoft.util.audit.AuditResponse;
-import ua.com.sipsoft.util.message.AppNotifyMsg;
-import ua.com.sipsoft.util.message.FacilityAddrEntityMsg;
 import ua.com.sipsoft.util.message.RestV1Msg;
 
 @Slf4j
@@ -53,84 +61,46 @@ public class FacilityAddrRestController implements LatLngAuditor {
 	/** The i18n provider. */
 	private final I18NProvider i18n;
 
-	private final static int facilityAddAliasLengthMax = 100;
-
-	private final static int facilityAddLengthMin = 1;
-	private final static int facilityAddLengthMax = 255;
-
-	private final ObjectMapper objectMapper;
-
+	@GetMapping(value = "", produces = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE })
 	@Operation(description = "Retrieves a list of Faility addresses")
-	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
+			"ROLE_CLIENT" })
 	public ResponseEntity<Object> listAllFacilitiesAddrDto() {
+
 		log.debug("Get the list of  all FacilityAddrDto");
-		// TODO return only Facilities Adresses approved for Editor
-		List<FacilityAddressDto> facilitiesAddrDto = facilityAddrService.getAllFacilityAddrDto();
+
+		List<FacilityAddrDto> facilitiesAddrDto = facilityAddrService.getAllFacilityAddrDto();
 		if (!facilitiesAddrDto.isEmpty()) {
-			return ResponseEntity.ok(facilitiesAddrDto);
+
+			return ResponseEntity.ok(FacilityAddrRespMapper.MAPPER.toRest(facilitiesAddrDto));
 		}
+
 		return ResponseEntity.notFound().build();
 	}
 
+	@GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE })
 	@Operation(description = "Retrieves a single Faility address")
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<FacilityAddressDto> getFacilityDto(@PathVariable(value = "id") Long id) {
-		log.debug("Get Facility Address by id {}", id);
-		// TODO return only Users approved for Editor
-		Optional<FacilityAddressDto> facilityAddrDtoO = facilityAddrService.fetchByIdDto(id);
-		return ResponseEntity.of(facilityAddrDtoO);
-	}
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
+			"ROLE_CLIENT" })
+	public ResponseEntity<Object> getFacilityDto(@PathVariable(value = "id") Long id) {
 
-	private AuditResponse performUpdateFacilityAddrCheck(AuditResponse result,
-			FacilityAddressDto facilityAddrDto,
-			Locale loc) {
-		result = performFacilityAddrBaseCheck(result, facilityAddrDto, loc);
-		return result;
-	}
+		log.debug("getFacilityDto] - Get Facility Address by id {}", id);
 
-	private AuditResponse performNewFacilityAddrCheck(AuditResponse result,
-			FacilityAddressDto facilityAddrDto,
-			Locale loc) {
-		result = performFacilityAddrBaseCheck(result, facilityAddrDto, loc);
-		return result;
-	}
+		Optional<FacilityAddrDto> facilityAddrDtoO = facilityAddrService.getFacilityAddrDtoById(id);
 
-	private AuditResponse performFacilityAddrBaseCheck(AuditResponse result,
-			FacilityAddressDto facilityAddrDto, Locale loc) {
-
-		if (facilityAddrDto.getAddressesAlias() != null
-				&& facilityAddrDto.getAddressesAlias().length() > facilityAddAliasLengthMax) {
-			result.setValid(false);
-			result.addMessage("addressesAlias", i18n.getTranslation(FacilityAddrEntityMsg.CHK_ALIAS_LONG, loc));
+		if (facilityAddrDtoO.isEmpty()) {
+			return ResponseEntity.notFound().build();
 		}
 
-		if (StringUtils.isBlank(facilityAddrDto.getAddress())
-				|| facilityAddrDto.getAddress().length() < facilityAddLengthMin) {
-			result.setValid(false);
-			result.addMessage("address", i18n.getTranslation(FacilityAddrEntityMsg.CHK_ADDRESS_SHORT, loc));
-		}
-
-		if (facilityAddrDto.getAddress() != null && facilityAddrDto.getAddress().length() > facilityAddLengthMax) {
-			result.setValid(false);
-			result.addMessage("address", i18n.getTranslation(FacilityAddrEntityMsg.CHK_ADDRESS_LONG, loc));
-		}
-
-		if (!isLatitudeAgreed(facilityAddrDto.getLat(), true)) {
-			result.setValid(false);
-			result.addMessage("lat", i18n.getTranslation(FacilityAddrEntityMsg.CHK_GEO_RANGE, loc));
-		}
-
-		if (!isLongitudeAgreed(facilityAddrDto.getLng(), true)) {
-			result.setValid(false);
-			result.addMessage("lng", i18n.getTranslation(FacilityAddrEntityMsg.CHK_GEO_RANGE, loc));
-		}
-
-		return result;
+		FacilityAddrResponse fasilityAddr = FacilityAddrRespMapper.MAPPER.toRest(facilityAddrDtoO.get());
+		return ResponseEntity.ok(fasilityAddr);
 	}
 
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	protected ResponseEntity<Object> addNewFacilityAddr(Long fasilityId,
-			FacilityAddressRegReq newFacilityAddrReq) {
+			FacilityAddrRegReq newFacilityAddrReq) {
 
 		log.info("addNewFacilityAddr] - Request register by FacilityId '{}' new Facility Address '{}'", fasilityId,
 				newFacilityAddrReq);
@@ -146,12 +116,12 @@ public class FacilityAddrRestController implements LatLngAuditor {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		FacilityAddrRegDto facilityAddrRegDto = ToFacilityAddressRegistrationDtoMapper.MAPPER
-				.fromFacilityRegistrationRequest(newFacilityAddrReq);
+		FacilityAddrRegReqDto facilityAddrRegDto = ToFacilityAddrRegDtoMapper.MAPPER
+				.fromFacilityRegReq(newFacilityAddrReq);
 
 		log.info("addNewFacilityAddr] - Perform register Facility address");
 
-		Optional<FacilityAddressDto> facilityAddrDtoO = facilityAddrService.registerNewFacilityAddr(fasilityId,
+		Optional<FacilityAddrDto> facilityAddrDtoO = facilityAddrService.registerNewFacilityAddr(fasilityId,
 				facilityAddrRegDto);
 
 		if (facilityAddrDtoO.isEmpty()) { // Registration is fail
@@ -175,67 +145,155 @@ public class FacilityAddrRestController implements LatLngAuditor {
 
 	}
 
-	public Optional<FacilityAddressDto> facilityAddrDtoNodeToDto(JsonNode facilityAddrNode, Locale loc,
-			AuditResponse response) {
-		log.info("Perform convert Facility Address Dto Node to Facility Address Dto'{}'", facilityAddrNode);
+	@PutMapping(value = "/{id}", consumes = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
+					MediaType.APPLICATION_JSON_VALUE })
+	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
+	public ResponseEntity<Object> updateFacilityAddr(@PathVariable(value = "id") Long fasilityAddrId,
+			@RequestBody(required = false) FacilityAddrUpdReq facilityAddrUpdReq, Locale locale) {
+		log.debug("updateFacilityAddr] - try to  update new address: {}", facilityAddrUpdReq);
+		if (facilityAddrUpdReq == null) {
+			log.warn("updateFacilityAddr] - Facility address update request must be not null");
+			InfoResponse infoResponse = new InfoResponse(HttpStatus.BAD_REQUEST,
+					i18n.getTranslation(RestV1Msg.ERR_BAD_REQUEST, locale),
+					i18n.getTranslation(RestV1Msg.ERR_BAD_REQUEST_EXT, locale));
 
-		if (facilityAddrNode == null || loc == null) {
-			return Optional.empty();
-		}
-		if (response == null) {
-			response = new AuditResponse();
-		}
-		FacilityAddressDto facilityAddrDto;
-
-		JsonNode addressesAliasNode = facilityAddrNode.get("addressesAlias");
-		JsonNode addressNode = facilityAddrNode.get("address");
-		JsonNode latNode = facilityAddrNode.get("lat");
-		JsonNode lngNode = facilityAddrNode.get("lng");
-		JsonNode defaultAddressNode = facilityAddrNode.get("defaultAddress");
-
-		if (addressesAliasNode == null || addressesAliasNode.isNull() ||
-				addressNode == null || addressNode.isNull() ||
-				latNode == null || latNode.isNull() ||
-				lngNode == null || lngNode.isNull() ||
-				defaultAddressNode == null || defaultAddressNode.isNull()) {
-			response.setValid(false);
-			response.addMessage("", i18n.getTranslation(AppNotifyMsg.FACILITYADDR_NOT_ADDED, loc));
-			return Optional.empty();
+			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		String coordinate = latNode.asText();
-		if (StringUtils.isNotBlank(coordinate)) {
-			Double d = DoubleValidator.getInstance().validate(coordinate, loc);
-			if (d != null && isLatitudeAgreed(d, false)) {
-				((ObjectNode) facilityAddrNode).put("lat", d);
-			} else {
-				response.setValid(false);
-				response.addMessage("", i18n.getTranslation(FacilityAddrEntityMsg.CHK_GEO_WRONG, loc));
-				return Optional.empty();
-			}
+		FacilityAddrUpdReqDto facilityAddrUpdReqDto = ToFacilityAddrUpdDtoMapper.MAPPER
+				.fromFacilityAddrUpdReq(facilityAddrUpdReq);
+		log.info("updateFacilityAddr] - Perform update Facility address");
+		Optional<FacilityAddrDto> facilityAddrDtoO = facilityAddrService.updateFacilityAddr(fasilityAddrId,
+				facilityAddrUpdReqDto);
+		if (facilityAddrDtoO.isEmpty()) {
+			log.info("updateFacilityAddr] - Update is fail. Inform to the registrant");
+			InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+					i18n.getTranslation(RestV1Msg.FACILITYADDR_UPDATE_FAIL, locale),
+					i18n.getTranslation(RestV1Msg.FACILITYADDR_UPDATE_FAIL_EXT, locale));
+
+			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		coordinate = lngNode.asText();
-		if (StringUtils.isNotBlank(coordinate)) {
-			Double d = DoubleValidator.getInstance().validate(coordinate, loc);
-			if (d != null && isLongitudeAgreed(d, false)) {
-				((ObjectNode) facilityAddrNode).put("lng", d);
-			} else {
-				response.setValid(false);
-				response.addMessage("lng", i18n.getTranslation(FacilityAddrEntityMsg.CHK_GEO_WRONG, loc));
-				return Optional.empty();
-			}
-		}
+		log.info("updateFacilityAddr] - Update is successful. Inform to the updater");
 
-		try {
-			facilityAddrDto = objectMapper.treeToValue(facilityAddrNode, FacilityAddressDto.class);
-		} catch (JsonProcessingException e) {
-			// e.printStackTrace();
-			response.setValid(false);
-			response.addMessage("lng", i18n.getTranslation(AppNotifyMsg.FACILITYADDR_NOT_ADDED, loc));
-			return Optional.empty();
+		FacilityAddrResponse facilityAddrResponse = FacilityAddrRespMapper.MAPPER.toRest(facilityAddrDtoO.get());
+		return ResponseEntity.ok().body(facilityAddrResponse);
 
-		}
-		return Optional.of(facilityAddrDto);
 	}
+
+	@ExceptionHandler(value = { Exception.class })
+	@ResponseBody()
+	public ResponseEntity<Object> handleOtherExceptions(Exception ex, WebRequest request) {
+		log.debug("IN handleOtherExceptions - Gets exception: {}", ex.getMessage());
+
+		InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex);
+
+		String headers = request.getHeader(HttpHeaders.ACCEPT);
+
+		MediaType mt;
+		if (headers.indexOf(MediaType.APPLICATION_JSON_VALUE) == -1) {
+			mt = MediaType.APPLICATION_XML;
+		} else {
+			mt = MediaType.APPLICATION_JSON;
+		}
+		return ResponseEntity.status(infoResponse.getStatus()).contentType(mt).body(infoResponse);
+	}
+
+	/**
+	 * Handle facility address dto audit exeption.
+	 *
+	 * @param ex      the Exception
+	 * @param request the request
+	 * @param loc     the Locale
+	 * @return the response entity
+	 */
+	@ExceptionHandler(value = { FacilityAddrDtoAuditExeption.class })
+	@ResponseBody()
+	public ResponseEntity<Object> handleFacilityDtoAuditExeption(FacilityAddrDtoAuditExeption ex, WebRequest request,
+			Locale loc) {
+		log.debug("handleFacilityDtoAuditExeption] - Gets exception: {}", ex.getMessage());
+
+		InfoResponse infoResponse = new InfoResponse(HttpStatus.BAD_REQUEST, ex.getErrMsg(), ex.getErrMsgExt());
+
+		Multimap<String, String> response = ex.getAuditMessages();
+
+		if (!response.isEmpty()) {
+			infoResponse.setSubInfos(new ArrayList<AbstractSubInfoResponse>());
+			response.forEach((k, v) -> infoResponse.getSubInfos().add(new ValidationInfoResponse(k, v)));
+		}
+
+		infoResponse.getSubInfos().add(new ValidationInfoResponse("", infoResponse.getMessage()));
+
+		String headers = request.getHeader(HttpHeaders.ACCEPT);
+
+		MediaType mt;
+		if (headers.indexOf(MediaType.APPLICATION_JSON_VALUE) == -1) {
+			mt = MediaType.APPLICATION_XML;
+		} else {
+			mt = MediaType.APPLICATION_JSON;
+		}
+		return ResponseEntity.status(infoResponse.getStatus()).contentType(mt).body(infoResponse);
+	}
+
+	@ExceptionHandler(value = { ResourceNotFoundException.class })
+	@ResponseBody()
+	public ResponseEntity<Object> handleFacilityAddrNotFoundException(ResourceNotFoundException ex,
+			WebRequest request,
+			Locale loc) {
+		log.debug("handleFacilityAddrNotFoundException] - Gets exception: {}", ex.getMessage());
+
+		InfoResponse infoResponse = new InfoResponse(HttpStatus.BAD_REQUEST,
+				i18n.getTranslation(RestV1Msg.FACILITYADDR_NOTFOUND, loc),
+				i18n.getTranslation(RestV1Msg.FACILITYADDR_NOTFOUND_EXT, loc));
+
+		String headers = request.getHeader(HttpHeaders.ACCEPT);
+
+		MediaType mt;
+		if (headers.indexOf(MediaType.APPLICATION_JSON_VALUE) == -1) {
+			mt = MediaType.APPLICATION_XML;
+		} else {
+			mt = MediaType.APPLICATION_JSON;
+		}
+		return ResponseEntity.status(infoResponse.getStatus()).contentType(mt).body(infoResponse);
+	}
+
+	@ExceptionHandler(value = { FacilityNotFoundException.class })
+	@ResponseBody()
+	public ResponseEntity<Object> handleFacilityNotFoundException(FacilityNotFoundException ex,
+			WebRequest request) {
+		log.debug("handleFacilityAddrNotFoundException] - Gets exception: {}", ex.getMessage());
+
+		InfoResponse infoResponse = new InfoResponse(HttpStatus.NOT_FOUND, ex.getErrMsg(), ex.getErrMsgExt());
+
+		String headers = request.getHeader(HttpHeaders.ACCEPT);
+
+		MediaType mt;
+		if (headers.indexOf(MediaType.APPLICATION_JSON_VALUE) == -1) {
+			mt = MediaType.APPLICATION_XML;
+		} else {
+			mt = MediaType.APPLICATION_JSON;
+		}
+		return ResponseEntity.status(infoResponse.getStatus()).contentType(mt).body(infoResponse);
+	}
+
+	@ExceptionHandler(value = { FacilityAddrNotFoundException.class })
+	@ResponseBody()
+	public ResponseEntity<Object> handleFacilityAddrNotFoundException(FacilityAddrNotFoundException ex,
+			WebRequest request) {
+		log.debug("handleFacilityAddrNotFoundException] - Gets exception: {}", ex.getMessage());
+
+		InfoResponse infoResponse = new InfoResponse(HttpStatus.NOT_FOUND, ex.getErrMsg(), ex.getErrMsgExt());
+
+		String headers = request.getHeader(HttpHeaders.ACCEPT);
+
+		MediaType mt;
+		if (headers.indexOf(MediaType.APPLICATION_JSON_VALUE) == -1) {
+			mt = MediaType.APPLICATION_XML;
+		} else {
+			mt = MediaType.APPLICATION_JSON;
+		}
+		return ResponseEntity.status(infoResponse.getStatus()).contentType(mt).body(infoResponse);
+	}
+
 }

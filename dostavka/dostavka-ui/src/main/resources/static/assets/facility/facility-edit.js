@@ -100,7 +100,7 @@ $(document).ready(function() {
 				console.log(xhr.status);
 				console.log(xhr);
 				$.each(xhr.responseJSON.subInfos, function(key, value) {
-                    	if (!value.field){value.field='editForm'}
+					if (!value.field) { value.field = 'editForm' }
 					$('#editFacilityForm .text-danger[data-name=' + value.field + ']').append('<p class="alert alert-danger w-100 mb-0">' + value.message + '</p>');
 				});
 				$('#editFacilityForm .text-danger').attr("hidden", false);
@@ -164,9 +164,9 @@ $(document).ready(function() {
 			.fail(function(xhr, textStatus, errorThrown) {
 				console.log(xhr);
 				console.log(textStatus);
-				$.each(xhr.responseJSON.errorMessages, function(key, value) {
-					if (!key) { key = 'editForm' }
-					$('#editFacilityForm .text-danger[data-name=' + key + ']').append('<p class="alert alert-danger w-100 mb-0">' + value + '</p>');
+				$.each(xhr.responseJSON.subInfos, function(key, value) {
+					if (!value.field) { value.field = 'editForm' }
+					$('#editFacilityForm .text-danger[data-name=' + value.field + ']').append('<p class="alert alert-danger w-100 mb-0">' + value.message + '</p>');
 				});
 				$('#editFacilityForm .text-danger').attr("hidden", false);
 				if (textStatus == "timeout") {

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.NonNull;
@@ -18,13 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.dao.common.Facility;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
+import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.repository.common.FacilityAddressRepository;
-import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddressMapper;
+import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityAddMapper;
 import ua.com.sipsoft.service.common.FacilitiesServiceToRepo;
 import ua.com.sipsoft.service.common.FacilityAddrServiceToRepo;
 import ua.com.sipsoft.service.common.FacilityAddressFilter;
-import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrUpdReqDto;
+import ua.com.sipsoft.service.exception.FacilityAddrNotFoundException;
 import ua.com.sipsoft.service.exception.FacilityNotFoundException;
 import ua.com.sipsoft.service.util.EntityFilter;
 import ua.com.sipsoft.service.util.HasQueryToSortConvertor;
@@ -56,7 +60,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	 * @return the facility addresses
 	 */
 	@Override
-	public List<FacilityAddress> getFacilityAddresses(Facility facility) {
+	public List<FacilityAddr> getFacilityAddresses(Facility facility) {
 		return dao.findByFacility(facility);
 	}
 
@@ -67,13 +71,13 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	 * @return the optional
 	 */
 	@Override
-	public Optional<FacilityAddress> save(FacilityAddress facilityAddress) {
+	public Optional<FacilityAddr> save(FacilityAddr facilityAddress) {
 		log.info("Save Facility address: {}", facilityAddress);
 		if (facilityAddress == null) {
 			log.warn("Save impossible. Missing some data. ");
 			return Optional.empty();
 		}
-		return Optional.of(dao.saveAndFlush(facilityAddress));
+		return Optional.ofNullable(dao.saveAndFlush(facilityAddress));
 	}
 
 	/**
@@ -83,7 +87,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	 * @return the optional
 	 */
 	@Override
-	public Optional<FacilityAddress> fetchById(Long id) {
+	public Optional<FacilityAddr> fetchById(Long id) {
 		log.debug("Get Facility Address by id: '{}'", id);
 		if (id == null) {
 			log.debug("Get Facility Address by id is impossible. id is null.");
@@ -104,7 +108,7 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	 * @param filter the filter
 	 * @return true, if is entity pass filter
 	 */
-	private boolean isEntityPassFilter(FacilityAddress entity, FacilityAddressFilter filter) {
+	private boolean isEntityPassFilter(FacilityAddr entity, FacilityAddressFilter filter) {
 		return entity.getAddress().concat(entity.getAddressesAlias()).toLowerCase()
 				.contains(filter.getAddress() == null ? "" : filter.getAddress().toLowerCase());
 	}
@@ -117,8 +121,8 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	 * @return the queried facility addr by filter
 	 */
 	@Override
-	public Stream<FacilityAddress> getQueriedFacilityAddrByFilter(
-			Query<FacilityAddress, EntityFilter<FacilityAddress>> query, Long facilityId) {
+	public Stream<FacilityAddr> getQueriedFacilityAddrByFilter(
+			Query<FacilityAddr, EntityFilter<FacilityAddr>> query, Long facilityId) {
 		log.debug("Get requested page Facility Addresses with offset '{}'; limit '{}'; sort '{}'; filter '{}'",
 				query.getOffset(), query.getLimit(), query.getSortOrders(), query.getFilter().get().toString());
 		if (query == null || query.getFilter().isEmpty()) {
@@ -145,34 +149,44 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	 * @return the queried facility addr by filter count
 	 */
 	@Override
-	public int getQueriedFacilityAddrByFilterCount(Query<FacilityAddress, EntityFilter<FacilityAddress>> query,
+	public int getQueriedFacilityAddrByFilterCount(Query<FacilityAddr, EntityFilter<FacilityAddr>> query,
 			Long faciliyId) {
 		log.debug("Get requested size Facility Addresses  with filter '{}'", query.getFilter().get().toString());
 		return (int) getQueriedFacilityAddrByFilter(query, faciliyId).count();
 	}
 
 	@Override
-	public List<FacilityAddress> getAllFacilityAddr() {
-		List<FacilityAddress> facilityAddresses = dao.findAll();
+	public List<FacilityAddr> getAllFacilityAddr() {
+		List<FacilityAddr> facilityAddresses = dao.findAll();
+		return facilityAddresses;
+	}
+
+	private List<FacilityAddr> getAllFacilityAddr(Long facilityUserId) {
+		List<FacilityAddr> facilityAddresses = dao.getdAllWithUserId(facilityUserId);
 		return facilityAddresses;
 	}
 
 	@Override
-	public List<FacilityAddressDto> getAllFacilityAddrDto() {
-		List<FacilityAddress> facilityAddresses = getAllFacilityAddr();
-		List<FacilityAddressDto> facilityAddressesDto = Mappers.getMapper(FacilityAddressMapper.class)
-				.toDto(facilityAddresses);
-//		List<FacilityAddressDto> facilityAddressesDto = FacilityAddressMapper.MAPPER.toDto(facilityAddresses);
+	public List<FacilityAddrDto> getAllFacilityAddrDto() {
+		List<FacilityAddr> facilityAddresses = getAllFacilityAddr();
+		List<FacilityAddrDto> facilityAddressesDto = FacilityAddMapper.MAPPER.toDto(facilityAddresses);
 		return facilityAddressesDto;
 	}
 
 	@Override
-	public Optional<FacilityAddressDto> fetchByIdDto(Long id) {
-		Optional<FacilityAddressDto> facilityAddrDtoO;
-		Optional<FacilityAddress> facilityAddrO = fetchById(id);
+	public List<FacilityAddrDto> getAllFacilityAddrDto(@NonNull Long facilityUserId) {
+		List<FacilityAddr> facilityAddresses = getAllFacilityAddr(facilityUserId);
+		List<FacilityAddrDto> facilityAddressesDto = FacilityAddMapper.MAPPER.toDto(facilityAddresses);
+		return facilityAddressesDto;
+	}
+
+	@Override
+	public Optional<FacilityAddrDto> fetchByIdDto(@NonNull Long id) {
+		Optional<FacilityAddrDto> facilityAddrDtoO;
+		Optional<FacilityAddr> facilityAddrO = fetchById(id);
 		if (facilityAddrO.isPresent()) {
-			facilityAddrDtoO = Optional.of(Mappers.getMapper(FacilityAddressMapper.class).toDto(facilityAddrO.get()));
-//			facilityAddrDtoO = Optional.of(FacilityAddressMapper.MAPPER.toDto(facilityAddrO.get()));
+			facilityAddrDtoO = Optional.ofNullable(FacilityAddMapper.MAPPER.toDto(facilityAddrO.get()));
+//			facilityAddrDtoO = Optional.of(FacilityAddMapper.MAPPER.toDto(facilityAddrO.get()));
 		} else {
 			facilityAddrDtoO = Optional.empty();
 		}
@@ -180,8 +194,21 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 	}
 
 	@Override
-	public Optional<FacilityAddressDto> registerNewFacilityAddress(@NonNull Long fasilityId,
-			@NonNull FacilityAddressDto facilityAddressDto) {
+	public Optional<FacilityAddrDto> fetchByIdDtoWithUser(@NonNull Long id, @NonNull User caller) {
+		Optional<FacilityAddrDto> facilityAddrDtoO;
+		Optional<FacilityAddr> facilityAddrO = fetchById(id);
+		if (facilityAddrO.isPresent() && facilityAddrO.get().getFacility() != null
+				&& facilityAddrO.get().getFacility().getUsers().contains(caller)) {
+			facilityAddrDtoO = Optional.ofNullable(FacilityAddMapper.MAPPER.toDto(facilityAddrO.get()));
+		} else {
+			facilityAddrDtoO = Optional.empty();
+		}
+		return facilityAddrDtoO;
+	}
+
+	@Override
+	public Optional<FacilityAddrDto> registerNewFacilityAddress(@NonNull Long fasilityId,
+			@NonNull FacilityAddrDto facilityAddressDto) {
 
 		Optional<Facility> facilityO = facilityService.fetchById(fasilityId);
 		if (facilityO.isEmpty()) {
@@ -194,8 +221,8 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 			throw ex;
 		}
 
-		FacilityAddress facilityAddress = Mappers.getMapper(FacilityAddressMapper.class).fromDto(facilityAddressDto);
-		Set<FacilityAddress> oldList = facilityO.get().getFacilityAddresses().stream().collect(Collectors.toSet());
+		FacilityAddr facilityAddress = Mappers.getMapper(FacilityAddMapper.class).fromDto(facilityAddressDto);
+		Set<FacilityAddr> oldList = facilityO.get().getFacilityAddresses().stream().collect(Collectors.toSet());
 		facilityO.get().addFacilityAddress(facilityAddress);
 		facilityO = facilityService.saveFacility(facilityO.get());
 
@@ -203,15 +230,46 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 			return Optional.empty();
 		} else {
 
-			List<FacilityAddress> addrList = new ArrayList<>(
+			List<FacilityAddr> addrList = new ArrayList<>(
 					(CollectionUtils.removeAll(facilityO.get().getFacilityAddresses(), oldList)));
 			if (addrList.size() == 1) {
-				return Optional.of(Mappers.getMapper(FacilityAddressMapper.class).toDto(addrList.get(0)));
+				return Optional.ofNullable(Mappers.getMapper(FacilityAddMapper.class).toDto(addrList.get(0)));
 			} else {
 				return Optional.empty();
 			}
 
 		}
+	}
+
+	@Override
+	public Optional<FacilityAddrDto> updateFacilityAddress(@lombok.NonNull Long fasilityId,
+			@lombok.NonNull FacilityAddrUpdReqDto facilityAddrUpdReqDto) {
+
+		log.info("updateFacilityAddress] - Update Facility address id {}: {}", fasilityId, facilityAddrUpdReqDto);
+
+		Optional<FacilityAddr> facilityAddrO = fetchById(fasilityId);
+
+		if (facilityAddrO.isEmpty()) {
+			Locale locale = LocaleContextHolder.getLocale();
+			FacilityAddrNotFoundException ex = new FacilityAddrNotFoundException();
+			ex.setErrMsg(i18n.getTranslation(RestV1Msg.FACILITYADDR_NOTFOUND, locale));
+			ex.setErrMsgExt(i18n.getTranslation(RestV1Msg.FACILITYADDR_NOTFOUND_EXT, locale));
+			throw ex;
+		}
+
+		FacilityAddr fa = facilityAddrO.get();
+
+		fa.setAddress(facilityAddrUpdReqDto.getAddress());
+		fa.setAddressesAlias(facilityAddrUpdReqDto.getAddressesAlias());
+		fa.setDefaultAddress(facilityAddrUpdReqDto.isDefaultAddress());
+		fa.setLat(StringUtils.isBlank(facilityAddrUpdReqDto.getLat()) ? null
+				: Double.valueOf(facilityAddrUpdReqDto.getLat()));
+		fa.setLng(StringUtils.isBlank(facilityAddrUpdReqDto.getLng()) ? null
+				: Double.valueOf(facilityAddrUpdReqDto.getLng()));
+
+		fa = dao.saveAndFlush(fa);
+
+		return Optional.ofNullable(FacilityAddMapper.MAPPER.toDto(fa));
 	}
 
 }

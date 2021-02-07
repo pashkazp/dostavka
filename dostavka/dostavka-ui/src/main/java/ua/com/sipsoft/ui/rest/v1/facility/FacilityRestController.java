@@ -16,9 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,17 +37,18 @@ import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.service.common.FacilitiesFilter;
 import ua.com.sipsoft.service.common.FacilityService;
-import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
-import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
-import ua.com.sipsoft.service.dto.facility.FacilityUpdateDto;
+import ua.com.sipsoft.service.dto.facility.FacilityRegReqDto;
+import ua.com.sipsoft.service.dto.facility.FacilityUpdReqDto;
 import ua.com.sipsoft.service.exception.FacilityDtoAuditExeption;
-import ua.com.sipsoft.service.security.UserPrincipal;
-import ua.com.sipsoft.ui.model.request.facility.FacilityAddressRegReq;
-import ua.com.sipsoft.ui.model.request.facility.FacilityRegistrationRequest;
-import ua.com.sipsoft.ui.model.request.facility.FacilityUpdateRequest;
-import ua.com.sipsoft.ui.model.request.mapper.ToFacilityRegistrationDtoMapper;
-import ua.com.sipsoft.ui.model.request.mapper.ToFacilityUpdateDtoMapper;
+import ua.com.sipsoft.service.exception.FacilityNotFoundException;
+import ua.com.sipsoft.service.exception.ResourceNotFoundException;
+import ua.com.sipsoft.ui.model.request.facility.FacilityAddrRegReq;
+import ua.com.sipsoft.ui.model.request.facility.FacilityRegReq;
+import ua.com.sipsoft.ui.model.request.facility.FacilityUpdReq;
+import ua.com.sipsoft.ui.model.request.mapper.ToFacilityRegDtoMapper;
+import ua.com.sipsoft.ui.model.request.mapper.ToFacilityUpdDtoMapper;
 import ua.com.sipsoft.ui.model.response.AbstractSubInfoResponse;
 import ua.com.sipsoft.ui.model.response.InfoResponse;
 import ua.com.sipsoft.ui.model.response.ValidationInfoResponse;
@@ -62,7 +61,6 @@ import ua.com.sipsoft.util.I18NProvider;
 import ua.com.sipsoft.util.message.RestV1Msg;
 import ua.com.sipsoft.util.paging.Page;
 import ua.com.sipsoft.util.paging.PagingRequest;
-import ua.com.sipsoft.util.security.Role;
 
 @Slf4j
 @RestController
@@ -84,10 +82,10 @@ public class FacilityRestController {
 	 *
 	 * @return the {@link List} of {@link FacilityDto}
 	 */
-	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "", consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
+	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<Object> listAllFacilitiesDto() {
 		log.debug("Get the list of  all FacilityDto");
 		List<FacilityDto> facilities = facilitiesService.getAllFacilitiesDto();
@@ -129,19 +127,20 @@ public class FacilityRestController {
 	}
 
 	/**
-	 * Gets the {@link FacilityRegistrationDto}.
+	 * Gets the {@link FacilityRegReqDto}.
 	 *
 	 * @param facilityId the facility id
-	 * @return the {@link FacilityRegistrationDto}
+	 * @return the {@link FacilityRegReqDto}
 	 */
 	@GetMapping(value = "/{facilityId}", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
 			"ROLE_CLIENT" })
 	public ResponseEntity<Object> getFacilityById(@PathVariable(value = "facilityId") Long facilityId) {
+
 		log.debug("getFacilityById] - Get Facility by id {}", facilityId);
 
-		Optional<FacilityDto> facilityDtoO = facilitiesService.fetchByIdDto(facilityId);
+		Optional<FacilityDto> facilityDtoO = facilitiesService.getFacilityDtoById(facilityId);
 
 		if (facilityDtoO.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -164,7 +163,7 @@ public class FacilityRestController {
 					MediaType.APPLICATION_JSON_VALUE })
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	public ResponseEntity<Object> addNewFacility(
-			@RequestBody(required = false) FacilityRegistrationRequest newFacility, Locale loc,
+			@RequestBody(required = false) FacilityRegReq newFacility, Locale loc,
 			Principal principal) {
 
 		log.info("addNewFacility] - Request register new Facility: '{}'", newFacility);
@@ -178,8 +177,8 @@ public class FacilityRestController {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		FacilityRegistrationDto facilityRegDto = ToFacilityRegistrationDtoMapper.MAPPER
-				.fromFacilityRegistrationRequest(newFacility);
+		FacilityRegReqDto facilityRegDto = ToFacilityRegDtoMapper.MAPPER
+				.fromFacilityRegReq(newFacility);
 
 		log.info("addNewFacility] - Perform register Facility");
 
@@ -216,8 +215,7 @@ public class FacilityRestController {
 					MediaType.APPLICATION_JSON_VALUE })
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	public ResponseEntity<Object> updateFacility(@PathVariable(value = "facilityId") Long facilityId,
-			@RequestBody(required = false) FacilityUpdateRequest updatedFacility, Locale loc,
-			Principal principal) {
+			@RequestBody(required = false) FacilityUpdReq updatedFacility, Locale loc) {
 
 		log.info("updateFacility] - Request Facility update id='{}' by Facility data '{}'", facilityId,
 				updatedFacility);
@@ -230,8 +228,8 @@ public class FacilityRestController {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		FacilityUpdateDto facilityUpdDto = ToFacilityUpdateDtoMapper.MAPPER
-				.fromFacilityUpdateRequest(updatedFacility);
+		FacilityUpdReqDto facilityUpdDto = ToFacilityUpdDtoMapper.MAPPER
+				.fromFacilityUpdReq(updatedFacility);
 
 		facilityUpdDto.setId(facilityId);
 
@@ -241,8 +239,8 @@ public class FacilityRestController {
 		if (facilityDtoO.isEmpty()) {
 			log.info("updateFacility] - Update is fail. Inform to the registrant");
 			InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-					i18n.getTranslation(RestV1Msg.USER_UPDATE_FAIL, loc),
-					i18n.getTranslation(RestV1Msg.USER_UPDATE_FAIL_EXT, loc));
+					i18n.getTranslation(RestV1Msg.FACILITY_UPDATE_FAIL, loc),
+					i18n.getTranslation(RestV1Msg.FACILITY_UPDATE_FAIL_EXT, loc));
 
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 
@@ -256,8 +254,7 @@ public class FacilityRestController {
 	@DeleteMapping(value = "/{facilityId}", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER" })
-	public ResponseEntity<Object> deleteFacility(@PathVariable(value = "facilityId") Long facilityId, Locale loc,
-			Principal principal) {
+	public ResponseEntity<Object> deleteFacility(@PathVariable(value = "facilityId") Long facilityId) {
 
 		log.info("deleteFacility] - Request Facility delete by id='{}'", facilityId);
 
@@ -279,8 +276,8 @@ public class FacilityRestController {
 					MediaType.APPLICATION_JSON_VALUE })
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER" })
 	public ResponseEntity<Object> addNewFacilityAddr(@PathVariable(value = "id") Long facilityId,
-			@RequestBody(required = false) FacilityAddressRegReq newFacilityAddr) {
-		log.debug("{}", newFacilityAddr);
+			@RequestBody(required = false) FacilityAddrRegReq newFacilityAddr) {
+		log.debug("addNewFacilityAddr] - try to  add new fasility address: {}", newFacilityAddr);
 		ResponseEntity<Object> response = facilityAddrRestController.addNewFacilityAddr(facilityId, newFacilityAddr);
 		return response;
 	}
@@ -293,37 +290,23 @@ public class FacilityRestController {
 	 * @param principal  the principal
 	 * @return the facility addresses by facility id
 	 */
-	@GetMapping(value = "/{id}" + AppURL.FACILITIESADDR, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/{id}" + AppURL.FACILITIESADDR, produces = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
 			"ROLE_CLIENT" })
-	public ResponseEntity<Object> getFacilityAddressesByFacilityId(@PathVariable(value = "id") Long facilityId,
-			Locale loc, Principal principal) {
+	public ResponseEntity<Object> getFacilityAddressesByFacilityId(@PathVariable(value = "id") Long facilityId) {
 
 		log.info("getFacilityAddressesByFacilityId] - Request the addresses of the Facility by its ID='{}'",
 				facilityId);
 
-		Optional<FacilityDto> facilityDtoO = facilitiesService.fetchByIdDto(facilityId);
+		Optional<FacilityDto> facilityDtoO = facilitiesService.getFacilityDtoById(facilityId);
 
-		UserPrincipal userPrincipal = null;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null) {
-			userPrincipal = (UserPrincipal) auth.getPrincipal();
-		}
-
-		if (facilityDtoO.isEmpty() || userPrincipal == null) {
+		if (facilityDtoO.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
 
-		final var id = userPrincipal.getUser().getId();
-		if (userPrincipal.getUser().getHighesRole().ordinal() >= Role.ROLE_CLIENT.ordinal()
-				&& facilityDtoO.get().getUsers().stream()
-						.filter(userDto -> userDto.getId() == id)
-						.count() == 0) {
-			return ResponseEntity.notFound().build();
-		}
-
-		List<FacilityAddressDto> response = facilityDtoO.get().getFacilityAddresses().stream()
+		List<FacilityAddrDto> response = facilityDtoO.get().getFacilityAddresses().stream()
 				.collect(Collectors.toList());
 		if (!response.isEmpty()) {
 			List<FacilityAddrResponse> resp = FacilityAddrRespMapper.MAPPER.toRest(response);
@@ -381,9 +364,49 @@ public class FacilityRestController {
 	@ExceptionHandler(value = { Exception.class })
 	@ResponseBody()
 	public ResponseEntity<Object> handleOtherExceptions(Exception ex, WebRequest request) {
-		log.debug("IN handleOtherExceptions - Gets exception: {}", ex.getMessage());
+		log.debug("handleOtherExceptions] - Gets exception: {}", ex.getMessage());
 
 		InfoResponse infoResponse = new InfoResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex);
+
+		String headers = request.getHeader(HttpHeaders.ACCEPT);
+
+		MediaType mt;
+		if (headers.indexOf(MediaType.APPLICATION_JSON_VALUE) == -1) {
+			mt = MediaType.APPLICATION_XML;
+		} else {
+			mt = MediaType.APPLICATION_JSON;
+		}
+		return ResponseEntity.status(infoResponse.getStatus()).contentType(mt).body(infoResponse);
+	}
+
+	@ExceptionHandler(value = { ResourceNotFoundException.class })
+	@ResponseBody()
+	public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request,
+			Locale locale) {
+		log.debug("handleResourceNotFoundException] - Gets exception: {}", ex.getMessage());
+
+		InfoResponse infoResponse = new InfoResponse(HttpStatus.NOT_FOUND,
+				i18n.getTranslation(RestV1Msg.FACILITY_NOTFOUND, locale),
+				i18n.getTranslation(RestV1Msg.FACILITY_NOTFOUND_EXT, locale));
+
+		String headers = request.getHeader(HttpHeaders.ACCEPT);
+
+		MediaType mt;
+		if (headers.indexOf(MediaType.APPLICATION_JSON_VALUE) == -1) {
+			mt = MediaType.APPLICATION_XML;
+		} else {
+			mt = MediaType.APPLICATION_JSON;
+		}
+		return ResponseEntity.status(infoResponse.getStatus()).contentType(mt).body(infoResponse);
+	}
+
+	@ExceptionHandler(value = { FacilityNotFoundException.class })
+	@ResponseBody()
+	public ResponseEntity<Object> handleFacilityNotFoundException(FacilityNotFoundException ex,
+			WebRequest request) {
+		log.debug("handleFacilityAddrNotFoundException] - Gets exception: {}", ex.getMessage());
+
+		InfoResponse infoResponse = new InfoResponse(HttpStatus.NOT_FOUND, ex.getErrMsg(), ex.getErrMsgExt());
 
 		String headers = request.getHeader(HttpHeaders.ACCEPT);
 

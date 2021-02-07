@@ -42,7 +42,7 @@ public class ArchivedSheetsServiceImpl implements ArchivedSheetsService, HasQuer
 			log.warn("Save Archived Route Sheet impossible. Some data missing");
 			return Optional.empty();
 		}
-		return Optional.of(dao.saveAndFlush(archivedRouteSheet));
+		return Optional.ofNullable(dao.saveAndFlush(archivedRouteSheet));
 	}
 
 	/**

@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ua.com.sipsoft.dao.common.Facility;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
 
 /**
  * The Interface FacilityAddressRepository.
@@ -17,7 +17,7 @@ import ua.com.sipsoft.dao.common.FacilityAddress;
  * @author Pavlo Degtyaryev
  */
 @Repository
-public interface FacilityAddressRepository extends JpaRepository<FacilityAddress, Long> {
+public interface FacilityAddressRepository extends JpaRepository<FacilityAddr, Long> {
 
 	/**
 	 * Find by facility.
@@ -25,7 +25,7 @@ public interface FacilityAddressRepository extends JpaRepository<FacilityAddress
 	 * @param facility the facility
 	 * @return the list
 	 */
-	List<FacilityAddress> findByFacility(Facility facility);
+	List<FacilityAddr> findByFacility(Facility facility);
 
 	/**
 	 * Gets the by facility id.
@@ -34,8 +34,17 @@ public interface FacilityAddressRepository extends JpaRepository<FacilityAddress
 	 * @param sort the sort
 	 * @return the by facility id
 	 */
-	@Query(" FROM FacilityAddress fa "
+	@Query(" FROM FacilityAddr fa "
 			+ " WHERE fa.facility.id = :facilityid ")
-	List<FacilityAddress> getByFacilityId(@Param("facilityid") Long id, Sort sort);
+	List<FacilityAddr> getByFacilityId(@Param("facilityid") Long id, Sort sort);
+
+	@Query(value = "select fa.* "
+			+ "from facility_address as fa"
+			+ "  left outer join facilities as f"
+			+ "    on fa.facility_id = f.facility_id"
+			+ "  left outer join users_facilities as uf"
+			+ "    on fa.id = uf.facility_id "
+			+ "where uf.user_id = :uid", nativeQuery = true)
+	List<FacilityAddr> getdAllWithUserId(@Param("uid") Long facilityUserId);
 
 }
