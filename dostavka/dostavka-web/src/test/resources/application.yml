@@ -18,7 +18,8 @@ logging:
       com:
         sipsoft: DEBUG
   pattern:
-    console: '%highlight(%-5level) %green(%C{1.}):%L - %msg%n%throwable'
+    console: '%highlight(%-5level) %green(%C{1.}):[%L - %msg%n%throwable'
+    #console: '%highlight(%-5level) %green(%C{1.}):%L - %msg%n%throwable'
 server:
   port: 8443
   ssl:
@@ -42,9 +43,9 @@ spring:
     
     data: classpath:/populate_db.sql
     
-    #url: jdbc:postgresql://192.168.88.6:5432/sipsoft-test
+    url: jdbc:postgresql://192.168.88.6:5432/sipsoft-test
     #url: jdbc:postgresql://localhost:5432/sipsoft-test
-    url: jdbc:postgresql://192.168.123.6:5432/sipsoft-test
+    #url: jdbc:postgresql://192.168.123.6:5432/sipsoft-test
     
     username: postgres
   jpa:
