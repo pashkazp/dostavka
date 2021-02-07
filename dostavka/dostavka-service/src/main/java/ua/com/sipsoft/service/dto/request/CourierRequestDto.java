@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 import ua.com.sipsoft.service.dto.user.UserDto;
 import ua.com.sipsoft.util.CourierVisitState;
 
@@ -31,9 +31,9 @@ public class CourierRequestDto implements Serializable {
 
 	private LocalDateTime creationDate = LocalDateTime.now();
 
-	private FacilityAddressDto fromPoint;
+	private FacilityAddrDto fromPoint;
 
-	private FacilityAddressDto toPoint;
+	private FacilityAddrDto toPoint;
 
 	private String description = "";
 

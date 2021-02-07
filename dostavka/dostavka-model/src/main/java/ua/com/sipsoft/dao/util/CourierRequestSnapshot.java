@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ua.com.sipsoft.dao.common.Facility;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.dao.request.draft.CourierRequest;
 import ua.com.sipsoft.dao.request.draft.CourierRequestEvent;
 import ua.com.sipsoft.dao.request.prototype.AbstractCourierRequest;
@@ -71,13 +71,13 @@ public class CourierRequestSnapshot {
 	private Facility fromFacility;
 
 	/** The from point. */
-	private FacilityAddress fromPoint;
+	private FacilityAddr fromPoint;
 
 	/** The to facility. */
 	private Facility toFacility;
 
 	/** The to point. */
-	private FacilityAddress toPoint;
+	private FacilityAddr toPoint;
 
 	/** The description. */
 	private String description;

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import ua.com.sipsoft.dao.common.Facility;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.repository.serviceimpl.mapper.facility.FacilityMapper;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
@@ -59,14 +59,14 @@ public class FacilityMapperTest {
 	 * @return the facility
 	 */
 	private Facility createFacility() {
-		FacilityAddress facilityAddress1 = new FacilityAddress("alias1", "address1");
+		FacilityAddr facilityAddress1 = new FacilityAddr("alias1", "address1");
 		facilityAddress1.setId(1L);
 		facilityAddress1.setVersion(1L);
 		facilityAddress1.setDefaultAddress(true);
 		facilityAddress1.setLat(1.1d);
 		facilityAddress1.setLng(2.2d);
 
-		FacilityAddress facilityAddress2 = new FacilityAddress("alias2", "address2");
+		FacilityAddr facilityAddress2 = new FacilityAddr("alias2", "address2");
 		facilityAddress1.setId(2L);
 		facilityAddress1.setVersion(2L);
 		facilityAddress1.setDefaultAddress(false);

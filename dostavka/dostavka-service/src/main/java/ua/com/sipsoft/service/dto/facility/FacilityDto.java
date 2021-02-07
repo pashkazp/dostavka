@@ -38,16 +38,16 @@ public class FacilityDto implements Serializable {
 
 	// @JsonBackReference
 	// @JsonIgnoreProperties("facility")
-	private Set<FacilityAddressDto> facilityAddresses = new HashSet<>();
+	private Set<FacilityAddrDto> facilityAddresses = new HashSet<>();
 
-	public void addFacilityAddress(FacilityAddressDto facilityAddress) {
+	public void addFacilityAddress(FacilityAddrDto facilityAddress) {
 		log.info("Try to add facility addresses");
 		if (facilityAddress != null && facilityAddresses != null) {
 			facilityAddresses.add(facilityAddress);
 		}
 	}
 
-	public void delFacilityAddress(FacilityAddressDto facilityAddress) {
+	public void delFacilityAddress(FacilityAddrDto facilityAddress) {
 		log.info("Try to remove fasility addresses");
 		if (facilityAddress != null && facilityAddresses != null) {
 			facilityAddresses.remove(facilityAddress);

@@ -23,7 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.util.CourierVisitState;
 
@@ -65,12 +65,12 @@ public abstract class AbstractCourierRequest<T extends AbstractHistoryEvent> imp
 	/** The from point. */
 	@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.PERSIST)
 	// @Column(nullable = false)
-	private FacilityAddress fromPoint;
+	private FacilityAddr fromPoint;
 
 	/** The to point. */
 	@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.PERSIST)
 	// @Column(nullable = false)
-	private FacilityAddress toPoint;
+	private FacilityAddr toPoint;
 
 	/** The description. */
 	@Column(nullable = false, length = 100)
@@ -89,10 +89,10 @@ public abstract class AbstractCourierRequest<T extends AbstractHistoryEvent> imp
 	 * Instantiates a new abstract courier request.
 	 *
 	 * @param author    the {@link User}
-	 * @param fromPoint the from {@link FacilityAddress}
-	 * @param toPoint   the to {@link FacilityAddress}
+	 * @param fromPoint the from {@link FacilityAddr}
+	 * @param toPoint   the to {@link FacilityAddr}
 	 */
-	public AbstractCourierRequest(User author, FacilityAddress fromPoint, FacilityAddress toPoint) {
+	public AbstractCourierRequest(User author, FacilityAddr fromPoint, FacilityAddr toPoint) {
 		super();
 		this.author = author;
 		this.fromPoint = fromPoint;

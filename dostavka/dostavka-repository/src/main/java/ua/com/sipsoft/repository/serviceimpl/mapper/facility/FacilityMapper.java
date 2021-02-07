@@ -9,12 +9,12 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import ua.com.sipsoft.dao.common.Facility;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.repository.serviceimpl.mapper.security.UserMapper;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
-import ua.com.sipsoft.service.dto.facility.FacilityRegistrationDto;
+import ua.com.sipsoft.service.dto.facility.FacilityRegReqDto;
 
-@Mapper(uses = { FacilityAddressMapper.class, UserMapper.class })
+@Mapper(uses = { FacilityAddMapper.class, UserMapper.class })
 public interface FacilityMapper {
 
 	public FacilityMapper MAPPER = Mappers.getMapper(FacilityMapper.class);
@@ -25,7 +25,7 @@ public interface FacilityMapper {
 	// @Mapping(target = "facilityAddresses", ignore = true)
 	public abstract Facility fromDto(FacilityDto facilityDto);
 
-	public abstract Facility fromRegDto(FacilityRegistrationDto facilityRegDto);
+	public abstract Facility fromRegDto(FacilityRegReqDto facilityRegDto);
 
 	public abstract List<FacilityDto> toDto(List<Facility> facilities);
 
@@ -40,7 +40,7 @@ public interface FacilityMapper {
 		if (facility == null || facility.getFacilityAddresses() == null) {
 			return;
 		}
-		for (FacilityAddress facilityAddress : facility.getFacilityAddresses()) {
+		for (FacilityAddr facilityAddress : facility.getFacilityAddresses()) {
 			facilityAddress.setFacility(facility);
 		}
 	}

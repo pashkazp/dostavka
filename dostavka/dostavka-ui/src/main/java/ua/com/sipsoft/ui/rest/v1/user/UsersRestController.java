@@ -39,9 +39,9 @@ import ua.com.sipsoft.service.exception.UserDtoAuditExeption;
 import ua.com.sipsoft.service.security.UserPrincipal;
 import ua.com.sipsoft.service.user.UserFilter;
 import ua.com.sipsoft.service.user.UserService;
-import ua.com.sipsoft.ui.model.request.mapper.ToUserRegistrationDtoMapper;
+import ua.com.sipsoft.ui.model.request.mapper.ToUserRegDtoMapper;
 import ua.com.sipsoft.ui.model.request.mapper.ToUserUpdateDtoMapper;
-import ua.com.sipsoft.ui.model.request.user.UserRegistrationRequest;
+import ua.com.sipsoft.ui.model.request.user.UserRegReq;
 import ua.com.sipsoft.ui.model.request.user.UserUpdateRequest;
 import ua.com.sipsoft.ui.model.response.AbstractSubInfoResponse;
 import ua.com.sipsoft.ui.model.response.InfoResponse;
@@ -165,7 +165,7 @@ public class UsersRestController {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> addNewUserByCreationRequest(
-			@RequestBody(required = false) UserRegistrationRequest userCreationRequest, Locale loc, Principal principal)
+			@RequestBody(required = false) UserRegReq userCreationRequest, Locale loc, Principal principal)
 			throws URISyntaxException {
 
 		log.info("IN addNewUserByCreationRequest - Request register new user '{}'", userCreationRequest);
@@ -196,8 +196,8 @@ public class UsersRestController {
 			return new ResponseEntity<>(infoResponse, infoResponse.getStatus());
 		}
 
-		UserRegistrationDto userRegDto = ToUserRegistrationDtoMapper.MAPPER
-				.fromUserRegistrationRequest(userCreationRequest);
+		UserRegistrationDto userRegDto = ToUserRegDtoMapper.MAPPER
+				.fromUserRegReq(userCreationRequest);
 
 		if (userRegDto.getRoles().isEmpty()) {
 			userRegDto.addRoles(Role.ROLE_USER);
@@ -227,7 +227,7 @@ public class UsersRestController {
 	 * Update existing User by User id.
 	 *
 	 * @param userId            the user id
-	 * @param userUpdateRequest the FacilityRegistrationDto
+	 * @param userUpdateRequest the FacilityRegReqDto
 	 * @param loc               the Locale
 	 * @param principal         the Principal
 	 * @return the user data check response

@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Slf4j
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FacilityAddressDto implements Serializable {
+public class FacilityAddrDto implements Serializable {
 
 	private static final long serialVersionUID = -2195070643307661176L;
 	/** The id. */

@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import ua.com.sipsoft.service.dto.facility.FacilityAddressDto;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 import ua.com.sipsoft.ui.model.response.facility.FacilityAddrResponse;
 
 @Mapper
@@ -14,10 +14,10 @@ public interface FacilityAddrRespMapper {
 
 	FacilityAddrRespMapper MAPPER = Mappers.getMapper(FacilityAddrRespMapper.class);
 
-	FacilityAddrResponse toRest(FacilityAddressDto facilityDto);
+	FacilityAddrResponse toRest(FacilityAddrDto facilityAddrDto);
 
-	List<FacilityAddrResponse> toRest(List<FacilityAddressDto> facilities);
+	List<FacilityAddrResponse> toRest(List<FacilityAddrDto> facilityAddrs);
 
-	Stream<FacilityAddrResponse> toRest(Stream<FacilityAddressDto> facilities);
+	Stream<FacilityAddrResponse> toRest(Stream<FacilityAddrDto> facilityAddrs);
 
 }

@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ua.com.sipsoft.dao.common.FacilityAddress;
+import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.service.util.EntityFilter;
 
 /**
@@ -23,7 +23,7 @@ import ua.com.sipsoft.service.util.EntityFilter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class FacilityAddressFilter implements EntityFilter<FacilityAddress> {
+public class FacilityAddressFilter implements EntityFilter<FacilityAddr> {
 
 	/** The address alias. */
 	@Builder.Default
@@ -55,7 +55,7 @@ public class FacilityAddressFilter implements EntityFilter<FacilityAddress> {
 	 * @return true, if is pass
 	 */
 	@Override
-	public boolean isPass(FacilityAddress entity) {
+	public boolean isPass(FacilityAddr entity) {
 		if (entity == null) {
 			return false;
 		}

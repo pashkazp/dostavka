@@ -25,7 +25,7 @@ import ua.com.sipsoft.util.security.Role;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserRegistrationRequest implements Serializable {
+public class UserRegReq implements Serializable {
 
 	private static final long serialVersionUID = 1848596179922865880L;
 
@@ -65,7 +65,7 @@ public class UserRegistrationRequest implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserRegistrationRequest [name=").append(name).append(", email=").append(email)
+		builder.append("UserRegReq [name=").append(name).append(", email=").append(email)
 				.append(", password=").append("*".repeat(getPasswordLength())).append(", confirmPassword=")
 				.append("*".repeat(getCPasswordLength()))
 				.append(", roles=").append(roles).append(", terms=").append(terms).append("]");

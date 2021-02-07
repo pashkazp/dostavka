@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Builder
 @AllArgsConstructor
-public class FacilityAddress implements Serializable {
+public class FacilityAddr implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -4398276671459742834L;
@@ -89,7 +89,7 @@ public class FacilityAddress implements Serializable {
 	 * @param addressAlias the address alias
 	 * @param address      the address
 	 */
-	public FacilityAddress(String addressAlias, String address) {
+	public FacilityAddr(String addressAlias, String address) {
 		super();
 		log.info("Instantiates a new facility address. Alias '{}' address '{}'", addressAlias, address);
 		this.addressesAlias = addressAlias;
@@ -107,10 +107,10 @@ public class FacilityAddress implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof FacilityAddress)) {
+		if (!(obj instanceof FacilityAddr)) {
 			return false;
 		}
-		FacilityAddress other = (FacilityAddress) obj;
+		FacilityAddr other = (FacilityAddr) obj;
 		if (this.id == null && other.id == null) {
 			return false;
 		}
@@ -130,7 +130,7 @@ public class FacilityAddress implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("FacilityAddress [id=").append(id).append(", version=").append(version)
+		builder.append("FacilityAddr [id=").append(id).append(", version=").append(version)
 				.append(", addressesAlias=").append(addressesAlias).append(", address=").append(address)
 				.append(", defaultAddress=").append(defaultAddress).append(", lat=").append(lat).append(", lng=")
 				.append(lng).append(", facility_id=").append(facility.getId()).append("]");
