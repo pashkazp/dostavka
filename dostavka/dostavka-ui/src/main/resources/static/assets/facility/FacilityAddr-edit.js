@@ -3,7 +3,7 @@
  */
 
 
-var addNewFacilityId;
+var operationFasilityId;
 
 // чистка полей и чекбоксов редактора
 function cleanFacilityAddrFormFields() {
@@ -44,7 +44,7 @@ function onAddNewFacilityAddrButtonModalClick(Id) {
 	console.log("press add");
 	//e.preventDefault();
 	cleanFacilityAddrForm();
-	addNewFacilityId = Id;
+	operationFasilityId = Id;
 	$('#editFacilityAddrForm #addNewFacilityAddrButton').show();
 	$('#editFacilityAddrForm #addFacilityAddrNum').show();
 	$('#editFacilityAddrModal').modal('show');
@@ -90,6 +90,8 @@ $(document).ready(function() {
 				console.log(res);
 				$('#editFacilityAddrModal').modal('hide');
 				//$('#facilities-table').DataTable().ajax.reload(null,false);
+				//var data = $("#facilities-table").DataTable().row(tr).data();
+				$('#' + operationFasilityId).DataTable().ajax.reload(null, false);
 			})
 			.fail(function(xhr, textStatus, errorThrown) {
 				console.log(xhr);
@@ -125,7 +127,7 @@ $(document).ready(function() {
 
 		//Remove previous errors
 		cleanFacilityAddrFormErrors();
-		var tableId = 'addr-table-' + addNewFacilityId;
+		var tableId = 'addr-table-' + operationFasilityId;
 		var
 			facilityAddress = {
 				addressesAlias: $('#editFacilityAddrForm #fAE-addressesAliasEdit').val(),
@@ -134,12 +136,12 @@ $(document).ready(function() {
 				lng: $('#editFacilityAddrForm #fAE-longitudeEdit').val(),
 				defaultAddress: $('#editFacilityAddrForm #fAE-defaultAddressEdit').prop('checked')
 
-				//facilityId : addNewFacilityId
+				//facilityId : operationFasilityId
 			}
 
 		console.log(facilityAddress);
 		$.post({
-			url: facilitiesurl + "/" + addNewFacilityId + facilitiesaddrurl,
+			url: facilitiesurl + "/" + operationFasilityId + facilitiesaddrurl,
 			data: JSON.stringify(facilityAddress),
 			dataType: "json",
 			contentType: "application/json",
@@ -187,6 +189,7 @@ $(document).ready(function() {
 		$('#editFacilityAddrForm #addNewFacilityAddrButton').hide();
 
 		var tableId = $(this).closest('table').attr('id');
+		operationFasilityId = $(this).closest('table').attr('id');
 		var facilityAddress = $("#" + tableId).DataTable().row($(this).closest('tr')).data();
 		console.log(facilityAddress);
 		$.get({

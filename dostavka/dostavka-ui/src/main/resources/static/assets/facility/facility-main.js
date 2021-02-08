@@ -136,6 +136,7 @@ $('#facilities-table tbody').on('click', 'td.main-table', function() {
 			destroy: true,
 			scrollCollapse: true,
 			select: true,
+			"paging": false,
 			"ajax": function(data, callback, settings) {
 				$.ajax({
 					"url": facilitiesurl + "/" + rowData.id + facilitiesaddrurl,
