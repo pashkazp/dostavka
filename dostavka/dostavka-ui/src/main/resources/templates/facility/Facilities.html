@@ -79,16 +79,16 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		var canEditFacility = true;
 		var canAddFacilityAddr = true;
  		var canEditFacilityAddr = true;
-		var defaultcontentstr =  '<a class="btn btn-xs btn-link text-primary" data-name="editButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
-		var defaultcontentaddrstr = '<a class="btn btn-xs btn-link text-primary"  data-name="editAddrButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
+		var editFacilityBtnContent =  '<a class="btn btn-xs btn-link text-primary" data-name="editButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
+		var editFacilityAddrBtnContent = '<a class="btn btn-xs btn-link text-primary"  data-name="editAddrButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
  	</script>
  	<script th:inline="javascript" sec:authorize="hasRole('ROLE_CLIENT') and !hasAnyRole('ROLE_ADMIN','ROLE_DISPATCHER','ROLE_MANAGER')">
 		var canAddFacility = false;
 		var canEditFacility = false;
 		var canAddFacilityAddr = false;
  		var canEditFacilityAddr = false;
-		var defaultcontentstr =  '<a class="btn btn-xs btn-link text-muted" data-name="disabledEditButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
-		var defaultcontentaddrstr = '<a class="btn btn-xs btn-link text-muted"  data-name="disabledEditAddrButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
+		var editFacilityBtnContent =  '<a class="btn btn-xs btn-link text-muted" data-name="disabledEditButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
+		var editFacilityAddrBtnContent = '<a class="btn btn-xs btn-link text-muted"  data-name="disabledEditAddrButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
  	</script>
 	<!-- </th:block> -->
 	

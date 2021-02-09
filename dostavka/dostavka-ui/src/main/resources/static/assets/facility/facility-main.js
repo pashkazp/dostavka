@@ -99,7 +99,7 @@ var facilitiesTable = $('#facilities-table').DataTable({
 			"data": null,
 			"bSortable": false,
 			"width": "5rem",
-			"defaultContent": defaultcontentstr,
+			"defaultContent": editFacilityBtnContent,
 			"targets": -1,
 			"visible": canEditFacility,
 			responsivePriority: 2
@@ -172,7 +172,7 @@ $('#facilities-table tbody').on('click', 'td.main-table', function() {
 					title: AddrTableTitleActions,
 					"bSortable": false,
 					"width": "5rem",
-					"defaultContent": defaultcontentaddrstr,
+					"defaultContent": editFacilityAddrBtnContent,
 					"targets": -1,
 					"visible": canEditFacilityAddr,
 					responsivePriority: 2
