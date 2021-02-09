@@ -101,8 +101,8 @@ var facilitiesTable = $('#facilities-table').DataTable({
 			"width": "5rem",
 			"defaultContent": defaultcontentstr,
 			"targets": -1,
-			responsivePriority: 2,
-			"visible": canEditFacility
+			"visible": canEditFacility,
+			responsivePriority: 2
 		}
 	],
 
@@ -174,8 +174,8 @@ $('#facilities-table tbody').on('click', 'td.main-table', function() {
 					"width": "5rem",
 					"defaultContent": defaultcontentaddrstr,
 					"targets": -1,
-					responsivePriority: 2,
-					"visible": canEditFacilityAddr
+					"visible": canEditFacilityAddr,
+					responsivePriority: 2
 				},
 			],
 			"aaSorting": [[3, 'desc'], [0, 'asc']],
