@@ -48,6 +48,7 @@ var facilitiesTable = $('#facilities-table').DataTable({
 			},
 			{
 				"text": '<span class="fas fa-plus"></span>',
+				"enabled": canAddFacility,
 				"className": 'btn btn-xs',
 				"action": function(e, dt, node, config) {
 					onAddNewFacilityButtonModalClick();
@@ -100,7 +101,8 @@ var facilitiesTable = $('#facilities-table').DataTable({
 			"width": "5rem",
 			"defaultContent": defaultcontentstr,
 			"targets": -1,
-			responsivePriority: 2
+			responsivePriority: 2,
+			"visible": canEditFacility
 		}
 	],
 
@@ -172,7 +174,8 @@ $('#facilities-table tbody').on('click', 'td.main-table', function() {
 					"width": "5rem",
 					"defaultContent": defaultcontentaddrstr,
 					"targets": -1,
-					responsivePriority: 2
+					responsivePriority: 2,
+					"visible": canEditFacilityAddr
 				},
 			],
 			"aaSorting": [[3, 'desc'], [0, 'asc']],
@@ -185,6 +188,7 @@ $('#facilities-table tbody').on('click', 'td.main-table', function() {
 					buttons: [
 						{
 							"text": '<span class="fas fa-plus"></span>',
+							"enabled": canAddFacilityAddr,
 							"className": 'btn btn-xs',
 							"action": function(e, dt, node, config) {
 								onAddNewFacilityAddrButtonModalClick(rowData.id);
