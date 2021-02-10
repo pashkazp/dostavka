@@ -42,9 +42,9 @@ spring:
     # uncomment for populate data to clean database
     #data: classpath:/populate_db.sql
     
-    url: jdbc:postgresql://192.168.88.6:5432/sipsoft
+    #url: jdbc:postgresql://192.168.88.6:5432/sipsoft
     #url: jdbc:postgresql://localhost:5432/sipsoft
-    #url: jdbc:postgresql://192.168.123.6:5432/sipsoft
+    url: jdbc:postgresql://192.168.123.6:5432/sipsoft
     
     username: postgres
   jpa:
