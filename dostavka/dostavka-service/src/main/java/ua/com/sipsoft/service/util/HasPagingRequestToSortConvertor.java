@@ -9,7 +9,7 @@ import ua.com.sipsoft.util.paging.Direction;
 import ua.com.sipsoft.util.paging.PagingRequest;
 
 /**
- * The Interface HasQueryToSortConvertor.
+ * The Interface HasPagingRequestToSortConvertor.
  */
 public interface HasPagingRequestToSortConvertor {
 

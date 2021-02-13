@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * The Interface HasQueryToSortConvertor.
+ * The Interface HasLimitedList.
  */
 public interface HasLimitedList {
 

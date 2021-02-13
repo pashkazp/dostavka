@@ -47,7 +47,8 @@ public class FacilityService {
 
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
 			"ROLE_CLIENT" })
-	public Page<FacilityDto> getFilteredPage(PagingRequest pagingRequest, FacilitiesFilter facilityFilter) {
+	public Page<FacilityDto> getFilteredPage(@NonNull PagingRequest pagingRequest,
+			@NonNull FacilitiesFilter facilityFilter) {
 
 		facilityFilter.setCaller(((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
 				.getUser());
