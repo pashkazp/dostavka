@@ -8,7 +8,7 @@
 		<div class="col-lg-12 m-0 p-1">
 			<div class="card card-bordered">
 				<div class="card-body">
-					<h4 class="header-title" th:text="#{app.title.facilities}">Facilities
+					<h4 class="header-title" th:text="#{card.facilities}">Facilities
 						table</h4>
 					<div class="card-text">
 						<div class="data-tables datatable-dark table-responsive-sm">
@@ -18,17 +18,17 @@
 								<thead class="text-capitalize">
 									<tr>
 										<th></th>
+										<th th:text="#{grid.colum.actions}">Actions</th>
 										<th th:text="#{entity.facility.facilityid}">Id</th>
 										<th th:text="#{entity.facility.name}">Name</th>
-										<th th:text="#{grid.colum.actions}">Actions</th>
 									</tr>
 								</thead>
 								<tfoot>
 									<tr>
 										<th></th>
+										<th th:text="#{grid.colum.actions}">Actions</th>
 										<th th:text="#{entity.facility.facilityid}">Id</th>
 										<th th:text="#{entity.facility.name}">Name</th>
-										<th th:text="#{grid.colum.actions}">Actions</th>
 									</tr>
 								</tfoot>
 							</table>
