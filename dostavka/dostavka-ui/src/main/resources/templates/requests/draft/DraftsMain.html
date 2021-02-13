@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+
+</head>
+<body>
+	<div class="card-area p-1">
+		<!-- data table start -->
+		<div class="row m-0">
+			<div class="col-lg-7 col-sm-12 m-0 p-0">
+				<div class="col-sm-12 m-0 p-0">
+					<div
+						th:replace="requests/draft/CardDraftSheet :: body/CardDraftSheet"></div>
+				</div>
+				<div class="col-sm-12 m-0 p-0">
+					<div
+						th:replace="requests/draft/CardSheetReqs :: body/CardSheetReqs"></div>
+				</div>
+			</div>
+			<div class="col-lg-5 col-sm-12 m-0 p-0">
+				<div th:replace="requests/draft/CardDraftReqs :: body/CardDraftReqs"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

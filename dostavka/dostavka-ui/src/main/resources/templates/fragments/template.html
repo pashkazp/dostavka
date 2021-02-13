@@ -53,6 +53,10 @@
 		<!-- modernizr css -->
 		<script type="text/javascript"
 			src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+			
+		<!-- for dtatatables.net format date -->	
+		<script type="text/javascript"
+			src="https://cdn.datatables.net/plug-ins/1.10.22/dataRender/datetime.js"></script>
 		<!-- 		<script type="text/javascript"
 			th:src="@{/webjars/modernizr/modernizr.min.js}"></script>
  -->
@@ -302,13 +306,13 @@
 								class="fas fa-truck"></i><span
 								th:text="#{menu.main.routesheets}">Route Sheets</span></a>
 							<ul>
-								<li><a href="#"> <i class="fas fa-file-signature"></i><span
+								<li><a th:href="@{${T(ua.com.sipsoft.util.AppURL).DRAFT}}"> <i class="fas fa-file-signature"></i><span
 										th:text="#{menu.main.routesheets.drafts}">Drafts</span>
 								</a></li>
-								<li><a href="#"> <i class="fas fa-file-alt"></i><span
+								<li><a th:href="@{${T(ua.com.sipsoft.util.AppURL).ISSUED}}"> <i class="fas fa-file-alt"></i><span
 										th:text="#{menu.main.routesheets.issued}">Issued</span>
 								</a></li>
-								<li><a href="#"> <i class="fas fa-archive"></i><span
+								<li><a th:href="@{${T(ua.com.sipsoft.util.AppURL).ARCHIVE}}"> <i class="fas fa-archive"></i><span
 										th:text="#{menu.main.routesheets.archived}">Archived</span>
 								</a></li>
 							</ul></li>

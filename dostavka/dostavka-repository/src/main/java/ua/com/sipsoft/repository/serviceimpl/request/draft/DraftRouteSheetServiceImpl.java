@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.com.sipsoft.dao.request.archive.ArchivedRouteSheet;
@@ -17,13 +18,20 @@ import ua.com.sipsoft.dao.request.draft.DraftRouteSheet;
 import ua.com.sipsoft.dao.request.issued.IssuedRouteSheet;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.repository.request.draft.DraftRouteSheetRepository;
+import ua.com.sipsoft.repository.serviceimpl.mapper.request.RouteSheetMapper;
+import ua.com.sipsoft.service.dto.request.RouteSheetDto;
 import ua.com.sipsoft.service.request.archive.ArchivedSheetsService;
 import ua.com.sipsoft.service.request.draft.CourierRequestService;
 import ua.com.sipsoft.service.request.draft.DraftRouteSheetFilter;
-import ua.com.sipsoft.service.request.draft.DraftRouteSheetService;
+import ua.com.sipsoft.service.request.draft.DraftRouteSheetServiceToRepo;
 import ua.com.sipsoft.service.request.issued.IssuedRouteSheetService;
 import ua.com.sipsoft.service.util.EntityFilter;
+import ua.com.sipsoft.service.util.HasFilteredList;
+import ua.com.sipsoft.service.util.HasLimitedList;
+import ua.com.sipsoft.service.util.HasPagingRequestToSortConvertor;
 import ua.com.sipsoft.service.util.HasQueryToSortConvertor;
+import ua.com.sipsoft.util.paging.Page;
+import ua.com.sipsoft.util.paging.PagingRequest;
 import ua.com.sipsoft.util.query.Query;
 
 /**
@@ -35,7 +43,9 @@ import ua.com.sipsoft.util.query.Query;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class DraftRouteSheetServiceImpl implements DraftRouteSheetService, HasQueryToSortConvertor {
+public class DraftRouteSheetServiceImpl
+		implements DraftRouteSheetServiceToRepo, HasQueryToSortConvertor, HasPagingRequestToSortConvertor,
+		HasFilteredList, HasLimitedList {
 
 	/** The dao. */
 	private final DraftRouteSheetRepository dao;
@@ -48,6 +58,8 @@ public class DraftRouteSheetServiceImpl implements DraftRouteSheetService, HasQu
 
 	/** The courier request service. */
 	private final CourierRequestService courierRequestService;
+
+	private final RouteSheetMapper routeSheetMapper;
 
 	/**
 	 * Clean draft sheets from courier requests.
@@ -315,5 +327,31 @@ public class DraftRouteSheetServiceImpl implements DraftRouteSheetService, HasQu
 	public int getQueriedDraftRouteSheetsCount(Query<DraftRouteSheet, EntityFilter<DraftRouteSheet>> query) {
 		log.debug("Get requested size Drafr Route Sheets  with filter '{}'", query.getFilter().get().toString());
 		return (int) getQueriedDraftRouteSheets(query).count();
+	}
+
+	@Override
+	public Page<RouteSheetDto> getFilteredPage(@NonNull PagingRequest pagingRequest,
+			@NonNull EntityFilter<DraftRouteSheet> entityFilter) {
+		log.debug(
+				"getFilteredPage] - Get requested page Draft Sheet with PagingRequest '{}' and EntityFilter<Facility> '{}'",
+				pagingRequest, entityFilter);
+
+		Page<RouteSheetDto> page = new Page<>();
+		List<DraftRouteSheet> routeSheets;
+		routeSheets = dao.findAll(toSort(pagingRequest));
+
+		page.setRecordsTotal(routeSheets.size());
+
+		routeSheets = getFiteredList(routeSheets, entityFilter);
+
+		page.setRecordsFiltered(routeSheets.size());
+
+		routeSheets = getLimitedList(routeSheets, pagingRequest.getStart(), pagingRequest.getLength());
+
+		page.setData(routeSheetMapper.draftRouteSheetToDto(routeSheets));
+
+		page.setDraw(pagingRequest.getDraw());
+
+		return page;
 	}
 }

@@ -19,8 +19,10 @@ public class AppURL {
 
 	public static final String API_V1 = "/api/v1";
 	public static final String AUTH = "/auth";
+
 	public static final String FACILITIES = "/facilities";
 	public static final String FACILITIESADDR = "/facility-addr";
+
 	public static final String HOME = "/";
 	public static final String ERROR = "/error";
 	public static final String LOGIN = "/login";
@@ -49,13 +51,27 @@ public class AppURL {
 	public static final String API_V1_USERS_PAGES = API_V1 + USERS + PAGES;
 	public static final String API_V1_USERS_ME = API_V1 + USERS + "/me";
 
+	public static final String REQUESTS = "/requests";
+	public static final String RSHEETS = "/route-sheets";
+	public static final String DRAFT = "/draft";
+	public static final String ISSUED = "/issued";
+	public static final String ARCHIVE = "/archive";
+	public static final String EVENTS = "/events";
+
+	public static final String API_V1_DRAFT_REQ = API_V1 + DRAFT + REQUESTS;
+	public static final String API_V1_DRAFT_RSHEET = API_V1 + DRAFT + RSHEETS;
+
+	public static final String API_V1_ISSUED_REQ = API_V1 + ISSUED + REQUESTS;
+	public static final String API_V1_ISSUED_RSHEET = API_V1 + ISSUED + RSHEETS;
+
+	public static final String API_V1_ARCHIVE_REQ = API_V1 + ARCHIVE + REQUESTS;
+	public static final String API_V1_ARCHIVE_RSHEET = API_V1 + ARCHIVE + RSHEETS;
+
 	public static final String LOGOUT_SUCCESS_URL = "loginsuccess";
 	public static final String LOGOUT_URL = "logout";
 
 	public static final String ACCESS_DENIED_URL = ERROR + "/403";
 	public static final String REGISTRATION_CONFIRM = "registration/confirm";
-
-	public static final String REQUESTS_ALL = "requests";
 
 	public static final String USER_ENV = API_V1 + "/env";
 
@@ -72,10 +88,6 @@ public class AppURL {
 	public static final String FACILITIES_PAGES = FACILITIES + PAGES;
 
 	public static final String FACILITIESADDR_PAGES = FACILITIESADDR + PAGES;
-
-	public static final String DRAFT_SHEETS = "draftsheet";
-	public static final String ISSUED = "issued";
-	public static final String ARCHIVE = "archive";
 
 	public static String APP_DOMAIN;
 

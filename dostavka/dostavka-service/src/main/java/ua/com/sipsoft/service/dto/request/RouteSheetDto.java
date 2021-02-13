@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ import ua.com.sipsoft.service.dto.user.UserDto;
 @Setter
 @NoArgsConstructor
 @Slf4j
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RouteSheetDto implements Serializable {
 

@@ -24,7 +24,7 @@ var facilitiesTable = $('#facilities-table').DataTable({
 	dom: 'Bfrtip',
 	"processing": true,
 	"serverSide": true,
-	scrollY: '50vh',
+	scrollY: '30vh',
 	scrollCollapse: true,
 	paging: true,
 	select: true,
@@ -93,8 +93,6 @@ var facilitiesTable = $('#facilities-table').DataTable({
 			defaultContent: '',
 			width: '3rem'
 		},
-		{ "data": "id", "width": "9rem" },
-		{ "data": "name", "width": "100%" },
 		{
 			"data": null,
 			"bSortable": false,
@@ -103,11 +101,13 @@ var facilitiesTable = $('#facilities-table').DataTable({
 			"targets": -1,
 			"visible": canEditFacility,
 			responsivePriority: 2
-		}
+		},
+		{ "data": "id", "width": "9rem" },
+		{ "data": "name", "width": "100%" }
 	],
 
 	"order": [
-		[1, 'asc']
+		[2, 'asc']
 	]
 
 });
@@ -162,11 +162,6 @@ $('#facilities-table tbody').on('click', 'td.main-table', function() {
 			},
 			columns: [
 				{ data: "id", title: AddrTableColTitleId, "width": "9rem", "orderable": "true" },
-				{ data: "addressesAlias", title: AddrTableColTitleAlias, "width": "30%", "orderable": "true" },
-				{ data: "address", title: AddrTableColTitleAddr, "width": "30%", "orderable": "true" },
-				{ data: "defaultAddress", title: AddrTableColTitleDefAddr, "render": true_false_show_check_func, "width": "10%", "orderable": "true" },
-				{ data: "lat", title: AddrTableColTitleLat, "width": "15%", "orderable": "true" },
-				{ data: "lng", title: AddrTableColTitleLng, "width": "15%", "orderable": "true" },
 				{
 					data: null,
 					title: AddrTableTitleActions,
@@ -177,6 +172,11 @@ $('#facilities-table tbody').on('click', 'td.main-table', function() {
 					"visible": canEditFacilityAddr,
 					responsivePriority: 2
 				},
+				{ data: "addressesAlias", title: AddrTableColTitleAlias, "width": "30%", "orderable": "true" },
+				{ data: "address", title: AddrTableColTitleAddr, "width": "30%", "orderable": "true" },
+				{ data: "defaultAddress", title: AddrTableColTitleDefAddr, "render": true_false_show_check_func, "width": "10%", "orderable": "true" },
+				{ data: "lat", title: AddrTableColTitleLat, "width": "15%", "orderable": "true" },
+				{ data: "lng", title: AddrTableColTitleLng, "width": "15%", "orderable": "true" }
 			],
 			"aaSorting": [[3, 'desc'], [0, 'asc']],
 				buttons: {

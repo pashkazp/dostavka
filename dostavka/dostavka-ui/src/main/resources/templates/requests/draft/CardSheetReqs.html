@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+	<div th:fragment="CardSheetReqs" class="card card-bordered">
+		<div class="card-body">
+			<h4 class="header-title" th:text="#{card.draft.sheetreqs}">Draft
+				Route sheet table</h4>
+			<div class="card-text">
+				<div class="data-tables datatable-dark table-responsive-sm">
+					<table id="sheetreqs-table"
+						class="table table-striped table-hover table-sm table-bordered"
+						style="width: 100%">
+						<thead class="text-capitalize">
+							<tr>
+								<th></th>
+								<th th:text="#{grid.colum.actions}">Actions</th>
+								<th th:text="#{entity.courier.request.id}">Id</th>
+								<th th:text="#{entity.courier.request.creation.date}">Date</th>
+								<th th:text="#{entity.courier.request.description}">Description</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+								<th></th>
+								<th th:text="#{grid.colum.actions}">Actions</th>
+								<th th:text="#{entity.courier.request.id}">Id</th>
+								<th th:text="#{entity.courier.request.creation.date}">Date</th>
+								<th th:text="#{entity.courier.request.description}">Description</th>
+								<th th:text="#{entity.courier.request.author}">Author</th>
+								<th th:text="#{entity.courier.request.address.from}">AddrFrom</th>
+								<th th:text="#{entity.courier.request.facilityaddr.to}">FacilityFrom</th>
+								<th th:text="#{entity.courier.request.address.to}">AddrTo</th>
+								<th th:text="#{entity.courier.request.facilityaddr.to}">FacilityTo</th>
+								<th th:text="#{entity.event.header.view}">Infobutton</th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

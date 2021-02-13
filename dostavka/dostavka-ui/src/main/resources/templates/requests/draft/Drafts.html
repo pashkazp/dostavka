@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head>
+<link th:rel="stylesheet" th:href="@{assets/datatable/datatables.min.css}" />
+<th:block th:insert="fragments/page-parts :: body/head"></th:block>
+
+<title th:text="#{app.title.draftsheet}">Title</title>
+</head>
+
+<body>
+	<!-- preloader area start -->
+	<div th:replace="fragments/template :: body/preloader"></div>
+	<!-- preloader area end -->
+
+	<!-- page container area start -->
+	<div class="page-container">
+
+		<!-- sidebar menu area start -->
+		<div th:replace="fragments/template :: body/sidebar-menu"></div>
+		<!-- sidebar menu area end -->
+
+		<!-- main content area start -->
+		<div class="main-content">
+
+			<!-- header area start -->
+			<div th:replace="fragments/template :: body/header-area"></div>
+			<!-- header area end -->
+
+			<!-- page title area start -->
+			<div th:replace="fragments/template :: body/page-title-area(~{::h4},~{::li})">
+ 				<h4 class="page-title fa-pull-left" th:text="#{menu.main.routesheets.drafts}">Title</h4>
+                <li><span th:text="#{menu.main.routesheets.drafts}">Drafts</span></li>  				
+			</div>			
+			<!-- page title area end -->
+
+			<div class="main-content-inner p-1">
+				<div th:replace="requests/draft/DraftsMain :: body"></div>
+			</div>
+		</div>
+		<!-- main content area end -->
+
+		<!-- footer area start-->
+		<footer>
+			<div class="footer-area">
+				<div th:replace="fragments/page-parts :: body/footer"></div>
+			</div>
+		</footer>
+		<!-- footer area end-->
+
+	</div>
+	<!-- page container area end -->
+
+	<!-- offset area start -->
+	<div th:replace="fragments/template :: body/offset-area"></div>
+
+	<div th:replace="fragments/page-parts :: body/bottom"></div>
+	<script th:src="@{assets/datatable/datatables.min.js}"></script>
+	<th:block
+		th:replace="fragments/scripts/datatables :: body/true_false_show_check_func" />
+	<script th:inline="javascript">
+		var facilitiesurl = [[@{ ${ T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES }}]];
+		var facilitiesaddressurl = [[@{ ${ T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIESADDR }}]];
+		var facilitiespagesurl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES_PAGES}}]];
+		var facilitiesaddrurl = [[${ T(ua.com.sipsoft.util.AppURL).FACILITIESADDR}]];
+		var AddrTableColTitleId = '[(#{entity.facilityaddr.addrid})]';
+		var AddrTableColTitleAlias = '[(#{entity.facilityaddr.alias})]';
+		var AddrTableColTitleAddr = '[(#{entity.facilityaddr.address})]';
+		var AddrTableColTitleDefAddr = '[(#{entity.facilityaddr.default})]';
+		var AddrTableColTitleLat = '[(#{entity.facilityaddr.lat})]';
+		var AddrTableColTitleLng = '[(#{entity.facilityaddr.lng})]';
+		var AddrTableTitleActions = '[(#{grid.colum.actions})]';
+ 	</script>
+ 	
+ 	<script th:inline="javascript" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_DISPATCHER','ROLE_MANAGER')">
+		var canAddFacility = true;
+		var canEditFacility = true;
+		var canAddFacilityAddr = true;
+ 		var canEditFacilityAddr = true;
+		var editFacilityBtnContent =  '<a class="btn btn-xs btn-link text-primary" data-name="editButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
+		var editFacilityAddrBtnContent = '<a class="btn btn-xs btn-link text-primary"  data-name="editAddrButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
+ 	</script>
+ 	<script th:inline="javascript" sec:authorize="hasRole('ROLE_CLIENT') and !hasAnyRole('ROLE_ADMIN','ROLE_DISPATCHER','ROLE_MANAGER')">
+		var canAddFacility = false;
+		var canEditFacility = false;
+		var canAddFacilityAddr = false;
+ 		var canEditFacilityAddr = false;
+		var editFacilityBtnContent =  '<a class="btn btn-xs btn-link text-muted" data-name="disabledEditButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
+		var editFacilityAddrBtnContent = '<a class="btn btn-xs btn-link text-muted"  data-name="disabledEditAddrButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
+ 	</script>
+	<!-- </th:block> -->
+	
+	<!-- Edit Facility modal form part -->
+	<div th:replace="facility/facilityEditor :: body/facilityEditor"></div>
+
+	<!-- Edit Facility modal form part -->
+	<div th:replace="facility/facilityAddrEditor :: body/facilityAddrEditor"></div>
+
+    <script src="assets/facility/facility-main.js"></script>
+
+ </body>
+
+</html>

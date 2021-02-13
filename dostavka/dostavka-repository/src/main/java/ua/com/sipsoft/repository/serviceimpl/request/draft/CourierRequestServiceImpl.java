@@ -18,7 +18,7 @@ import ua.com.sipsoft.dao.util.CourierRequestSnapshot;
 import ua.com.sipsoft.repository.request.draft.CourierRequestRepository;
 import ua.com.sipsoft.service.request.archive.ArchivedVisitsService;
 import ua.com.sipsoft.service.request.draft.CourierRequestService;
-import ua.com.sipsoft.service.request.draft.DraftRouteSheetService;
+import ua.com.sipsoft.service.request.draft.DraftRouteSheetServiceToRepo;
 import ua.com.sipsoft.service.security.UsersUtils;
 import ua.com.sipsoft.service.util.EntityFilter;
 import ua.com.sipsoft.service.util.HasQueryToSortConvertor;
@@ -39,7 +39,7 @@ public class CourierRequestServiceImpl implements CourierRequestService, HasQuer
 	private final CourierRequestRepository dao;
 
 	/** The draft route sheet service. */
-	private final DraftRouteSheetService draftRouteSheetService;
+	private final DraftRouteSheetServiceToRepo draftRouteSheetService;
 
 	/** The archived courier visit service. */
 	private final ArchivedVisitsService archivedCourierVisitService;
@@ -50,7 +50,7 @@ public class CourierRequestServiceImpl implements CourierRequestService, HasQuer
 	 * @param archivedCourierVisitService
 	 */
 	public CourierRequestServiceImpl(@Lazy CourierRequestRepository dao,
-			@Lazy DraftRouteSheetService draftRouteSheetService,
+			@Lazy DraftRouteSheetServiceToRepo draftRouteSheetService,
 			@Lazy ArchivedVisitsService archivedCourierVisitService) {
 		super();
 		this.dao = dao;
