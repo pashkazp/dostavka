@@ -57,7 +57,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div th:replace="fragments/template :: body/offset-area"></div>
 
 	<div th:replace="fragments/page-parts :: body/bottom"></div>
+	<script type="text/javascript"
+			src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
 	<script th:src="@{assets/datatable/datatables.min.js}"></script>
+	<script type="text/javascript"
+			src="https://cdn.datatables.net/plug-ins/1.10.21/dataRender/datetime.js"></script>
 	<th:block
 		th:replace="fragments/scripts/datatables :: body/true_false_show_check_func" />
 	<script th:inline="javascript">

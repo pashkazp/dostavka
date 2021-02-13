@@ -1,7 +1,6 @@
 package ua.com.sipsoft.ui.model.response.request.daft;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -25,6 +24,6 @@ public class DraftSheetCardResponse implements Serializable {
 
 	private String description;
 
-	private LocalDateTime creationDate;
+	private String creationDate;
 
 }

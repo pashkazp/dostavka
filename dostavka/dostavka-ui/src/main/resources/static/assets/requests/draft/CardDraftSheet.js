@@ -15,7 +15,7 @@ function onAddCardDraftSheetButtonClick() {
 
 $(document).ready(function() {
 	const FROM_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS';
-	const TO_PATTERN   = 'DD.MM.YYYY HH:mm';
+	const TO_PATTERN = 'DD.MM.YYYY HH:mm';
 	var draftsheet_table = $('#draftsheet-table').DataTable({
 		dom: 'Bfrtip',
 		"processing": true,
@@ -24,7 +24,6 @@ $(document).ready(function() {
 		scrollCollapse: true,
 		paging: true,
 		select: true,
-
 
 
 		buttons: {
@@ -92,19 +91,25 @@ $(document).ready(function() {
 				defaultContent: '',
 				width: '3rem'
 			},
-		{
-			"data": null,
-			"bSortable": false,
-			"width": "5rem",
-			"defaultContent": editFacilityBtnContent,
-			"targets": -1,
-			"visible": canEditCardDraftSheet,
-			responsivePriority: 2
-		},
-			{ "data": "creationDate",				"width": "9rem","render": $.fn.dataTable.render.moment(FROM_PATTERN, TO_PATTERN) },
-			{ "data": "description", "width": "100%" }
+			{
+				"data": null,
+				"bSortable": false,
+				"width": "5rem",
+				"defaultContent": editFacilityBtnContent,
+				"targets": -1,
+				"visible": canEditCardDraftSheet,
+				responsivePriority: 2
+			},
+			{ "data": "creationDate" },
+			{ "data": "description", "width": "100%"}
 		],
-		"order": [[2, 'asc']]
+		"order": [[2, 'asc']],
+		"columnDefs": [
+			{
+				"targets": 2,
+				"render": $.fn.dataTable.render.moment(FROM_PATTERN, TO_PATTERN)
+			}
+		]
 	});
 
 	// Array to track the ids of the details displayed rows

@@ -1,5 +1,6 @@
 package ua.com.sipsoft.ui.model.response.mapper;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -14,7 +15,10 @@ import ua.com.sipsoft.ui.model.response.request.daft.DraftSheetCardResponse;
 @Component
 public interface DraftSheetRespMapper {
 
+	final static DateTimeFormatter format = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss.SSS");
+
 	@Mapping(target = "author", source = "author.name")
+	@Mapping(expression = "java(routeSheet.getCreationDate().format(format))", target = "creationDate")
 	DraftSheetCardResponse toRest(RouteSheetDto routeSheet);
 
 	List<DraftSheetCardResponse> toRest(List<RouteSheetDto> routeSheets);
