@@ -21,7 +21,9 @@ function format(rowData, tableId) {
 
 
 var facilitiesTable = $('#facilities-table').DataTable({
-	dom: 'Bfrtip',
+	dom: "<'row'<'col-sm-12 col-md-4'B><'col-sm-12 col-md-8'f>>" +
+			"<'row'<'col-sm-12'tr>>" +
+			"<'row'<'col-sm-12 col-md-4'i><'col-sm-12 col-md-3'l><'col-sm-12 col-md-5'p>>",
 	"processing": true,
 	"serverSide": true,
 	scrollY: '30vh',

@@ -3,8 +3,9 @@
 xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-<link th:rel="stylesheet"
-	th:href="@{assets/datatable/datatables.min.css}" />
+<link th:rel="stylesheet" th:href="@{assets/datatable/datatables.min.css}" />
+<link th:rel="stylesheet" th:href="@{assets/datatable/DataTables-1.10.20/css/dataTables.bootstrap.min.css}" />
+<link th:rel="stylesheet" th:href="@{assets/datatable/Responsive-2.2.3/css/responsive.bootstrap.min.css}" />
 <th:block th:insert="fragments/page-parts :: body/head" />
 
 <title th:text="#{app.title.users}">Title</title>
@@ -63,6 +64,10 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 	<div th:replace="fragments/page-parts :: body/bottom"></div>
 
+	<script th:src="@{assets/datatable/DataTables-1.10.20/js/jquery.dataTables.min.js}"></script>
+	<script th:src="@{assets/datatable/DataTables-1.10.20/js/dataTables.bootstrap.min.js}"></script>
+	<script th:src="@{assets/datatable/Responsive-2.2.3/js/dataTables.responsive.min.js}"></script>
+	<script th:src="@{assets/datatable/Responsive-2.2.3/js/responsive.bootstrap.min.js}"></script>
 	<script th:src="@{assets/datatable/datatables.min.js}"></script>
 	<th:block
 		th:replace="fragments/scripts/datatables :: body/true_false_show_check_func" />
@@ -82,7 +87,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		var locU = [[@{assets/datatable/Ukrainian.json}]];
     	var localecallstr = ( [[${#locale.language}]] == "en" )? locE :( [[${#locale.language}]] == "ru" )? locR: locU ;
 	    var table = $('#table-users').DataTable({
-	    	dom: 'Bfrtip',
+	    	dom: "<'row'<'col-sm-12 col-md-4'B><'col-sm-12 col-md-8'f>>" +
+			"<'row'<'col-sm-12'tr>>" +
+			"<'row'<'col-sm-12 col-md-4'i><'col-sm-12 col-md-3'l><'col-sm-12 col-md-5'p>>",
 	    	buttons: { 
 	    		dom: {
     				button: {

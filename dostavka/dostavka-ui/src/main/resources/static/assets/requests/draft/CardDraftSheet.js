@@ -17,14 +17,15 @@ $(document).ready(function() {
 	const FROM_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS';
 	const TO_PATTERN = 'DD.MM.YYYY HH:mm';
 	var draftsheet_table = $('#draftsheet-table').DataTable({
-		dom: 'Bfrtip',
+		dom: "<'row'<'col-sm-12 col-md-4'B><'col-sm-12 col-md-8'f>>" +
+			"<'row'<'col-sm-12'tr>>" +
+			"<'row'<'col-sm-12 col-md-4'i><'col-sm-12 col-md-3'l><'col-sm-12 col-md-5'p>>",
 		"processing": true,
 		"serverSide": true,
 		scrollY: '30vh',
 		scrollCollapse: true,
 		paging: true,
 		select: true,
-
 
 		buttons: {
 			dom: {
@@ -89,19 +90,19 @@ $(document).ready(function() {
 				orderable: false,
 				data: null,
 				defaultContent: '',
-				width: '3rem'
+				width: '3em'
 			},
 			{
 				"data": null,
 				"bSortable": false,
-				"width": "5rem",
+				"width": "5em",
 				"defaultContent": editFacilityBtnContent,
 				"targets": -1,
 				"visible": canEditCardDraftSheet,
 				responsivePriority: 2
 			},
-			{ "data": "creationDate" },
-			{ "data": "description", "width": "100%"}
+			{ "data": "creationDate", "width": "11rem" },
+			{ "data": "description", "width": "70%" }
 		],
 		"order": [[2, 'asc']],
 		"columnDefs": [

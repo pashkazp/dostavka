@@ -5,6 +5,8 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 <link th:rel="stylesheet" th:href="@{assets/datatable/datatables.min.css}" />
+<link th:rel="stylesheet" th:href="@{assets/datatable/DataTables-1.10.20/css/dataTables.bootstrap.min.css}" />
+<link th:rel="stylesheet" th:href="@{assets/datatable/Responsive-2.2.3/css/responsive.bootstrap.min.css}" />
 <th:block th:insert="fragments/page-parts :: body/head"></th:block>
 
 <title th:text="#{app.title.facilities}">Title</title>
@@ -57,6 +59,10 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div th:replace="fragments/template :: body/offset-area"></div>
 
 	<div th:replace="fragments/page-parts :: body/bottom"></div>
+	<script th:src="@{assets/datatable/DataTables-1.10.20/js/jquery.dataTables.min.js}"></script>
+	<script th:src="@{assets/datatable/DataTables-1.10.20/js/dataTables.bootstrap.min.js}"></script>
+	<script th:src="@{assets/datatable/Responsive-2.2.3/js/dataTables.responsive.min.js}"></script>
+	<script th:src="@{assets/datatable/Responsive-2.2.3/js/responsive.bootstrap.min.js}"></script>
 	<script th:src="@{assets/datatable/datatables.min.js}"></script>
 	<th:block
 		th:replace="fragments/scripts/datatables :: body/true_false_show_check_func" />
