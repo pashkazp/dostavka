@@ -3,45 +3,40 @@ package ua.com.sipsoft.repository.serviceimpl.mapper.facility;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.dao.common.Facility;
 import ua.com.sipsoft.dao.common.FacilityAddr;
 import ua.com.sipsoft.repository.serviceimpl.mapper.security.UserMapper;
+import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
 import ua.com.sipsoft.service.dto.facility.FacilityDto;
 import ua.com.sipsoft.service.dto.facility.FacilityRegReqDto;
 
-@Mapper(componentModel = "spring", uses = { FacilityAddMapper.class, UserMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class })
 @Component
 public interface FacilityMapper {
 
-	// @Mapping(target = "facilityAddresses", ignore = true)
-	public abstract FacilityDto toDto(Facility facility);
+	FacilityDto toDto(Facility facility);
 
-	// @Mapping(target = "facilityAddresses", ignore = true)
-	public abstract Facility fromDto(FacilityDto facilityDto);
+	Facility fromDto(FacilityDto facilityDto);
 
-	public abstract Facility fromRegDto(FacilityRegReqDto facilityRegDto);
+	@Mappings({ @Mapping(target = "facility.facilityAddresses", ignore = true) })
+	FacilityAddrDto toDto(FacilityAddr facilityAddr);
 
-	public abstract List<FacilityDto> toDto(List<Facility> facilities);
+	@Mappings({ @Mapping(target = "facility.facilityAddresses", ignore = true) })
+	FacilityAddr fromDto(FacilityAddrDto facilityAddrDto);
 
-	public abstract List<Facility> fromDto(List<FacilityDto> facilitiesDto);
+	Facility fromRegDto(FacilityRegReqDto facilityRegDto);
 
-	public abstract Stream<FacilityDto> toDto(Stream<Facility> facilities);
+	List<FacilityDto> toDto(List<Facility> facilities);
 
-	public abstract Stream<Facility> fromDto(Stream<FacilityDto> facilitiesDto);
+	List<Facility> fromDto(List<FacilityDto> facilitiesDto);
 
-	@AfterMapping
-	default void populateFacilityAddress(@MappingTarget Facility facility) {
-		if (facility == null || facility.getFacilityAddresses() == null) {
-			return;
-		}
-		for (FacilityAddr facilityAddress : facility.getFacilityAddresses()) {
-			facilityAddress.setFacility(facility);
-		}
-	}
+	Stream<FacilityDto> toDto(Stream<Facility> facilities);
+
+	Stream<Facility> fromDto(Stream<FacilityDto> facilitiesDto);
 
 }
