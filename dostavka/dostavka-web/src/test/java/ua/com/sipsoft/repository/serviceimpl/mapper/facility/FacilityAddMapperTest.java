@@ -1,7 +1,6 @@
 package ua.com.sipsoft.repository.serviceimpl.mapper.facility;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +50,7 @@ public class FacilityAddMapperTest {
 		assertEquals(facilityAddress2.getAddressesAlias(), facilityAddress1.getAddressesAlias());
 		assertEquals(facilityAddress2.getLat(), facilityAddress1.getLat());
 		assertEquals(facilityAddress2.getLng(), facilityAddress1.getLng());
-		assertNotEquals(facilityAddress2.getFacility(), facilityAddress1.getFacility());
+		assertEquals(facilityAddress2.getFacility(), facilityAddress1.getFacility());
 	}
 
 	private FacilityAddr createFacilityAddress() {
