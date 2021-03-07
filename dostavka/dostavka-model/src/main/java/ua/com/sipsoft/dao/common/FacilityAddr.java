@@ -48,7 +48,7 @@ public class FacilityAddr implements Serializable {
 
 	/** The version. */
 	@Version
-	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	@Column(nullable = false)
 	@Builder.Default
 	private Long version = 0L;
 

@@ -51,7 +51,7 @@ public abstract class AbstractRouteSheet<T extends AbstractHistoryEvent> impleme
 
 	/** The version. */
 	@Version
-	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	@Column(nullable = false)
 	private Long version = 0L;
 
 	/** The author. */

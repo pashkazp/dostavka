@@ -19,6 +19,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -53,7 +56,7 @@ public class Facility implements Serializable {
 
 	/** The version. */
 	@Version
-	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	@Column(nullable = false)
 	private Long version = 0L;
 
 	/** The name. */
@@ -65,10 +68,12 @@ public class Facility implements Serializable {
 	@JoinTable(name = "users_facilities", //
 			joinColumns = @JoinColumn(name = "facility_id"), //
 			inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@Fetch(FetchMode.JOIN)
 	private Set<User> users = new HashSet<>();
 
 	/** The facility addresses. */
 	@OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@Fetch(FetchMode.JOIN)
 	private Set<FacilityAddr> facilityAddresses = new HashSet<>();
 
 	/**

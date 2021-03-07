@@ -43,7 +43,8 @@ public abstract class AbstractHistoryEvent implements Serializable {
 
 	/** The version. */
 	@Version
-	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	@Column(nullable = false)
+	// @Column(columnDefinition = "NUMERIC(19,0)", nullable = false)
 	private Long version = 0L;
 
 	/** The creation date. */
