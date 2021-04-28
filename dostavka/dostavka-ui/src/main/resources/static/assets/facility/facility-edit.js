@@ -125,7 +125,7 @@ $(document).ready(function() {
 });
 
 // SAVE updateFacilityButton на форме редактора
-// очиста сообщений об ошибках
+// очистка сообщений об ошибках
 // получение данных из полей редактора формы
 // отправка данных в базу данных
 // при успехе обновления - сокрытие формы редактора и рефреш таблицы
@@ -159,7 +159,8 @@ $(document).ready(function() {
 			.done(function(res) {
 				console.log(res);
 				$('#editFacilityModal').modal('hide');
-				$('#facilities-table').DataTable().ajax.reload(null, false);
+				facilitiesTable.ajax.reload(null, false);
+				$//('#facilities-table').DataTable().ajax.reload(null, false);
 			})
 			.fail(function(xhr, textStatus, errorThrown) {
 				console.log(xhr);

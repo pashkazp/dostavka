@@ -1,66 +1,39 @@
 // *********************************************************************************************
 //
-// Draft Sheets
+// Sheet Reqs
 //
 //
 // *********************************************************************************************
+function onAddCardSheetReqsButtonClick() {
 
-function formatdraftsheet(d) {
-	varStr = detailDraftSheetFormatStr;
+}
+
+function formatsheetreqs(d) {
+	varStr = detailSheetReqsFormatStr;
 
 	var sRegExInput = new RegExp('{d.id}', "g");
 	varStr = varStr.replace(sRegExInput, d.id);
 	var sRegExInput = new RegExp('{d.author}', "g");
 	varStr = varStr.replace(sRegExInput, d.author);
+	var sRegExInput = new RegExp('{d.fromAddr}', "g");
+	varStr = varStr.replace(sRegExInput, d.fromAddr);
+	var sRegExInput = new RegExp('{d.fromFacility}', "g");
+	varStr = varStr.replace(sRegExInput, d.fromFacility);
+	var sRegExInput = new RegExp('{d.toAddr}', "g");
+	varStr = varStr.replace(sRegExInput, d.toAddr);
+	var sRegExInput = new RegExp('{d.toFacility}', "g");
+	varStr = varStr.replace(sRegExInput, d.toFacility);
 
 	return varStr;
 }
 
-function calculateSheetReqsUrl(id) {
-	varStr = cardSheetReqsPagesTemplateUrl;
-
-	var sRegExInput = new RegExp('{id}', "g");
-	varStr = varStr.replace(sRegExInput, id);
-	return varStr;
-}
-
-function draftsheetTableRowSelected() {
-	reloadSheetReqsTable();
-	sheetreqs_table.buttons([0, 1, 3]).enable();
-	if (canAddSheetReqs) {
-		sheetreqs_table.buttons([2]).enable();
-	}  
-	draftsheet_table.buttons([0, 1]).enable();
-}
-function draftsheetTableRowDeselected() {
-	reloadSheetReqsTable();
-	sheetreqs_table.buttons([0, 1, 2, 3]).disable();
-	draftsheet_table.buttons([0, 1]).disable();
-}
-
-function reloadSheetReqsTable() {
-	var id = getDraftSheetSelectedId();
-	var url = calculateSheetReqsUrl(id);
-	sheetreqs_table.ajax.url(url);
-	sheetreqs_table.ajax.reload(null, true);
-}
-
-
-function getDraftSheetSelectedId() {
-	var data = draftsheet_table.row({ selected: true }).data();
-	if (!data) {
-		return 0;
-	}
-	return data.id;
-}
+var cardSheetReqsPagesUrl = calculateSheetReqsUrl(0);
 
 $(document).ready(function() {
-
 	$.fn.dataTable.ext.errMode = 'none';
 
-
-	draftsheet_table = $('#draftsheet-table').DataTable({
-		dom: "<'row'<'col-sm-12 col-md-4'B><'col-sm-12 col-md-8'f>>" +
+	sheetreqs_table = $('#sheetreqs-table').DataTable({
+		dom: "<'row'<'col-sm-12 col-md-4'B>>" +
 			"<'row'<'col-sm-12'tr>>" +
 			"<'row'<'col-sm-12 col-md-4'i><'col-sm-12 col-md-3'l><'col-sm-12 col-md-5'p>>",
 		"processing": true,
@@ -68,9 +41,8 @@ $(document).ready(function() {
 		scrollY: '30vh',
 		scrollCollapse: true,
 		paging: true,
-		select: {
-			style: 'single'
-		},
+		select: true,
+
 		buttons: {
 			dom: {
 				button: {
@@ -79,33 +51,33 @@ $(document).ready(function() {
 			},
 			buttons: [
 				{
-					"name": 'printDraftSheet',
+					"name": 'printSheetReqs',
 					"extend": 'print',
 					"text": '<span class="fas fa-print"></span>',
 					"className": 'btn btn-xs'
 				},
 				{
-					"name": 'toPdfDraftSheet',
+					"name": 'toPdfSheetReqs',
 					"extend": 'pdf',
 					"text": '<span class="far fa-file-pdf"></span>',
 					"className": 'btn btn-xs'
 				},
 				{
-					"name": 'addDraftSheet',
+					"name": 'addSheetReqs',
 					"text": '<span class="fas fa-plus"></span>',
-					"enabled": canAddDraftSheet,
+					"enabled": canAddSheetReqs,
 					"className": 'btn btn-xs',
 					"action": function(e, dt, node, config) {
-						onAddCardDraftSheetButtonClick();
+						onAddCardSheetReqsButtonClick();
 					}
 				},
 				{
-					"name": 'refreshDraftSheet',
+					"name": 'refreshSheetReqs',
 					"text": '<span class="fas fa-sync-alt"></span>',
 					"className": 'btn btn-xs',
 					"action": function(e, dt, node, config) {
-						dt.ajax.reload(null, true);
-						dt.rows().deselect();
+						//dt.clear().draw();
+						dt.ajax.reload(null, false);
 					}
 				}
 			]
@@ -118,7 +90,7 @@ $(document).ready(function() {
 		"pagingType": "numbers",
 
 		"ajax": {
-			"url": cardDraftSheetPagesUrl,
+			"url": cardSheetReqsPagesUrl,
 			"type": "POST",
 			"dataType": "json",
 			"contentType": "application/json",
@@ -134,7 +106,7 @@ $(document).ready(function() {
 
 		"columns": [
 			{
-				"className": "details-control draftsheet-table",
+				"className": "details-control sheetreqs-table",
 				orderable: false,
 				data: null,
 				defaultContent: '',
@@ -143,21 +115,22 @@ $(document).ready(function() {
 			{
 				"data": null,
 				"bSortable": false,
-				"width": "5em",
-				"defaultContent": buttonsCardDraftSheetBtnContent,
+				"width": "50px",
+				"defaultContent": buttonsCardSheetReqsBtnContent,
 				"targets": -1,
-				"visible": canEditCardDraftSheet,
+				"visible": canEditCardSheetReqs,
 				responsivePriority: 2
 			},
+			//			{ "data": "id", "width": "3em" },
 			{ "data": "creationDate", "width": "11em" },
 			{ "data": "description", "width": "70%" }
 		],
 		"order": [[2, 'asc']]
 	});
 
-	$('#draftsheet-table tbody').on('click', 'tr td.draftsheet-table', function(e) {
+	$('#sheetreqs-table tbody').on('click', 'tr td.sheetreqs-table', function(e) {
 		var tr = $(this).closest('tr');
-		var row = draftsheet_table.row(tr);
+		var row = sheetreqs_table.row(tr);
 		e.stopPropagation();
 
 		if (row.child.isShown()) {
@@ -166,26 +139,16 @@ $(document).ready(function() {
 		}
 		else {
 			tr.addClass('shown');
-			row.child(formatdraftsheet(row.data())).show();
+			row.child(formatsheetreqs(row.data())).show();
 		}
 	});
 
-
-	draftsheet_table
+	sheetreqs_table
 		.on('error.dt', function(e, settings, techNote, message) {
-			console.log('An error has been reported by draftsheet_table DataTables: ', message);
+			console.log('An error has been reported by sheetreqs_table DataTables: ', message);
 		})
 		.on('init.dt', function(e, dt, type, indexes) {
-			draftsheet_table.buttons([0, 1]).disable();
-		})
-		.on('select', function(e, dt, type, indexes) {
-			//var rowData = draftsheet_table.rows(indexes).data().toArray();
-			draftsheetTableRowSelected();
-		})
-		.on('deselect', function(e, dt, type, indexes) {
-			//var rowData = draftsheet_table.rows(indexes).data().toArray();
-			draftsheetTableRowDeselected();
+			sheetreqs_table.buttons([0, 1, 2, 3]).disable();
 		});
 
 });
-

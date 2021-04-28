@@ -1,11 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 
 
 </head>
 <body>
 	<div class="card-area p-1">
+			<script th:inline="javascript">
+				var canAddDraftSheet = false;
+				var canAddSheetReqs = false;
+				var canAddDraftReqs = false;
+			</script>
+		<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_DISPATCHER','ROLE_PRODUCTOPER')">
+			<script th:inline="javascript">
+				 canAddDraftSheet = true;
+			</script>
+		</div>
+		<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_DISPATCHER','ROLE_PRODUCTOPER')">
+			<script th:inline="javascript">
+				canAddSheetReqs = true;
+			</script>
+		</div>
+		<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_DISPATCHER','ROLE_PRODUCTOPER','ROLE_MANAGER','ROLE_CLIENT')">
+			<script th:inline="javascript"	>
+				var canAddDraftReqs = true;
+			</script>
+		</div>
+		<script th:inline="javascript">
+			var draftsheet_table;
+			var draftreqs_table;
+			var sheetreqs_table;
+		</script>
 		<!-- data table start -->
 		<div class="row m-0">
 			<div class="col-lg-7 col-sm-12 m-0 p-0">

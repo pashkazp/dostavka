@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -20,10 +19,8 @@ import ua.com.sipsoft.service.request.archive.ArchivedVisitsService;
 import ua.com.sipsoft.service.request.draft.CourierRequestService;
 import ua.com.sipsoft.service.request.draft.DraftRouteSheetServiceToRepo;
 import ua.com.sipsoft.service.security.UsersUtils;
-import ua.com.sipsoft.service.util.EntityFilter;
 import ua.com.sipsoft.service.util.HasQueryToSortConvertor;
 import ua.com.sipsoft.util.CourierVisitState;
-import ua.com.sipsoft.util.query.Query;
 
 /**
  * The Class CourierRequestServiceImpl.
@@ -186,87 +183,87 @@ public class CourierRequestServiceImpl implements CourierRequestService, HasQuer
 		}
 	}
 
-	/**
-	 * Gets the queried courier requests by filter.
-	 *
-	 * @param query the query
-	 * @return the queried courier requests by filter
-	 */
-	@Override
-	public Stream<CourierRequest> getQueriedCourierRequestsByFilter(
-			Query<CourierRequest, EntityFilter<CourierRequest>> query) {
-		log.debug(
-				"Get requested page Courier Requests By Sheet ID with offset '{}'; limit '{}'; sort '{}'; filter '{}'",
-				query.getOffset(), query.getLimit(), query.getSortOrders(), query.getFilter().get().toString());
-		if (query == null || query.getFilter().isEmpty()) {
-			log.debug("Get Courier Requests Sheets is impossible. Miss some data.");
-			return Stream.empty();
-		}
-		try {
-			return dao.findAll(queryToSort(query))
-					.stream()
-					.filter(entity -> query.getFilter().get().isPass(entity))
-					.skip(query.getOffset())
-					.limit(query.getLimit());
-		} catch (Exception e) {
-			log.error("The Courier Requests list was not received for a reason: {}", e.getMessage());
-		}
-		return Stream.empty();
-	}
-
-	/**
-	 * Gets the queried courier requests by filter count.
-	 *
-	 * @param query the query
-	 * @return the queried courier requests by filter count
-	 */
-	@Override
-	public int getQueriedCourierRequestsByFilterCount(Query<CourierRequest, EntityFilter<CourierRequest>> query) {
-		log.debug("Get requested size Courier Requests with filter '{}'", query.getFilter().get().toString());
-		return (int) getQueriedCourierRequestsByFilter(query).count();
-	}
-
-	/**
-	 * Gets the queried courier requests by filter.
-	 *
-	 * @param query   the query
-	 * @param SheetId the sheet id
-	 * @return the queried courier requests by filter
-	 */
-	@Override
-	public Stream<CourierRequest> getQueriedCourierRequestsByFilterBySheetId(
-			Query<CourierRequest, EntityFilter<CourierRequest>> query, Long SheetId) {
-		log.debug(
-				"Get requested page Courier Requests By Sheet ID with offset '{}'; limit '{}'; sort '{}'; filter '{}'",
-				query.getOffset(), query.getLimit(), query.getSortOrders(), query.getFilter().get().toString());
-		if (query == null || query.getFilter().isEmpty()) {
-			log.debug("Get Courier Requests Sheets is impossible. Miss some data.");
-			return Stream.empty();
-		}
-		try {
-			return dao.getCourierRequestByDratRequestSheetId(SheetId, queryToSort(query))
-					.stream()
-					.filter(entity -> query.getFilter().get().isPass(entity))
-					.skip(query.getOffset())
-					.limit(query.getLimit());
-		} catch (Exception e) {
-			log.error("The Courier Requests list was not received for a reason: {}", e.getMessage());
-		}
-		return Stream.empty();
-	}
-
-	/**
-	 * Gets the queried courier requests by filter count.
-	 *
-	 * @param query   the query
-	 * @param SheetId the sheet id
-	 * @return the queried courier requests by filter count
-	 */
-	@Override
-	public int getQueriedCourierRequestsByFilterBySheetIdCount(
-			Query<CourierRequest, EntityFilter<CourierRequest>> query, Long SheetId) {
-		log.debug("Get requested size Courier Requests with filter '{}'", query.getFilter().get().toString());
-		return (int) getQueriedCourierRequestsByFilterBySheetId(query, SheetId).count();
-	}
+//	/**
+//	 * Gets the queried courier requests by filter.
+//	 *
+//	 * @param query the query
+//	 * @return the queried courier requests by filter
+//	 */
+//	@Override
+//	public Stream<CourierRequest> getQueriedCourierRequestsByFilter(
+//			Query<CourierRequest, EntityFilter<CourierRequest>> query) {
+//		log.debug(
+//				"Get requested page Courier Requests By Sheet ID with offset '{}'; limit '{}'; sort '{}'; filter '{}'",
+//				query.getOffset(), query.getLimit(), query.getSortOrders(), query.getFilter().get().toString());
+//		if (query == null || query.getFilter().isEmpty()) {
+//			log.debug("Get Courier Requests Sheets is impossible. Miss some data.");
+//			return Stream.empty();
+//		}
+//		try {
+//			return dao.findAll(queryToSort(query))
+//					.stream()
+//					.filter(entity -> query.getFilter().get().isPass(entity))
+//					.skip(query.getOffset())
+//					.limit(query.getLimit());
+//		} catch (Exception e) {
+//			log.error("The Courier Requests list was not received for a reason: {}", e.getMessage());
+//		}
+//		return Stream.empty();
+//	}
+//
+//	/**
+//	 * Gets the queried courier requests by filter count.
+//	 *
+//	 * @param query the query
+//	 * @return the queried courier requests by filter count
+//	 */
+//	@Override
+//	public int getQueriedCourierRequestsByFilterCount(Query<CourierRequest, EntityFilter<CourierRequest>> query) {
+//		log.debug("Get requested size Courier Requests with filter '{}'", query.getFilter().get().toString());
+//		return (int) getQueriedCourierRequestsByFilter(query).count();
+//	}
+//
+//	/**
+//	 * Gets the queried courier requests by filter.
+//	 *
+//	 * @param query   the query
+//	 * @param SheetId the sheet id
+//	 * @return the queried courier requests by filter
+//	 */
+//	@Override
+//	public Stream<CourierRequest> getQueriedCourierRequestsByFilterBySheetId(
+//			Query<CourierRequest, EntityFilter<CourierRequest>> query, Long SheetId) {
+//		log.debug(
+//				"Get requested page Courier Requests By Sheet ID with offset '{}'; limit '{}'; sort '{}'; filter '{}'",
+//				query.getOffset(), query.getLimit(), query.getSortOrders(), query.getFilter().get().toString());
+//		if (query == null || query.getFilter().isEmpty()) {
+//			log.debug("Get Courier Requests Sheets is impossible. Miss some data.");
+//			return Stream.empty();
+//		}
+//		try {
+//			return dao.getCourierRequestByDratRequestSheetId(SheetId, queryToSort(query))
+//					.stream()
+//					.filter(entity -> query.getFilter().get().isPass(entity))
+//					.skip(query.getOffset())
+//					.limit(query.getLimit());
+//		} catch (Exception e) {
+//			log.error("The Courier Requests list was not received for a reason: {}", e.getMessage());
+//		}
+//		return Stream.empty();
+//	}
+//
+//	/**
+//	 * Gets the queried courier requests by filter count.
+//	 *
+//	 * @param query   the query
+//	 * @param SheetId the sheet id
+//	 * @return the queried courier requests by filter count
+//	 */
+//	@Override
+//	public int getQueriedCourierRequestsByFilterBySheetIdCount(
+//			Query<CourierRequest, EntityFilter<CourierRequest>> query, Long SheetId) {
+//		log.debug("Get requested size Courier Requests with filter '{}'", query.getFilter().get().toString());
+//		return (int) getQueriedCourierRequestsByFilterBySheetId(query, SheetId).count();
+//	}
 
 }

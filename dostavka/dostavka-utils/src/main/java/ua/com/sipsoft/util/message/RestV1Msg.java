@@ -45,6 +45,9 @@ public class RestV1Msg {
 	public static final String FACILITYADDR_NOTFOUND = "rest.v1.facilityaddr.notfound";;
 	public static final String FACILITYADDR_NOTFOUND_EXT = "rest.v1.facilityadd.notfound.debug";;
 
+	public static final String ROUTESHEET_UPDATE_FAIL = "rest.v1.routesheet.upd.fail";
+	public static final String ROUTESHEET_UPDATE_FAIL_EXT = "rest.v1.routesheet.upd.fail.debug";
+
 	private RestV1Msg() {
 	}
 }

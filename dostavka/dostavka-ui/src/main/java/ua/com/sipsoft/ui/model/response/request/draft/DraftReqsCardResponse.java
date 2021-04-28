@@ -16,9 +16,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DraftSheetCardResponse implements Serializable {
+public class DraftReqsCardResponse implements Serializable {
 
-	private static final long serialVersionUID = -270696402784834928L;
+	private static final long serialVersionUID = -5444702374367279740L;
 
 	private Long id;
 
@@ -28,5 +28,17 @@ public class DraftSheetCardResponse implements Serializable {
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
 	private LocalDateTime creationDate;
+
+	private Long fromId;
+
+	private String fromAddr;
+
+	private String fromFacility;
+
+	private long toId;
+
+	private String toAddr;
+
+	private String toFacility;
 
 }

@@ -185,7 +185,8 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 		Optional<FacilityAddrDto> facilityAddrDtoO;
 		Optional<FacilityAddr> facilityAddrO = fetchById(id);
 		if (facilityAddrO.isPresent()) {
-			facilityAddrDtoO = Optional.ofNullable(facilityAddMapper.toDto(facilityAddrO.get()));
+			facilityAddrDtoO = Optional
+					.ofNullable(facilityAddMapper.toDto(facilityAddrO.get()));
 //			facilityAddrDtoO = Optional.of(FacilityAddMapper.MAPPER.toDto(facilityAddrO.get()));
 		} else {
 			facilityAddrDtoO = Optional.empty();
@@ -199,7 +200,8 @@ public class FacilityAddrServiceToRepoImpl implements FacilityAddrServiceToRepo,
 		Optional<FacilityAddr> facilityAddrO = fetchById(id);
 		if (facilityAddrO.isPresent() && facilityAddrO.get().getFacility() != null
 				&& facilityAddrO.get().getFacility().getUsers().contains(caller)) {
-			facilityAddrDtoO = Optional.ofNullable(facilityAddMapper.toDto(facilityAddrO.get()));
+			facilityAddrDtoO = Optional
+					.ofNullable(facilityAddMapper.toDto(facilityAddrO.get()));
 		} else {
 			facilityAddrDtoO = Optional.empty();
 		}

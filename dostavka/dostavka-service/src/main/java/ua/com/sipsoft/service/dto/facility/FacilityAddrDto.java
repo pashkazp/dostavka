@@ -39,4 +39,6 @@ public class FacilityAddrDto implements Serializable {
 
 	private Double lng;
 
+	private FacilityDto facility;
+
 }

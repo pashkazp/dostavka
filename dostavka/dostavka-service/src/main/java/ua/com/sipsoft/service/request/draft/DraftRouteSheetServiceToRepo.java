@@ -10,6 +10,7 @@ import lombok.NonNull;
 import ua.com.sipsoft.dao.request.draft.CourierRequest;
 import ua.com.sipsoft.dao.request.draft.DraftRouteSheet;
 import ua.com.sipsoft.dao.user.User;
+import ua.com.sipsoft.service.dto.request.DraftSheetUpdReqDto;
 import ua.com.sipsoft.service.dto.request.RouteSheetDto;
 import ua.com.sipsoft.service.util.EntityFilter;
 import ua.com.sipsoft.util.paging.Page;
@@ -59,6 +60,14 @@ public interface DraftRouteSheetServiceToRepo {
 	 * @return the optional
 	 */
 	Optional<DraftRouteSheet> save(DraftRouteSheet request);
+
+	/**
+	 * Save.
+	 *
+	 * @param request the request
+	 * @return the optional
+	 */
+	Optional<RouteSheetDto> save(@NonNull RouteSheetDto request);
 
 	/**
 	 * Move to archive.
@@ -122,9 +131,11 @@ public interface DraftRouteSheetServiceToRepo {
 	 * @param id the id
 	 * @return the optional
 	 */
-	Optional<DraftRouteSheet> fetchById(Long id);
+	Optional<RouteSheetDto> fetchById(@NonNull Long id);
 
 	Page<RouteSheetDto> getFilteredPage(@NonNull PagingRequest pagingRequest,
-			@NonNull EntityFilter<DraftRouteSheet> entityFilter);
+			@NonNull EntityFilter<RouteSheetDto> entityFilter);
+
+	Optional<RouteSheetDto> updateRouteSheet(@NonNull DraftSheetUpdReqDto draftSheetUpdReqDto);
 
 }

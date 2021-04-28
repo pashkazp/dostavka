@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
 import ua.com.sipsoft.service.dto.request.RouteSheetDto;
-import ua.com.sipsoft.ui.model.response.request.daft.DraftSheetCardResponse;
+import ua.com.sipsoft.ui.model.response.request.draft.DraftSheetCardResp;
 
 @Mapper(componentModel = "spring")
 @Component
@@ -18,11 +18,12 @@ public interface DraftSheetRespMapper {
 	final static DateTimeFormatter format = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss.SSS");
 
 	@Mapping(target = "author", source = "author.name")
-	@Mapping(expression = "java(routeSheet.getCreationDate().format(format))", target = "creationDate")
-	DraftSheetCardResponse toRest(RouteSheetDto routeSheet);
+	// @Mapping(expression = "java(routeSheet.getCreationDate().format(format))",
+	// target = "creationDate")
+	DraftSheetCardResp toRest(RouteSheetDto routeSheet);
 
-	List<DraftSheetCardResponse> toRest(List<RouteSheetDto> routeSheets);
+	List<DraftSheetCardResp> toRest(List<RouteSheetDto> routeSheets);
 
-	Stream<DraftSheetCardResponse> toRest(Stream<RouteSheetDto> routeSheets);
+	Stream<DraftSheetCardResp> toRest(Stream<RouteSheetDto> routeSheets);
 
 }

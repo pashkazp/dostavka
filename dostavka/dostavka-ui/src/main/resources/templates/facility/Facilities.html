@@ -71,6 +71,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		var facilitiesaddressurl = [[@{ ${ T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIESADDR }}]];
 		var facilitiespagesurl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_FACILITIES_PAGES}}]];
 		var facilitiesaddrurl = [[${ T(ua.com.sipsoft.util.AppURL).FACILITIESADDR}]];
+		var facilitiesTable;
 		var AddrTableColTitleId = '[(#{entity.facilityaddr.addrid})]';
 		var AddrTableColTitleAlias = '[(#{entity.facilityaddr.alias})]';
 		var AddrTableColTitleAddr = '[(#{entity.facilityaddr.address})]';
@@ -97,14 +98,14 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		var editFacilityAddrBtnContent = '<a class="btn btn-xs btn-link text-muted"  data-name="disabledEditAddrButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
  	</script>
 	<!-- </th:block> -->
+
+    <script src="assets/facility/facility-main.js"></script>
 	
 	<!-- Edit Facility modal form part -->
 	<div th:replace="facility/facilityEditor :: body/facilityEditor"></div>
 
 	<!-- Edit Facility modal form part -->
 	<div th:replace="facility/facilityAddrEditor :: body/facilityAddrEditor"></div>
-
-    <script src="assets/facility/facility-main.js"></script>
 
  </body>
 

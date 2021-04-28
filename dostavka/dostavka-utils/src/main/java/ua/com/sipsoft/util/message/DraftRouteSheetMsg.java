@@ -20,6 +20,8 @@ public class DraftRouteSheetMsg {
 	public static final String DRAFT_ROUTE_SHEET_ISSUE_HEADER = "draft.route.sheet.issue.header";
 	public static final String DRAFT_ROUTE_SHEET_ISSUE_MSG = "draft.route.sheet.issue.msg";
 
+	public static final String CHK_NAME_SHORT = "entity.draft.route.description.short";
+	public static final String CHK_NAME_LONG = "entity.draft.route.description.long";
 //	public static final String DRAFT_ROUTE_SHEET_REM_REQ_HEADER = "draft.route.sheet.remove.request.header";
 //	public static final String DRAFT_ROUTE_SHEET_REM_REQ_MSG = "draft.route.sheet.remove.request.msg";
 //	public static final String DRAFT_ROUTE_SHEET_ADD_REQ_HEADER = "draft.route.sheet.add.requests.header";

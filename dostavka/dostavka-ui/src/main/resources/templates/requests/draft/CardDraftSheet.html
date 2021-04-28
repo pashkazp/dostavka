@@ -5,6 +5,20 @@
 </head>
 <body>
 	<div th:fragment="CardDraftSheet" class="card card-bordered">
+		<script th:inline="javascript">
+			var detailDraftSheetFormatStr = ' <span class="font-weight-bold">{d.id} | '+
+	        								'[(#{entity.draft.route.author})]:</span> {d.author}';
+
+	        var cardDraftSheetPagesUrl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_DRAFT_RSHEET}}]]+'/pages';
+	        var canEditCardDraftSheet = true;
+			var buttonsCardDraftSheetBtnContent =  
+				'<a class="btn btn-xs btn-link text-primary pl-0 pr-0" data-name="editButton">' +
+					'<i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i>' +
+				'</a>'+
+				'<a class="btn btn-xs btn-link text-primary pl-0 pr-0" data-name="infoButton">' +
+					'<i class="[(@{${T(ua.com.sipsoft.util.UIIcon).INFO.getClassCSS()}})]" title="[(#{button.info})]"></i>' +
+				'</a>';
+ 		</script>
 		<div class="card-body">
 			<h4 class="header-title" th:text="#{card.draft.sheets}">Draft
 				Route sheet table</h4>
@@ -21,28 +35,10 @@
 								<th th:text="#{entity.draft.route.description}">Description</th>
 							</tr>
 						</thead>
-						<tfoot>
-							<tr>
-								<th></th>
-								<th th:text="#{grid.colum.actions}">Actions</th>
-								<th th:text="#{entity.draft.route.creation.date}">Created</th>
-								<th th:text="#{entity.draft.route.description}">Description</th>
-							</tr>
-						</tfoot>
 					</table>
 				</div>
 			</div>
 		</div>
-		<script th:inline="javascript">
-			var detailDraftSheetFormatStr = '[(#{entity.draft.route.id})]: {d.id} <br>'+
-	        								'[(#{entity.draft.route.author})]: {d.author}';
-
-	        var cardDraftSheetPagesUrl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_DRAFT_RSHEET}}]]+'/pages';
-	        
-			var canEditCardDraftSheet = true;
-			var editCardDraftSheetBtnContent =  '<a class="btn btn-xs btn-link text-primary" data-name="editButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>';
- 		</script>
-
 		<script src="assets/requests/draft/CardDraftSheet.js"></script>
 	</div>
 </body>

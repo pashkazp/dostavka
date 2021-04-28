@@ -12,8 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ua.com.sipsoft.dao.request.draft.DraftRouteSheet;
 import ua.com.sipsoft.dao.user.User;
+import ua.com.sipsoft.service.dto.request.RouteSheetDto;
 import ua.com.sipsoft.service.util.EntityFilter;
 
 @Builder
@@ -23,7 +23,9 @@ import ua.com.sipsoft.service.util.EntityFilter;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class DraftSheetFilter implements EntityFilter<DraftRouteSheet> {
+public class DraftSheetFilter implements EntityFilter<RouteSheetDto> {
+
+	private Long id;
 
 	private User author;
 
@@ -32,8 +34,11 @@ public class DraftSheetFilter implements EntityFilter<DraftRouteSheet> {
 	private String description;
 
 	@Override
-	public boolean isPass(DraftRouteSheet entity) {
+	public boolean isPass(RouteSheetDto entity) {
 		if (entity == null) {
+			return false;
+		}
+		if (id != null && entity.getId() != id) {
 			return false;
 		}
 		if (!containsIgnoreCase(entity.getDescription(), defaultString(description))) {

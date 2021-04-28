@@ -1,25 +1,3 @@
-logging:
-  file:
-    name: app.log
-  level:
-    org:
-      hibernate:
-        SQL: INFO
-        type:
-          descriptor:
-            sql:
-              BasicBinder: INFO
-      springframework:
-        jdbc:
-          core:
-            JdbcTemplate: DEBUG
-            StatementCreatorUtils: TRACE
-    ua:
-      com:
-        sipsoft: DEBUG
-  pattern:
-    console: '%highlight(%-5level) %green(%C{1.}):[%L - %msg%n%throwable'
-    #console: '%highlight(%-5level) %green(%C{1.}):%L - %msg%n%throwable'
 server:
   servlet:
     context-path: /dostavka
@@ -50,7 +28,7 @@ spring:
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     open-in-view: true
     properties:
       hibernate:
@@ -58,6 +36,7 @@ spring:
         show_sql: true
         type: 'TRACE '
         use_sql_comments: true
+        format_sql: false
     show-sql: true
   mail:
     host: mail.sipsoft.com.ua
@@ -118,3 +97,26 @@ springdoc:
   swagger-ui:
     path: /api/doc/swagger-ui.html
 
+logging:
+  file:
+    name: app.log
+  level:
+    org:
+      hibernate:
+        SQL: INFO
+        type:
+          descriptor:
+            sql: 
+              #BasicBinder: TRACE
+              BasicBinder: DEBUG
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+            StatementCreatorUtils: TRACE
+    ua:
+      com:
+        sipsoft: DEBUG
+  pattern:
+    console: '%highlight(%-5level) %green(%C{1.}):[%L - %msg%n%throwable'
+    #console: '%highlight(%-5level) %green(%C{1.}):%L - %msg%n%throwable'

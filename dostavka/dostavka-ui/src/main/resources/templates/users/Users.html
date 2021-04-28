@@ -132,6 +132,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	        paging:         true,
 	        "lengthMenu": [ [ 25, 50, 100, -1], [ 25, 50, 100, "All"] ],
 	        "pagingType": "numbers",
+	        //"autoWidth": false,
 	        "ajax": {
 	            "url": [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_USERS_PAGES}}]],
 	            "type": "POST",
@@ -148,15 +149,15 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				"url": localecallstr
 			},
     		"columns": [
-	            {"data": "id","width": "9rem",responsivePriority: 3},
-	            {"data": null,"bSortable": false, "width": "5rem",
+	            {"data": "id","width": "5em",responsivePriority: 3},
+	            {"data": null,"bSortable": false, "width": "5em",
 		            "defaultContent": '<a class="btn btn-xs btn-link text-primary" data-name="editButton"><i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i></a>',
 	        		"targets": -1, responsivePriority: 2},
-	            {"data": "name","width": "33%", responsivePriority:1},
-	            {"data": "email","width": "33%"},
-	            {"data": "enabled", "render": true_false_show_check_func, "width": "5rem"},
-	            {"data": "verified","render": true_false_show_check_func, "width": "5rem"},
-	            {"data": "roles","bSortable": false, "render": role_presenter_func, "width": "34%"}
+	            {"data": "name","width": "35%", responsivePriority:1},
+	            {"data": "email","width": "35%"},
+	            {"data": "enabled", "render": true_false_show_check_func, "width": "5em"},
+	            {"data": "verified","render": true_false_show_check_func, "width": "5em"},
+	            {"data": "roles","bSortable": false, "render": role_presenter_func, "width": "35em"}
 	        ],
 	        
 	    });

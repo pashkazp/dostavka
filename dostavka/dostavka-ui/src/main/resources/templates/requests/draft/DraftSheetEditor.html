@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+
+	<div th:fragment="draftSheetEditor" class="modal fade"
+		id="editDraftSheetModal" tabindex="-1" role="dialog"
+		aria-labelledby="editDraftSheetLabel" aria-hidden="true">
+		<form id="editDraftSheetForm">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content login-s2">
+					<div class="modal-header">
+						<div id="editDraftSheetDiv" style="display: none;"
+							class="container">
+							<div class="row">
+								<h5 id="editDraftSheetLabel" class="modal-title"
+									th:text="#{entity.draft.route.edit}" style="display: inline;">Edit
+									Draft Sheet</h5>
+								<h5 id="editDraftSheetLabelId" class="modal-title ml-1"
+									data-name="id" data-value="0">1</h5>
+							</div>
+
+							<div id="editDraftSheetLabelCreated" class="modal-title ml-1"
+								data-name="creationDate" data-value="0">1</div>
+							<div id="editDraftSheetLabelAuthor" class="modal-title ml-1"
+								data-name="author" data-value="0">1</div>
+						</div>
+						<div id="addDraftSheetDiv" style="display: none;">
+							<h5 class="modal-title" id="addDraftSheetLabel"
+								th:text="#{entity.draft.route.add}">Add Draft Sheet</h5>
+						</div>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="text-primary" for="descrEdit"
+								th:text="#{entity.draft.route.description}">Name</label>
+							<div class="input-group form-row">
+								<input class="form-control border-right-0 bg-transparent"
+									type="text" id="descrEdit" name="description">
+								<div class="input-group-append input-group-text border-left-0">
+									<i class="fas fa-info"></i>
+								</div>
+							</div>
+							<div class="text-danger form-row mr-1" data-name="description"
+								hidden="true">
+								<p class="alert alert-danger w-100 mb-0">Validation error</p>
+							</div>
+						</div>
+						<div class="text-danger form-row mr-1" th:data-name="editForm"
+							hidden="true">
+							<p class="alert alert-danger w-100 mb-0">Validation error</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="addNewRouteSheetButton" type="submit"
+							class="btn btn-primary" th:text="#{button.add}"
+							style="display: none;">Add</button>
+						<button id="updateRouteSheetButton" type="submit"
+							class="btn btn-primary" th:text="#{button.save}"
+							style="display: none;">Save</button>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal" th:text="#{button.close}">Close</button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<script th:inline="javascript">
+			var PostNewDrafSheetUrl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_DRAFT_RSHEET}}]];
+			var PutDrafSheetUrl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_DRAFT_RSHEET}}]];
+			var GetDrafSheetUrl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_DRAFT_RSHEET}}]];
+		</script>
+		<script src="assets/requests/draft/DraftSheet-edit.js"></script>
+
+	</div>
+</body>
+
+</html>

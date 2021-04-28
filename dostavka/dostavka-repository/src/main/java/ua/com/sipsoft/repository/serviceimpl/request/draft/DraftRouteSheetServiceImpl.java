@@ -19,6 +19,7 @@ import ua.com.sipsoft.dao.request.issued.IssuedRouteSheet;
 import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.repository.request.draft.DraftRouteSheetRepository;
 import ua.com.sipsoft.repository.serviceimpl.mapper.request.RouteSheetMapper;
+import ua.com.sipsoft.service.dto.request.DraftSheetUpdReqDto;
 import ua.com.sipsoft.service.dto.request.RouteSheetDto;
 import ua.com.sipsoft.service.request.archive.ArchivedSheetsService;
 import ua.com.sipsoft.service.request.draft.CourierRequestService;
@@ -263,18 +264,18 @@ public class DraftRouteSheetServiceImpl
 	 * @return the optional
 	 */
 	@Override
-	public Optional<DraftRouteSheet> fetchById(Long id) {
+	public Optional<RouteSheetDto> fetchById(@NonNull Long id) {
 		log.debug("Get Route Sheet id: '{}'", id);
-		if (id == null) {
-			log.debug("Get  Route Sheet by id is impossible. id is null.");
-			return Optional.empty();
-		}
+		RouteSheetDto sheet = null;
 		try {
-			return dao.findById(id);
+			Optional<DraftRouteSheet> routeSheet = dao.findById(id);
+			if (routeSheet.isPresent()) {
+				sheet = routeSheetMapper.draftRouteSheetToDto(routeSheet.get());
+			}
 		} catch (Exception e) {
 			log.error("The Route Sheet bi id is not received for a reason: {}", e.getMessage());
-			return Optional.empty();
 		}
+		return Optional.ofNullable(sheet);
 	}
 
 	/**
@@ -331,7 +332,7 @@ public class DraftRouteSheetServiceImpl
 
 	@Override
 	public Page<RouteSheetDto> getFilteredPage(@NonNull PagingRequest pagingRequest,
-			@NonNull EntityFilter<DraftRouteSheet> entityFilter) {
+			@NonNull EntityFilter<RouteSheetDto> entityFilter) {
 		log.debug(
 				"getFilteredPage] - Get requested page Draft Sheet with PagingRequest '{}' and EntityFilter<Facility> '{}'",
 				pagingRequest, entityFilter);
@@ -340,18 +341,34 @@ public class DraftRouteSheetServiceImpl
 		List<DraftRouteSheet> routeSheets;
 		routeSheets = dao.findAll(toSort(pagingRequest));
 
-		page.setRecordsTotal(routeSheets.size());
+		List<RouteSheetDto> routeSheetsDto = getFiteredList(routeSheetMapper.draftRouteSheetToDto(routeSheets),
+				entityFilter);
 
-		routeSheets = getFiteredList(routeSheets, entityFilter);
+		page.setRecordsTotal(routeSheetsDto.size());
 
-		page.setRecordsFiltered(routeSheets.size());
+		page.setRecordsFiltered(routeSheetsDto.size());
 
-		routeSheets = getLimitedList(routeSheets, pagingRequest.getStart(), pagingRequest.getLength());
+		routeSheetsDto = getLimitedList(routeSheetsDto, pagingRequest.getStart(), pagingRequest.getLength());
 
-		page.setData(routeSheetMapper.draftRouteSheetToDto(routeSheets));
+		page.setData(routeSheetsDto);
 
 		page.setDraw(pagingRequest.getDraw());
 
 		return page;
+	}
+
+	@Override
+	public Optional<RouteSheetDto> save(@NonNull RouteSheetDto request) {
+		log.debug(
+				"save] - Save Draft Sheet '{}'", request);
+		DraftRouteSheet routeSheet = routeSheetMapper.fromDtoToDraftRouteSheet(request);
+		routeSheet = dao.save(routeSheet);
+		return Optional.ofNullable(routeSheetMapper.draftRouteSheetToDto(routeSheet));
+	}
+
+	@Override
+	public Optional<RouteSheetDto> updateRouteSheet(@NonNull DraftSheetUpdReqDto draftSheetUpdReqDto) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +33,6 @@ import com.google.common.collect.Multimap;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ua.com.sipsoft.dao.user.User;
 import ua.com.sipsoft.service.common.FacilitiesFilter;
 import ua.com.sipsoft.service.common.FacilityService;
 import ua.com.sipsoft.service.dto.facility.FacilityAddrDto;
@@ -111,8 +109,7 @@ public class FacilityRestController {
 					MediaType.APPLICATION_JSON_VALUE })
 	@RolesAllowed({ "ROLE_ADMIN", "ROLE_DISPATCHER", "ROLE_MANAGER", "ROLE_PRODUCTOPER", "ROLE_COURIER",
 			"ROLE_CLIENT" })
-	public ResponseEntity<Object> getFasilitiesPage(@RequestBody(required = true) PagingRequest pagingRequest,
-			@AuthenticationPrincipal User user) {
+	public ResponseEntity<Object> getFasilitiesPage(@RequestBody(required = true) PagingRequest pagingRequest) {
 		log.debug("getFasilitiesPage] - get page of facilities by request: {}", pagingRequest.toString());
 
 		FacilitiesFilter facilityFilter = new FacilitiesFilter();

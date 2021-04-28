@@ -5,9 +5,26 @@
 </head>
 <body>
 	<div th:fragment="CardDraftReqs" class="card card-bordered">
+		<script th:inline="javascript">
+			var detailDraftReqsFormatStr = ' <span class="font-weight-bold">{d.id} | '+
+	        								'[(#{entity.courier.request.author})]:</span> {d.author} <br>'+
+	        								'<span class="font-weight-bold">[(#{entity.courier.request.address.from})]:</span> {d.fromAddr} ( <span class="font-italic">{d.fromFacility}</span> ) <br>'+
+	        								'<span class="font-weight-bold">[(#{entity.courier.request.address.to})]:</span> {d.toAddr} ( <span class="font-italic">{d.toFacility}</span> )';
+
+	        var cardDraftReqsPagesUrl = [[@{${T(ua.com.sipsoft.util.AppURL).API_V1_DRAFT_REQ}}]]+'/pages';
+	        var canEditCardDraftReqs = true;
+			var buttonsCardDraftReqsBtnContent =  
+				'<a class="btn btn-xs btn-link text-primary pl-0 pr-0" data-name="editButton">'	+
+					'<i class="[(@{${T(ua.com.sipsoft.util.UIIcon).BTN_EDIT.getClassCSS()}})]" title="[(#{button.edit})]"></i>' +
+				'</a>' +
+				'<a class="btn btn-xs btn-link text-primary pl-0 pr-0" data-name="infoButton">' +
+					'<i class="[(@{${T(ua.com.sipsoft.util.UIIcon).INFO.getClassCSS()}})]" title="[(#{button.info})]"></i>' +
+				'</a>';
+ 		</script>
+	
 		<div class="card-body">
 			<h4 class="header-title" th:text="#{card.draft.reqs}">Draft
-				Route sheet table</h4>
+				Requests table</h4>
 			<div class="card-text">
 				<div class="data-tables datatable-dark table-responsive-sm">
 					<table id="draftreqs-table"
@@ -17,30 +34,15 @@
 							<tr>
 								<th></th>
 								<th th:text="#{grid.colum.actions}">Actions</th>
-								<th th:text="#{entity.courier.request.id}">Id</th>
 								<th th:text="#{entity.courier.request.creation.date}">Date</th>
 								<th th:text="#{entity.courier.request.description}">Description</th>
 							</tr>
 						</thead>
-						<tfoot>
-							<tr>
-								<th></th>
-								<th th:text="#{grid.colum.actions}">Actions</th>
-								<th th:text="#{entity.courier.request.id}">Id</th>
-								<th th:text="#{entity.courier.request.creation.date}">Date</th>
-								<th th:text="#{entity.courier.request.description}">Description</th>
-								<th th:text="#{entity.courier.request.author}">Author</th>
-								<th th:text="#{entity.courier.request.address.from}">AddrFrom</th>
-								<th th:text="#{entity.courier.request.facilityaddr.to}">FacilityFrom</th>
-								<th th:text="#{entity.courier.request.address.to}">AddrTo</th>
-								<th th:text="#{entity.courier.request.facilityaddr.to}">FacilityTo</th>
-								<th th:text="#{entity.event.header.view}">Infobutton</th>
-							</tr>
-						</tfoot>
 					</table>
 				</div>
 			</div>
 		</div>
+		<script src="assets/requests/draft/CardDraftReqs.js"></script>
 	</div>
 </body>
 </html>
